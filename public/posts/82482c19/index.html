@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"llmysnow.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="安装 i18ninternationalization 这个单词中，i 和 n 之间有 18 个字母">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue + Element 国际化(i18n)路由页面切换语言">
+<meta property="og:url" content="http://llmysnow.top/posts/82482c19/index.html">
+<meta property="og:site_name" content="奇幻的梦之旅">
+<meta property="og:description" content="安装 i18ninternationalization 这个单词中，i 和 n 之间有 18 个字母">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%9B%BD%E9%99%85%E5%8C%96%E4%BF%A1%E6%81%AF.jpg">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%88%87%E6%8D%A2%E8%AF%AD%E8%A8%80.gif">
+<meta property="article:published_time" content="2021-05-06T08:38:25.955Z">
+<meta property="article:modified_time" content="2021-05-06T08:50:53.934Z">
+<meta property="article:author" content="LiLyn">
+<meta property="article:tag" content="Vue">
+<meta property="article:tag" content="Element">
+<meta property="article:tag" content="i18n">
+<meta property="article:tag" content="切换语言">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%9B%BD%E9%99%85%E5%8C%96%E4%BF%A1%E6%81%AF.jpg">
+
+<link rel="canonical" href="http://llmysnow.top/posts/82482c19/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Vue + Element 国际化(i18n)路由页面切换语言 | 奇幻的梦之旅</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="奇幻的梦之旅" type="application/atom+xml">
+</head>
+<!--即时预加载技术，在用户点击之前预先加载页面-->
+<script src="https://cdn.jsdelivr.net/gh/TRHX/CDN-for-itrhx.com@2.0.2/js/instantclick-1.2.2.js" type="module"></script>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	  <!--<a target="_blank" rel="noopener" href="https://github.com/llwodexue" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>-->
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">奇幻的梦之旅</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">http://llmysnow.top/</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/82482c19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.jpg">
+      <meta itemprop="name" content="LiLyn">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="奇幻的梦之旅">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vue + Element 国际化(i18n)路由页面切换语言
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-06 16:38:25" itemprop="dateCreated datePublished" datetime="2021-05-06T16:38:25+08:00">2021-05-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="安装-i18n"><a href="#安装-i18n" class="headerlink" title="安装 i18n"></a>安装 i18n</h2><p><code>internationalization</code> 这个单词中，i 和 n 之间有 18 个字母</p>
+<a id="more"></a>
+
+<p><strong>注意：</strong>当前 i18n 最新版本为 9 版本，9 版本没有 VueI18n，<code>import VueI18n from &#39;vue-i18n&#39;</code> 解构会报错 <code>Cannot read property &#39;install&#39; of undefined</code></p>
+<ul>
+<li>这里为了让 Element 兼容，安装的是 8 版本的</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install vue-i18n@8</span><br></pre></td></tr></table></figure>
+
+<h2 id="页面中使用国际化"><a href="#页面中使用国际化" class="headerlink" title="页面中使用国际化"></a>页面中使用国际化</h2><h3 id="i18n-文件夹下的-index-js-文件"><a href="#i18n-文件夹下的-index-js-文件" class="headerlink" title="i18n 文件夹下的 index.js 文件"></a>i18n 文件夹下的 index.js 文件</h3><p><code>require.context</code></p>
+<blockquote>
+<p>它允许传入一个目录进行搜索，一个标志指示是否应该搜索子目录，还有一个正则表达式来匹配文件</p>
+</blockquote>
+<ul>
+<li>第一个参数：<code>directory</code> 要搜索的文件夹目录不能是变量，否则在编译阶段无法定位目录</li>
+<li>第二个参数：<code>useSubdirectories</code> 是否搜索子目录</li>
+<li>第三个参数：<code>regExp</code> 匹配文件的正则表达式</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>.context(<span class="string">&#x27;demo&#x27;</span>, <span class="literal">false</span>, <span class="regexp">/\.js$/</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>function</code> 返回一个具有 resolve、keys、id 三属性的方法</p>
+<ul>
+<li><code>resolve</code> 返回请求被解析后得到的模板</li>
+<li><code>keys</code> 返回一个数组，由所有符合上下文模板处理的请求组成</li>
+<li><code>id</code> 是上下文模板里面所包含的模板，可能在你使用 <code>module.hot.accept</code> 的时候被调用到</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> VueI18n <span class="keyword">from</span> <span class="string">&#x27;vue-i18n&#x27;</span></span><br><span class="line"></span><br><span class="line">Vue.use(VueI18n)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> langFiles = <span class="built_in">require</span>.context(<span class="string">&#x27;./config&#x27;</span>, <span class="literal">false</span>, <span class="regexp">/\.js$/</span>)</span><br><span class="line"><span class="keyword">let</span> regExp = <span class="regexp">/\.\/([^\.\/]+)\.([^\.]+)$/</span></span><br><span class="line"><span class="keyword">let</span> messages = &#123;&#125;</span><br><span class="line"></span><br><span class="line">langFiles.keys().forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> prop = regExp.exec(key)[<span class="number">1</span>]</span><br><span class="line">  messages[prop] = langFiles(key).default</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getLanguage</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> locale = sessionStorage.getItem(<span class="string">&#x27;lang&#x27;</span>) || <span class="string">&#x27;zh&#x27;</span></span><br><span class="line">  <span class="keyword">return</span> locale</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> VueI18n(&#123;</span><br><span class="line">  locale: getLanguage(),</span><br><span class="line">  messages</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>messages 对象</li>
+</ul>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%9B%BD%E9%99%85%E5%8C%96%E4%BF%A1%E6%81%AF.jpg"></p>
+<h3 id="main-js-引入"><a href="#main-js-引入" class="headerlink" title="main.js 引入"></a>main.js 引入</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> i18n <span class="keyword">from</span> <span class="string">&#x27;./i18n&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App),</span><br><span class="line">  i18n</span><br><span class="line">&#125;).$mount(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="展示页面"><a href="#展示页面" class="headerlink" title="展示页面"></a>展示页面</h3><p>效果图如下：</p>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%88%87%E6%8D%A2%E8%AF%AD%E8%A8%80.gif"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;el-dropdown</span><br><span class="line">      trigger&#x3D;&quot;click&quot;</span><br><span class="line">      class&#x3D;&quot;international&quot;</span><br><span class="line">      @command&#x3D;&quot;handleSetLanguage&quot;</span><br><span class="line">    &gt;</span><br><span class="line">      &lt;div&gt;&lt;i class&#x3D;&quot;el-icon-s-tools&quot; &#x2F;&gt;切换语言&lt;&#x2F;div&gt;</span><br><span class="line">      &lt;el-dropdown-menu slot&#x3D;&quot;dropdown&quot;&gt;</span><br><span class="line">        &lt;el-dropdown-item :disabled&#x3D;&quot;language &#x3D;&#x3D;&#x3D; &#39;zh&#39;&quot; command&#x3D;&quot;zh&quot;&gt;</span><br><span class="line">          中文</span><br><span class="line">        &lt;&#x2F;el-dropdown-item&gt;</span><br><span class="line">        &lt;el-dropdown-item :disabled&#x3D;&quot;language &#x3D;&#x3D;&#x3D; &#39;en&#39;&quot; command&#x3D;&quot;en&quot;&gt;</span><br><span class="line">          English</span><br><span class="line">        &lt;&#x2F;el-dropdown-item&gt;</span><br><span class="line">      &lt;&#x2F;el-dropdown-menu&gt;</span><br><span class="line">    &lt;&#x2F;el-dropdown&gt;</span><br><span class="line">    &lt;el-table :data&#x3D;&quot;tableData&quot; style&#x3D;&quot;width: 100%&quot;&gt;</span><br><span class="line">      &lt;el-table-column prop&#x3D;&quot;date&quot; :label&#x3D;&quot;$t(&#39;table.date&#39;)&quot; width&#x3D;&quot;180&quot;&gt;</span><br><span class="line">      &lt;&#x2F;el-table-column&gt;</span><br><span class="line">      &lt;el-table-column prop&#x3D;&quot;name&quot; :label&#x3D;&quot;$t(&#39;table.name&#39;)&quot; width&#x3D;&quot;180&quot;&gt;</span><br><span class="line">      &lt;&#x2F;el-table-column&gt;</span><br><span class="line">      &lt;el-table-column prop&#x3D;&quot;age&quot; :label&#x3D;&quot;$t(&#39;table.age&#39;)&quot;&gt; &lt;&#x2F;el-table-column&gt;</span><br><span class="line">    &lt;&#x2F;el-table&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      tableData: [</span><br><span class="line">        &#123;</span><br><span class="line">          date: &#39;2016-05-02&#39;,</span><br><span class="line">          name: &#39;王小虎&#39;,</span><br><span class="line">          age: &#39;23&#39;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          date: &#39;2016-05-04&#39;,</span><br><span class="line">          name: &#39;李小鸭&#39;,</span><br><span class="line">          age: &#39;14&#39;</span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      language: sessionStorage.getItem(&#39;lang&#39;) || &#39;zh&#39;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    handleSetLanguage(lang) &#123;</span><br><span class="line">      this.$i18n.locale &#x3D; lang</span><br><span class="line">      this.language &#x3D; lang</span><br><span class="line">      sessionStorage.setItem(&#39;lang&#39;, lang)</span><br><span class="line">      location.reload();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="语言配置文件"><a href="#语言配置文件" class="headerlink" title="语言配置文件"></a>语言配置文件</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// en.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  table: &#123;</span><br><span class="line">    date: <span class="string">&#x27;Date&#x27;</span>,</span><br><span class="line">    name: <span class="string">&#x27;Name&#x27;</span>,</span><br><span class="line">    age: <span class="string">&#x27;Age&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// zh.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  table: &#123;</span><br><span class="line">    date: <span class="string">&#x27;日期&#x27;</span>,</span><br><span class="line">    name: <span class="string">&#x27;姓名&#x27;</span>,</span><br><span class="line">    age: <span class="string">&#x27;年龄&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="路由菜单国际化"><a href="#路由菜单国际化" class="headerlink" title="路由菜单国际化"></a>路由菜单国际化</h2><ul>
+<li><p>首先需要处理一下标题名，如果这个名在语言配置文件中就直接返回，如果不在返回原信息中的标题</p>
+<p><code>$te</code>这个方法用以判断需要翻译的<code>key</code>在你提供的<code>语言包(messages)</code>中是否存在</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">routeTitle</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> name = <span class="string">`route.<span class="subst">$&#123;item.path.substring(<span class="number">1</span>)&#125;</span>`</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">this</span>.$te(name)) &#123;</span><br><span class="line">    <span class="keyword">return</span> item.meta.title</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">this</span>.$t(name)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="展示页面中"><a href="#展示页面中" class="headerlink" title="展示页面中"></a>展示页面中</h3><p>把每一项传到处理标题的方法中</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span> <span class="attr">v-for</span>=<span class="string">&quot;(item, index) in routesSystem&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">el-menu-item</span> <span class="attr">:index</span>=<span class="string">&quot;index.toString()&quot;</span>&gt;</span>&#123;&#123; routeTitle(item) &#125;&#125;<span class="tag">&lt;/<span class="name">el-menu-item</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> &#123; routeTitle &#125; <span class="keyword">from</span> <span class="string">&#x27;@/utils/get-page-title&#x27;</span></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line">    methods: &#123;</span><br><span class="line"><span class="javascript">        routeTitle <span class="comment">// 声明一下</span></span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置语言文件"><a href="#配置语言文件" class="headerlink" title="配置语言文件"></a>配置语言文件</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// zh.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  route: &#123;</span><br><span class="line">    application: <span class="string">&#x27;总计划&#x27;</span>,</span><br><span class="line">    plan: <span class="string">&#x27;计划&#x27;</span>,</span><br><span class="line">    equipment: <span class="string">&#x27;设备&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// en.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  route: &#123;</span><br><span class="line">    application: <span class="string">&#x27;Application&#x27;</span>,</span><br><span class="line">    plan: <span class="string">&#x27;Plan&#x27;</span>,</span><br><span class="line">    equipment: <span class="string">&#x27;Equipment&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        path: <span class="string">&#x27;/application&#x27;</span>,</span><br><span class="line">        meta: &#123; <span class="attr">title</span>: <span class="string">&#x27;总计划&#x27;</span> &#125;,</span><br><span class="line">	&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        path: <span class="string">&#x27;/plan&#x27;</span>,</span><br><span class="line">        meta: &#123; <span class="attr">title</span>: <span class="string">&#x27;计划&#x27;</span> &#125;,</span><br><span class="line">	&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        path: <span class="string">&#x27;/equipment&#x27;</span>,</span><br><span class="line">        meta: &#123; <span class="attr">title</span>: <span class="string">&#x27;设备&#x27;</span> &#125;,</span><br><span class="line">	&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h2 id="Element-国际化"><a href="#Element-国际化" class="headerlink" title="Element 国际化"></a>Element 国际化</h2><h3 id="main-js-引入-1"><a href="#main-js-引入-1" class="headerlink" title="main.js 引入"></a>main.js 引入</h3><ul>
+<li>参考兼容 <code>vue-i18n@6.x</code> 的步骤（需要手动处理）</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> i18n <span class="keyword">from</span> <span class="string">&#x27;./i18n&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ElementUI <span class="keyword">from</span> <span class="string">&#x27;element-ui&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;element-ui/lib/theme-chalk/index.css&#x27;</span></span><br><span class="line"><span class="comment">// 因为是8版本需要这么使用</span></span><br><span class="line">Vue.use(ElementUI, &#123;</span><br><span class="line">  i18n: <span class="function">(<span class="params">key, value</span>) =&gt;</span> i18n.t(key, value),</span><br><span class="line">  size: <span class="string">&#x27;mini&#x27;</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App),</span><br><span class="line">  i18n</span><br><span class="line">&#125;).$mount(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="语言配置文件-1"><a href="#语言配置文件-1" class="headerlink" title="语言配置文件"></a>语言配置文件</h3><ul>
+<li>这样 Element 的国际化也就完成了</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// en.js</span></span><br><span class="line"><span class="keyword">import</span> enLocale <span class="keyword">from</span> <span class="string">&#x27;element-ui/lib/locale/lang/en&#x27;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  ...enLocale</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// zh.js</span></span><br><span class="line"><span class="keyword">import</span> zhLocale <span class="keyword">from</span> <span class="string">&#x27;element-ui/lib/locale/lang/zh-CN&#x27;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  ...zhLocale</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="推荐参考"><a href="#推荐参考" class="headerlink" title="推荐参考"></a>推荐参考</h2><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000008752459">前端国际化之Vue-i18n源码分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000016445415">vue中如何使用i18n实现国际化</a></p>
+<p><a target="_blank" rel="noopener" href="https://element.eleme.cn/#/zh-CN/component/i18n">Element国际化</a></p>
+
+    </div>
+
+    
+    
+    
+
+	<div>
+		  
+			
+<div class="my_post_copyright clearfix">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <article class="box-left">
+    <img src="https://gitee.com/lilyn/pic/raw/master/logo.jpg">
+  </article>
+  <article class="box-right">
+    <p><span>本文标题:</span><a href="/posts/82482c19/">Vue + Element 国际化(i18n)路由页面切换语言</a></p>
+    <p><span>文章作者:</span><a href="/" title="访问 LiLyn 的个人博客">LiLyn</a></p>
+    <p><span>原始链接:</span><a href="/posts/82482c19/" title="Vue + Element 国际化(i18n)路由页面切换语言">http://llmysnow.top/posts/82482c19/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/82482c19/"  aria-label="复制成功！"></i></span>
+  </p>
+    <p><span>许可协议:</span>转载请保留原文链接及作者。</p>  
+  </article>
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+    });
+    });  
+</script>
+
+		  
+	</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Vue/" rel="tag"><i class="fa fa-tag"></i> Vue</a>
+              <a href="/tags/Element/" rel="tag"><i class="fa fa-tag"></i> Element</a>
+              <a href="/tags/i18n/" rel="tag"><i class="fa fa-tag"></i> i18n</a>
+              <a href="/tags/%E5%88%87%E6%8D%A2%E8%AF%AD%E8%A8%80/" rel="tag"><i class="fa fa-tag"></i> 切换语言</a>
+          </div>
+		 
+		<!--post-tags 彩色标签-->
+		<script type="text/javascript">
+		var tagsall=document.getElementsByClassName("post-tags")
+		for (var i = tagsall.length - 1; i >= 0; i--){
+			var tags=tagsall[i].getElementsByTagName("a");
+			for (var j = tags.length - 1; j >= 0; j--) {
+				var r=Math.floor(Math.random()*75+130);
+				var g=Math.floor(Math.random()*75+100);
+				var b=Math.floor(Math.random()*75+80);
+				tags[j].style.background = "rgb("+r+","+g+","+b+")";
+				tags[j].style.color = "#fff";
+				tags[j].style.padding = "0 10px";
+			}
+		}                        
+		</script>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/379f43e/" rel="prev" title="Element 日期选择器清除问题（Axios get请求问题）">
+      <i class="fa fa-chevron-left"></i> Element 日期选择器清除问题（Axios get请求问题）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/7e319c36/" rel="next" title="手撕React.createElement和ReactDOM.render">
+      手撕React.createElement和ReactDOM.render <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-i18n"><span class="nav-text">安装 i18n</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%9B%BD%E9%99%85%E5%8C%96"><span class="nav-text">页面中使用国际化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#i18n-%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%8B%E7%9A%84-index-js-%E6%96%87%E4%BB%B6"><span class="nav-text">i18n 文件夹下的 index.js 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main-js-%E5%BC%95%E5%85%A5"><span class="nav-text">main.js 引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%95%E7%A4%BA%E9%A1%B5%E9%9D%A2"><span class="nav-text">展示页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E8%A8%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">语言配置文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%8F%9C%E5%8D%95%E5%9B%BD%E9%99%85%E5%8C%96"><span class="nav-text">路由菜单国际化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%95%E7%A4%BA%E9%A1%B5%E9%9D%A2%E4%B8%AD"><span class="nav-text">展示页面中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%AF%AD%E8%A8%80%E6%96%87%E4%BB%B6"><span class="nav-text">配置语言文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-text">路由表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Element-%E5%9B%BD%E9%99%85%E5%8C%96"><span class="nav-text">Element 国际化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#main-js-%E5%BC%95%E5%85%A5-1"><span class="nav-text">main.js 引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E8%A8%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="nav-text">语言配置文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E5%8F%82%E8%80%83"><span class="nav-text">推荐参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiLyn"
+      src="/images/logo.jpg">
+  <p class="site-author-name" itemprop="name">LiLyn</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/llwodexue" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;llwodexue" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/qq_38689395" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_38689395" rel="noopener" target="_blank"><i class="fas fa-copyright fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://scx69.gitee.io/blogs/" title="https:&#x2F;&#x2F;scx69.gitee.io&#x2F;blogs&#x2F;" rel="noopener" target="_blank">花开满城</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yixin-oss.gitee.io/daytoy/" title="http:&#x2F;&#x2F;yixin-oss.gitee.io&#x2F;daytoy&#x2F;" rel="noopener" target="_blank">daytoy</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiLyn</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">124k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:53</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>-->
+
+<!--
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="powered-by">
+  <i class="fa fa-user-md"></i>
+  <span id="busuanzi_container_site_pv">
+    本站访问量:<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">
+    本站总访客量：<span id="busuanzi_value_site_uv"></span>人
+  </span>
+</div>-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  <!-- 动态线条背景 -->
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript">
+	!function(e,t,a){function n(){c(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),o(),r()}function r(){for(var e=0;e<d.length;e++)d[e].alpha<=0?(t.body.removeChild(d[e].el),d.splice(e,1)):(d[e].y--,d[e].scale+=.004,d[e].alpha-=.013,d[e].el.style.cssText="left:"+d[e].x+"px;top:"+d[e].y+"px;opacity:"+d[e].alpha+";transform:scale("+d[e].scale+","+d[e].scale+") rotate(45deg);background:"+d[e].color+";z-index:99999");requestAnimationFrame(r)}function o(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),i(e)}}function i(e){var a=t.createElement("div");a.className="heart",d.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:s()}),t.body.appendChild(a)}function c(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function s(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var d=[];e.requestAnimationFrame=function(){return e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)}}(),n()}(window,document);
+  </script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+</html>

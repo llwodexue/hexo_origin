@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"llmysnow.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="实现效果 根据上架时间&#x2F;热度&#x2F;价格进行升序&#x2F;降序排序 上箭头亮代表升序，下箭头亮代表降序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS实现商城排序">
+<meta property="og:url" content="http://llmysnow.top/posts/d2addf30/index.html">
+<meta property="og:site_name" content="奇幻的梦之旅">
+<meta property="og:description" content="实现效果 根据上架时间&#x2F;热度&#x2F;价格进行升序&#x2F;降序排序 上箭头亮代表升序，下箭头亮代表降序">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220203345422.gif">
+<meta property="article:published_time" content="2020-12-20T11:38:43.308Z">
+<meta property="article:modified_time" content="2020-12-20T15:43:44.579Z">
+<meta property="article:author" content="LiLyn">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="flex">
+<meta property="article:tag" content="DocumentFragment">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20201220203345422.gif">
+
+<link rel="canonical" href="http://llmysnow.top/posts/d2addf30/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JS实现商城排序 | 奇幻的梦之旅</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="奇幻的梦之旅" type="application/atom+xml">
+</head>
+<!--即时预加载技术，在用户点击之前预先加载页面-->
+<script src="https://cdn.jsdelivr.net/gh/TRHX/CDN-for-itrhx.com@2.0.2/js/instantclick-1.2.2.js" type="module"></script>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	  <!--<a target="_blank" rel="noopener" href="https://github.com/llwodexue" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>-->
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">奇幻的梦之旅</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">http://llmysnow.top/</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/d2addf30/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.jpg">
+      <meta itemprop="name" content="LiLyn">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="奇幻的梦之旅">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JS实现商城排序
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-20 19:38:43" itemprop="dateCreated datePublished" datetime="2020-12-20T19:38:43+08:00">2020-12-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h2><ul>
+<li>根据上架时间/热度/价格进行升序/降序排序</li>
+<li>上箭头亮代表升序，下箭头亮代表降序</li>
+</ul>
+<a id="more"></a>
+
+<p><img data-src="https://img-blog.csdnimg.cn/20201220203345422.gif" alt="商城排序"></p>
+<h3 id="渲染-li-标签"><a href="#渲染-li-标签" class="headerlink" title="渲染 li 标签"></a>渲染 li 标签</h3><ul>
+<li>获取 ul 以便让每一个 li 渲染到页面</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> lists = <span class="built_in">document</span>.querySelector(<span class="string">&quot;.lists&quot;</span>);</span><br><span class="line"><span class="keyword">var</span> lis = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>把每一个 li 渲染到页面上</p>
+<p>这里为了操作方便，给每一个 li 绑定自定义属性，之后根据属性值获取其中内容 <code>li.getAttribute(...)</code> 即可</p>
+<p>如果不这样做，则需要通过 <code>li.querySelector(...).innerText</code> 获取</p>
+<p><strong>注意：</strong><code>querySelectorAll</code> 获取到的是类数组，因为需要进行排序，使用数组的 sort() 方法，所以需要用 <code>[].slice.call()</code> 或 <code>Array.from</code> 转换成数组</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Init</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> str = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; data.length; i++) &#123;</span><br><span class="line">        <span class="keyword">const</span> el = data[i];</span><br><span class="line">        str += <span class="string">`&lt;li time=&quot;<span class="subst">$&#123;el.time&#125;</span>&quot; hot=&quot;<span class="subst">$&#123;el.hot&#125;</span>&quot; price=&quot;<span class="subst">$&#123;el.price&#125;</span>&quot;&gt;</span></span><br><span class="line"><span class="string">        &lt;img src=&quot;<span class="subst">$&#123;el.img&#125;</span>&quot; alt=&quot;&quot;&gt;</span></span><br><span class="line"><span class="string">        &lt;p class=&quot;title&quot;&gt;<span class="subst">$&#123;el.title&#125;</span>&lt;/p&gt;</span></span><br><span class="line"><span class="string">        &lt;p class=&quot;time&quot;&gt;<span class="subst">$&#123;el.time&#125;</span>&lt;/p&gt;</span></span><br><span class="line"><span class="string">        &lt;p class=&quot;info&quot;&gt;</span></span><br><span class="line"><span class="string">            &lt;span class=&quot;price&quot;&gt;<span class="subst">$&#123;el.price&#125;</span>&lt;/span&gt;</span></span><br><span class="line"><span class="string">            &lt;span class=&quot;hot&quot;&gt;<span class="subst">$&#123;el.hot&#125;</span>&lt;/span&gt;</span></span><br><span class="line"><span class="string">        &lt;/p&gt;</span></span><br><span class="line"><span class="string">    &lt;/li&gt;`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    lists.innerHTML = str;</span><br><span class="line">    lis = [].slice.call(lists.querySelectorAll(<span class="string">&quot;li&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="点击-a-标签进行排序"><a href="#点击-a-标签进行排序" class="headerlink" title="点击 a 标签进行排序"></a>点击 a 标签进行排序</h3><ul>
+<li>获取 a 标签</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> links = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;.top a&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>给 a 标签添加鼠标点击事件</p>
+<p>为实现每次排序都是上一次的倒序，需要给每一个 a 标签添加一个自定义属性作为标志 <code>links[i].flag = -1</code> ，flag 值为1代表升序，每次点击事件只需 flag 取反即可 <code>this.flag *= -1</code></p>
+<p><strong>注意：</strong> sort() 方法中回调函数 this 指向 window，所以需要用一个变量存储 this <code>let that = this;</code></p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; links.length; i++) &#123;</span><br><span class="line">    links[i].flag = -<span class="number">1</span>;</span><br><span class="line">    links[i].onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.flag *= -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">let</span> that = <span class="built_in">this</span>;</span><br><span class="line">        <span class="keyword">let</span> sortFlag = <span class="built_in">this</span>.getAttribute(<span class="string">&quot;sortFlag&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (sortFlag == <span class="string">&quot;time&quot;</span>) &#123;</span><br><span class="line">            lis.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> (a.getAttribute(sortFlag).replace(<span class="regexp">/-/g</span>, <span class="string">&quot;&quot;</span>) - b.getAttribute(sortFlag).replace(<span class="regexp">/-/g</span>, <span class="string">&quot;&quot;</span>)) * that.flag;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            lis.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> (a.getAttribute(sortFlag) - b.getAttribute(sortFlag)) * that.flag;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; lis.length; i++) &#123;</span><br><span class="line">            lists.appendChild(lis[i])</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="点击-a-标签点亮排序箭头"><a href="#点击-a-标签点亮排序箭头" class="headerlink" title="点击 a 标签点亮排序箭头"></a>点击 a 标签点亮排序箭头</h3><ul>
+<li>升/降序高亮对应箭头字体图标</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arrows = <span class="built_in">this</span>.querySelectorAll(<span class="string">&quot;b&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> arrCur = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;.top b.current&quot;</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arrCur.length; i++) &#123;</span><br><span class="line">    arrCur[i].classList.remove(<span class="string">&quot;current&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">this</span>.flag == <span class="number">1</span>) &#123;</span><br><span class="line">    arrows[<span class="number">0</span>].classList.add(<span class="string">&quot;current&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    arrows[<span class="number">1</span>].classList.add(<span class="string">&quot;current&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><ul>
+<li>for 每进行一次循环都会引起浏览器的回流，非常耗性能</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; lis.length; i++) &#123;</span><br><span class="line">    lists.appendChild(lis[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>可以使用 <code>DocumentFragment</code> 来创建一个新的空白的文档片段，把元素附加到这个文档片段中，之后通过这个文档片段附加到 DOM 树</p>
+<p>因为<strong>文档片段存在内存中</strong>，并不在 DOM 树中，所以将子元素插入到文档片段时不会引起页面回流。因此，使用文档片段会带来更好的性能</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> frg = <span class="built_in">document</span>.createDocumentFragment();</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; lis.length; i++) &#123;</span><br><span class="line">    frg.appendChild(lis[i]);</span><br><span class="line">&#125;</span><br><span class="line">lists.appendChild(frg)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果希望点击完当前a标签，再点击其他a标签时都是升序排列的话，需要每次都将其他标签的flag设置为 -1</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; links.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (links[i] != <span class="built_in">this</span>) &#123;</span><br><span class="line">        links[i].flag = -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><h3 id="index-html（html-css）"><a href="#index-html（html-css）" class="headerlink" title="index.html（html+css）"></a>index.html（html+css）</h3><ul>
+<li>创建 <code>index.html</code> 文件，粘贴如下代码</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>商城排序<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line">        * &#123;</span><br><span class="line">            margin: 0;</span><br><span class="line">            padding: 0;</span><br><span class="line">        &#125;</span><br><span class="line">        ul &#123;</span><br><span class="line">            list-style: none;</span><br><span class="line">        &#125;</span><br><span class="line">        a &#123;</span><br><span class="line">            text-decoration: none;</span><br><span class="line">        &#125;</span><br><span class="line">        body, html &#123;</span><br><span class="line">            background: lavender;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.main</span> &#123;</span></span><br><span class="line">            width: 1185px;</span><br><span class="line">            margin: 0 auto;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.main</span> <span class="selector-class">.topBar</span> &#123;</span></span><br><span class="line">            height: 50px;</span><br><span class="line"><span class="css">            <span class="selector-tag">background</span>: <span class="selector-id">#fff</span>;</span></span><br><span class="line">            display: flex;</span><br><span class="line">            align-items: center;</span><br><span class="line">            padding-left: 20px;</span><br><span class="line">            box-sizing: border-box;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.main</span> <span class="selector-class">.shortBtn</span> &#123;</span></span><br><span class="line">            display: flex;</span><br><span class="line">            align-items: center;</span><br><span class="line">            margin: 0 10px;</span><br><span class="line">            color: blue;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.main</span> <span class="selector-class">.shortBtn</span> <span class="selector-class">.arrows</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">color</span>: <span class="selector-id">#333</span>;</span></span><br><span class="line">            display: flex;</span><br><span class="line">            flex-direction: column;</span><br><span class="line">            margin-left: 10px;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.main</span> <span class="selector-class">.shortBtn</span> <span class="selector-class">.iconfont</span> &#123;</span></span><br><span class="line">            font-size: 14px;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.shortBtn</span><span class="selector-pseudo">:hover</span>&gt;<span class="selector-tag">span</span> &#123;</span></span><br><span class="line">            color: red;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.lists</span> &#123;</span></span><br><span class="line">            display: flex;</span><br><span class="line">            flex-wrap: wrap;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.lists</span> <span class="selector-tag">li</span> &#123;</span></span><br><span class="line">            margin-top: 20px;</span><br><span class="line">            width: 225px;</span><br><span class="line"><span class="css">            <span class="selector-tag">background</span>: <span class="selector-id">#fff</span>;</span></span><br><span class="line">            padding: 20px;</span><br><span class="line">            box-sizing: border-box;</span><br><span class="line">            font-size: 14px;</span><br><span class="line">            margin-right: 15px;</span><br><span class="line">            line-height: 30px;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.lists</span> <span class="selector-tag">li</span><span class="selector-pseudo">:nth-child(5n)</span>&#123;</span></span><br><span class="line">            margin-right: 0;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.lists</span> <span class="selector-tag">li</span> <span class="selector-tag">img</span> &#123;</span></span><br><span class="line">            width: 140px;</span><br><span class="line">            display: block;</span><br><span class="line">            margin: 0 auto;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.lists</span> <span class="selector-tag">li</span> <span class="selector-class">.numInfo</span> &#123;</span></span><br><span class="line">            display: flex;</span><br><span class="line">            justify-content: space-between;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.arrowUp</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">border</span>: 5<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#333</span>;</span></span><br><span class="line">            margin-bottom: 10px;</span><br><span class="line"><span class="css">            <span class="selector-tag">border-color</span>: <span class="selector-tag">transparent</span> <span class="selector-tag">transparent</span> <span class="selector-id">#333</span> <span class="selector-tag">transparent</span>;</span></span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.arrowUp</span><span class="selector-class">.current</span> &#123;</span></span><br><span class="line">            border-color: transparent transparent red transparent;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.arrowDown</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">border</span>: 5<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#333</span>;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">border-color</span>: <span class="selector-id">#333</span> <span class="selector-tag">transparent</span> <span class="selector-tag">transparent</span> <span class="selector-tag">transparent</span>;</span></span><br><span class="line">        &#125;</span><br><span class="line"><span class="css">        <span class="selector-class">.arrowDown</span><span class="selector-class">.current</span> &#123;</span></span><br><span class="line">            border-color: red transparent transparent transparent;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;main&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;topBar&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">span</span>&gt;</span>排序<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:;&quot;</span> <span class="attr">class</span>=<span class="string">&quot;shortBtn&quot;</span> <span class="attr">sortFlag</span>=<span class="string">&quot;time&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">span</span>&gt;</span>上架时间<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;arrows&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">&quot;arrowUp&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">&quot;arrowDown&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:;&quot;</span> <span class="attr">class</span>=<span class="string">&quot;shortBtn&quot;</span> <span class="attr">sortFlag</span>=<span class="string">&quot;hot&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">span</span>&gt;</span>热度<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;arrows&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">&quot;arrowUp&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">&quot;arrowDown&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:;&quot;</span> <span class="attr">class</span>=<span class="string">&quot;shortBtn&quot;</span> <span class="attr">sortFlag</span>=<span class="string">&quot;price&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">span</span>&gt;</span>价格<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;arrows&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">&quot;arrowUp&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">&quot;arrowDown&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 图片列表 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ul</span> <span class="attr">class</span>=<span class="string">&quot;lists&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;index.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="data-json"><a href="#data-json" class="headerlink" title="data.json"></a>data.json</h3><ul>
+<li>这里需要用 Ajax 请求一下如下 json 数据</li>
+<li>创建 <code>data.json</code> ，粘贴如下数据</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;HUAWEI全网通版（亮黑色）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">499</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2017-03-15&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">198</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/1.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;HUAWEI（曜石黑）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">129</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2017-02-08&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">25</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/2.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">3</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;华为畅享7（香槟金）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">895</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2017-01-25&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">568</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/3.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">4</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;HUAWEI全网通版（曜石黑）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">1895</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2016-12-30&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">20000</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/4.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;HUAWEI全网通版（玫瑰金）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">3587</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2016-01-30&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">1032654</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/5.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">6</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;华为畅享7（香槟金）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">992</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2018-01-01&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/6.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">7</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;HUAWEI全网通版（樱语粉）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">564</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2017-02-19&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">400</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/7.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">8</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;HUAWEI全网通版（曜石黑）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">420</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2017-01-25&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">240</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/8.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">9</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;HUAWEI P10（钻雕金）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2014-01-01&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">12345678</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/9.jpg&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="number">10</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;HUAWEI全网通版（曜石黑）&quot;</span>,</span><br><span class="line">        <span class="string">&quot;price&quot;</span>: <span class="number">420</span>,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: <span class="string">&quot;2017-01-25&quot;</span>,</span><br><span class="line">        <span class="string">&quot;hot&quot;</span>: <span class="number">240</span>,</span><br><span class="line">        <span class="string">&quot;img&quot;</span>: <span class="string">&quot;img/8.jpg&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="index-js"><a href="#index-js" class="headerlink" title="index.js"></a>index.js</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取页面元素</span></span><br><span class="line"><span class="keyword">let</span> lists = <span class="built_in">document</span>.querySelector(<span class="string">&quot;.lists&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> links = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;.topBar a&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> lis = lists.getElementsByTagName(<span class="string">&quot;li&quot;</span>);</span><br><span class="line"><span class="comment">// Ajax 请求数据</span></span><br><span class="line"><span class="keyword">let</span> data = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.数据请求 Ajax四部曲</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getData</span>(<span class="params">url</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    xhr.open(<span class="string">&quot;get&quot;</span>, url);</span><br><span class="line">    xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span> &amp;&amp; xhr.status == <span class="number">200</span>) &#123;</span><br><span class="line">            data = <span class="built_in">JSON</span>.parse(xhr.responseText);</span><br><span class="line">            BindHtml(data);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    xhr.send();</span><br><span class="line">&#125;</span><br><span class="line">getData(<span class="string">&quot;data/data.json&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2.渲染li</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">BindHtml</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> str = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; data.length; i++) &#123;</span><br><span class="line">        <span class="keyword">const</span> el = data[i];</span><br><span class="line">        str += <span class="string">`&lt;li time=&quot;<span class="subst">$&#123;el.time&#125;</span>&quot; price=&quot;<span class="subst">$&#123;el.price&#125;</span>&quot; hot=&quot;<span class="subst">$&#123;el.hot&#125;</span>&quot;&gt;</span></span><br><span class="line"><span class="string">        &lt;img src=&quot;<span class="subst">$&#123;el.img&#125;</span>&quot; alt=&quot;&quot;&gt;</span></span><br><span class="line"><span class="string">        &lt;p class=&quot;title&quot;&gt;<span class="subst">$&#123;el.title&#125;</span>&lt;/p&gt;</span></span><br><span class="line"><span class="string">        &lt;p class=&quot;time&quot;&gt;<span class="subst">$&#123;el.time&#125;</span>&lt;/p&gt;</span></span><br><span class="line"><span class="string">        &lt;p class=&quot;numInfo&quot;&gt;</span></span><br><span class="line"><span class="string">            &lt;span class=&quot;price&quot;&gt;<span class="subst">$&#123;el.price&#125;</span>&lt;/span&gt;</span></span><br><span class="line"><span class="string">            &lt;span class=&quot;hot&quot;&gt;<span class="subst">$&#123;el.hot&#125;</span>&lt;/span&gt;</span></span><br><span class="line"><span class="string">        &lt;/p&gt;</span></span><br><span class="line"><span class="string">    &lt;/li&gt;`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    lists.innerHTML = str;</span><br><span class="line">    lis = [].slice.call(lis);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 3.给link绑定事件</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; links.length; i++) &#123;</span><br><span class="line">    links[i].flag = -<span class="number">1</span>;</span><br><span class="line">    links[i].onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> that = <span class="built_in">this</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; links.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (links[i] != <span class="built_in">this</span>) &#123;</span><br><span class="line">                links[i].flag = -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">this</span>.flag *= -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">let</span> sortFlag = <span class="built_in">this</span>.getAttribute(<span class="string">&quot;sortFlag&quot;</span>);</span><br><span class="line">        <span class="keyword">let</span> arrows = <span class="built_in">this</span>.querySelectorAll(<span class="string">&quot;b&quot;</span>);</span><br><span class="line">        <span class="keyword">let</span> arrCur = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;b.current&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arrCur.length; i++) &#123;</span><br><span class="line">            arrCur[i].classList.remove(<span class="string">&quot;current&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.flag == <span class="number">1</span>) &#123;</span><br><span class="line">            arrows[<span class="number">0</span>].classList.add(<span class="string">&quot;current&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            arrows[<span class="number">1</span>].classList.add(<span class="string">&quot;current&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> frg = <span class="built_in">document</span>.createDocumentFragment();</span><br><span class="line">        <span class="keyword">if</span> (sortFlag == <span class="string">&quot;time&quot;</span>) &#123;</span><br><span class="line">            lis.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> (a.getAttribute(sortFlag).replace(<span class="regexp">/-/g</span>, <span class="string">&quot;&quot;</span>) - b.getAttribute(sortFlag).replace(<span class="regexp">/-/g</span>, <span class="string">&quot;&quot;</span>)) * that.flag;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            lis.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> (a.getAttribute(sortFlag) - b.getAttribute(sortFlag)) * that.flag;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; lis.length; i++) &#123;</span><br><span class="line">            frg.appendChild(lis[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        lists.appendChild(frg);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+	<div>
+		  
+			
+<div class="my_post_copyright clearfix">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <article class="box-left">
+    <img src="https://gitee.com/lilyn/pic/raw/master/logo.jpg">
+  </article>
+  <article class="box-right">
+    <p><span>本文标题:</span><a href="/posts/d2addf30/">JS实现商城排序</a></p>
+    <p><span>文章作者:</span><a href="/" title="访问 LiLyn 的个人博客">LiLyn</a></p>
+    <p><span>原始链接:</span><a href="/posts/d2addf30/" title="JS实现商城排序">http://llmysnow.top/posts/d2addf30/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/d2addf30/"  aria-label="复制成功！"></i></span>
+  </p>
+    <p><span>许可协议:</span>转载请保留原文链接及作者。</p>  
+  </article>
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+    });
+    });  
+</script>
+
+		  
+	</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"><i class="fa fa-tag"></i> JavaScript</a>
+              <a href="/tags/flex/" rel="tag"><i class="fa fa-tag"></i> flex</a>
+              <a href="/tags/DocumentFragment/" rel="tag"><i class="fa fa-tag"></i> DocumentFragment</a>
+          </div>
+		 
+		<!--post-tags 彩色标签-->
+		<script type="text/javascript">
+		var tagsall=document.getElementsByClassName("post-tags")
+		for (var i = tagsall.length - 1; i >= 0; i--){
+			var tags=tagsall[i].getElementsByTagName("a");
+			for (var j = tags.length - 1; j >= 0; j--) {
+				var r=Math.floor(Math.random()*75+130);
+				var g=Math.floor(Math.random()*75+100);
+				var b=Math.floor(Math.random()*75+80);
+				tags[j].style.background = "rgb("+r+","+g+","+b+")";
+				tags[j].style.color = "#fff";
+				tags[j].style.padding = "0 10px";
+			}
+		}                        
+		</script>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/ea5004b1/" rel="prev" title="JS中出现undefined和null情况">
+      <i class="fa fa-chevron-left"></i> JS中出现undefined和null情况
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/399b5a63/" rel="next" title="JS 实现图片延迟加载（懒加载）">
+      JS 实现图片延迟加载（懒加载） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C"><span class="nav-text">实现效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93-li-%E6%A0%87%E7%AD%BE"><span class="nav-text">渲染 li 标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E5%87%BB-a-%E6%A0%87%E7%AD%BE%E8%BF%9B%E8%A1%8C%E6%8E%92%E5%BA%8F"><span class="nav-text">点击 a 标签进行排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E5%87%BB-a-%E6%A0%87%E7%AD%BE%E7%82%B9%E4%BA%AE%E6%8E%92%E5%BA%8F%E7%AE%AD%E5%A4%B4"><span class="nav-text">点击 a 标签点亮排序箭头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-text">优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-text">完整代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html%EF%BC%88html-css%EF%BC%89"><span class="nav-text">index.html（html+css）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-json"><span class="nav-text">data.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-js"><span class="nav-text">index.js</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiLyn"
+      src="/images/logo.jpg">
+  <p class="site-author-name" itemprop="name">LiLyn</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/llwodexue" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;llwodexue" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/qq_38689395" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_38689395" rel="noopener" target="_blank"><i class="fas fa-copyright fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://scx69.gitee.io/blogs/" title="https:&#x2F;&#x2F;scx69.gitee.io&#x2F;blogs&#x2F;" rel="noopener" target="_blank">花开满城</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yixin-oss.gitee.io/daytoy/" title="http:&#x2F;&#x2F;yixin-oss.gitee.io&#x2F;daytoy&#x2F;" rel="noopener" target="_blank">daytoy</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiLyn</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">124k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:53</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>-->
+
+<!--
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="powered-by">
+  <i class="fa fa-user-md"></i>
+  <span id="busuanzi_container_site_pv">
+    本站访问量:<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">
+    本站总访客量：<span id="busuanzi_value_site_uv"></span>人
+  </span>
+</div>-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  <!-- 动态线条背景 -->
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript">
+	!function(e,t,a){function n(){c(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),o(),r()}function r(){for(var e=0;e<d.length;e++)d[e].alpha<=0?(t.body.removeChild(d[e].el),d.splice(e,1)):(d[e].y--,d[e].scale+=.004,d[e].alpha-=.013,d[e].el.style.cssText="left:"+d[e].x+"px;top:"+d[e].y+"px;opacity:"+d[e].alpha+";transform:scale("+d[e].scale+","+d[e].scale+") rotate(45deg);background:"+d[e].color+";z-index:99999");requestAnimationFrame(r)}function o(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),i(e)}}function i(e){var a=t.createElement("div");a.className="heart",d.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:s()}),t.body.appendChild(a)}function c(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function s(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var d=[];e.requestAnimationFrame=function(){return e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)}}(),n()}(window,document);
+  </script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+</html>
