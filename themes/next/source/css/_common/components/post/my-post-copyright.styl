@@ -1,0 +1,72 @@
+.my_post_copyright {
+  width: 85%;
+  height: 100%;
+  max-width: 45em;
+  margin: 2.8em auto 0;
+  padding: 0.5em 1.0em;
+  border: 1px solid #d3d3d3;
+  font-size: 0.8rem;
+  line-height: 1.6em;
+  word-break: break-all;
+  background: rgba(128,128,128,0.1);
+}
+.my_post_copyright .box-left{
+  width: 15%;
+  float: left;
+}
+.my_post_copyright img {
+  width: 100%;
+  max-height: 80%;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 0!important;
+  border-radius: 50%;
+}
+.my_post_copyright .box-right{
+  width: 80%;
+  float: right;
+}
+.my_post_copyright p{
+  margin:0;
+}
+.my_post_copyright span {
+  display: inline-block;
+  width: 5.2em;
+  color: #333;
+  font-weight: bold;
+}
+.my_post_copyright .raw {
+  margin-left: 1em;
+  width: 5em;
+}
+.my_post_copyright a {
+  color: #2196f3;
+  border-bottom:0;
+}
+.my_post_copyright a:hover {
+  color: #ff6709;
+  text-decoration: underline;
+}
+.my_post_copyright:hover .fa-clipboard {
+  color: #000;
+}
+.my_post_copyright .post-url:hover {
+  font-weight: normal;
+}
+.my_post_copyright .copy-path {
+  margin-left: 1em;
+  width: 1em;
+  +mobile(){display:none;}
+}
+.my_post_copyright .copy-path:hover {
+  color: #808080;
+  cursor: pointer;
+}
+.clearfix::after {
+  content: '';
+  display: block;
+  clear: both;
+  height: 0;
+  font-size: 0;
+  visibility: hidden;
+}

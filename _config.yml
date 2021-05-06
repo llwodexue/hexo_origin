@@ -1,0 +1,178 @@
+# Hexo Configuration
+## Docs: https://hexo.io/docs/configuration.html
+## Source: https://github.com/hexojs/hexo/
+
+# Site
+title: 奇幻的梦之旅
+subtitle: 'http://llmysnow.top/'
+description: ''
+keywords:
+author: 'LiLyn'
+language: zh-CN
+timezone: ''
+
+# URL
+## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
+# url: https://llwodexue.github.io/
+# url: https://coding-pages-bucket-3494768-8070950-6679-397043-1304378822.cos-website.ap-hongkong.myqcloud.com/
+# url: http://llmysnow.top/
+url: http://llmysnow.top
+root: /
+# root: /blog
+# permalink: :year/:month/:day/:title/
+permalink: posts/:abbrlink/
+abbrlink:
+	alg: crc32   #算法： crc16(default) and crc32
+	rep: hex     #进制： dec(default) and hex
+permalink_defaults:
+pretty_urls:
+  trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
+  trailing_html: true # Set to false to remove trailing '.html' from permalinks
+
+# Directory
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: :lang
+skip_render:
+
+# Writing
+new_post_name: :title.md # File name of new posts
+default_layout: post
+titlecase: false # Transform title into titlecase
+external_link:
+  enable: true # Open external links in new tab
+  field: site # Apply to the whole site
+  exclude: ''
+filename_case: 0
+render_drafts: false
+post_asset_folder: false
+relative_link: false
+future: true
+highlight:
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace: ''
+  wrap: true
+  hljs: false
+prismjs:
+  enable: false
+  preprocess: true
+  line_number: true
+  tab_replace: ''
+
+# Home page setting
+# path: Root path for your blogs index page. (default = '')
+# per_page: Posts displayed per page. (0 = disable pagination)
+# order_by: Posts order. (Order by date descending by default)
+index_generator:
+  path: ''
+  per_page: 10
+  order_by: -date
+
+# Category & Tag
+default_category: uncategorized
+category_map:
+tag_map:
+
+# Metadata elements
+## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
+meta_generator: true
+
+# Date / Time format
+## Hexo uses Moment.js to parse and display date
+## You can customize the date format as defined in
+## http://momentjs.com/docs/#/displaying/format/
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
+## updated_option supports 'mtime', 'date', 'empty'
+updated_option: 'mtime'
+
+# Pagination
+## Set per_page to 0 to disable pagination
+per_page: 10
+pagination_dir: page
+
+# Include / Exclude file(s)
+## include:/exclude: options only apply to the 'source/' folder
+include:
+exclude:
+ignore:
+
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+# theme: butterfly
+theme: next
+
+# Deployment
+## Docs: https://hexo.io/docs/one-command-deployment
+deploy:
+- type: git
+  repo:
+    coding: git@e.coding.net:llmysnow/llmysnow/blog.git
+    github: git@github.com:llwodexue/llwodexue.github.io.git
+    # gitee: https://gitee.com/lilyn/blog.git
+  branch: master
+  message: blog update
+- type: baidu_url_submitter # 百度
+
+baidu_url_submit:
+  count: 10                 # 提交最新的多少个链接
+  host: www.llmysnow.top    # 在百度站长平台中添加的域名
+  token: RcEpLI04FCeJ4BrO   # 秘钥
+  path: baidu_urls.txt      # 文本文档的地址， 新链接会保存在此文本文档里
+
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+
+# SEO
+sitemap:
+  path: sitemap.xml
+baidusitemap:
+  path: baidusitemap.xml
+
+## Depends on hexo-lazyload-image
+lazyload:
+  enable: true
+  onlypost: false
+  # 图片尚未加载完时，显示指定图片。目录地址为博客根目录下的 source/
+  loadingImg: /uploads/loading.gif
+
+# 文字字数统计
+symbols_count_time:
+  symbols: true                # 文章字数统计
+  time: true                   # 文章阅读时长
+  total_symbols: true          # 站点总字数统计
+  total_time: true             # 站点总阅读时长
+  exclude_codeblock: false     # 排除代码字数统计
+
+# 看板娘
+live2d:
+  enable: true
+  scriptFrom: local
+  pluginRootPath: live2dw/
+  pluginJsPath: lib/
+  pluginModelPath: assets/
+  tagMode: false
+  log: false
+  model:
+    # 白猫
+    # use: live2d-widget-model-tororo
+    # 黑猫
+    use: live2d-widget-model-hijiki
+  display:
+    position: right
+    width: 150
+    height: 300
+  mobile:
+    show: true
+  react:
+    opacity: 0.7
