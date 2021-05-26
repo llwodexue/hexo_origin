@@ -6,6 +6,7 @@ tags:
 categories: JavaScript
 author: LiLyn
 copyright: ture
+abbrlink: 9cad4e3f
 ---
 ## 实现 sizeOf 函数，传入一个 object，计算这个 Object 占用了多少个 bytes
 

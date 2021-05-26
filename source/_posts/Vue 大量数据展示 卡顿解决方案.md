@@ -7,6 +7,7 @@ tags:
 categories: Vue
 author: LiLyn
 copyright: ture
+abbrlink: b05a9b29
 ---
 ## 需求分析（长列表展示）
 

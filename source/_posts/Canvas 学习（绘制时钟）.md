@@ -4,10 +4,10 @@ tags:
   - Canvas
   - JavaScript
 categories: JavaScript
-description: >-
-  Canvas画圆、时钟、绘图板
+description: Canvas画圆、时钟、绘图板
 author: LiLyn
 copyright: ture
+abbrlink: 453bf97e
 ---
 ## canvas画圆
 

@@ -28,11 +28,9 @@
 <meta property="og:description" content="对象和对象进行比较的时候：比较的是空间地址，如果空间地址相同就是 true，不同就是 false  &amp;#123;&amp;#125;&#x3D;&#x3D;&amp;#123;&amp;#125;(false)  不同的数据类型再进行比较的时候，除了以下的，剩下的都是先转换为数字在比较：  对象和字符串进行比较的时候，把对象转换为字符串，再进行比较  null 和 undefined 永远不等于任何一种数据类型，但是 null&#x3D;&#x3D;undef">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-11-21T09:44:50.744Z">
-<meta property="article:modified_time" content="2020-12-10T09:39:38.297Z">
+<meta property="article:modified_time" content="2021-05-26T01:18:48.062Z">
 <meta property="article:author" content="LiLyn">
 <meta property="article:tag" content="JavaScript">
-<meta property="article:tag" content="基础">
-<meta property="article:tag" content="前端">
 <meta property="article:tag" content="数据类型转换">
 <meta property="article:tag" content="题解">
 <meta name="twitter:card" content="summary">
@@ -237,7 +235,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.2k</span>
+              <span>3.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -276,7 +274,7 @@
 
 
 
-<h3 id="对象转换"><a href="#对象转换" class="headerlink" title="对象转换"></a>对象转换</h3><blockquote>
+<h2 id="对象数据转换规则"><a href="#对象数据转换规则" class="headerlink" title="对象数据转换规则"></a>对象数据转换规则</h2><blockquote>
 <p>原始值：number string boolean null undefined symbol bigint</p>
 </blockquote>
 <p><strong>对象数据转换规则：</strong></p>
@@ -314,9 +312,7 @@
 
 
 
-<h3 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h3><blockquote>
-<p>== 比较，数学运算（+不仅仅是数学运算，还有字符串拼接）</p>
-</blockquote>
+<h2 id="其他类型转换为数字"><a href="#其他类型转换为数字" class="headerlink" title="其他类型转换为数字"></a>其他类型转换为数字</h2><h3 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h3><p>一般用于隐式转换【数学运算、isNaN、==比较…】</p>
 <ul>
 <li>字符串：<ul>
 <li>如果是空字符穿，转换结果 0</li>
@@ -330,19 +326,19 @@
 </li>
 <li><strong>null：转换为0</strong></li>
 <li><strong>undefined：NaN</strong></li>
+<li>Symbol：报错</li>
+<li>BigInt ：正常转换</li>
 <li>对象：<strong>遵循对象数据转换规则</strong></li>
 </ul>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Number</span>(<span class="string">&quot;123px&quot;</span>)     <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">Number</span>(<span class="literal">undefined</span>)   <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">Number</span>(<span class="literal">false</span>)       <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">Number</span>(<span class="literal">true</span>)        <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">Number</span>(<span class="literal">null</span>)        <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">Number</span>(<span class="string">&quot;&quot;</span>)          <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Number</span>([])          <span class="comment">// 0  Number([]) ==&gt; [].toString() ==&gt; &quot;&quot; ==&gt; Number(&quot;&quot;) ==&gt; 0</span></span><br></pre></td></tr></table></figure>
 
-
-
 <h3 id="parseInt"><a href="#parseInt" class="headerlink" title="parseInt"></a>parseInt</h3><p><code>parseInt([val], [radix])</code></p>
 <ul>
-<li>[val] 必须是一个字符串，如果不是，也要默认转换为字符串</li>
+<li>[val] <strong>必须是一个字符串，如果不是，也要默认转换为字符串</strong></li>
 <li>[radix] 不设置（写零）：按十进制处理，如果字符串以<code>0x</code>开头，默认是16进制</li>
 </ul>
-<p>从左往右查找 [val] 中，找到所有符合 [radix] 进制的内容，直到遇到不符合的停止查找（不论后面是否还有符合的）</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">parseInt</span>(<span class="string">&#x27;12px&#x27;</span>)    <span class="comment">// 12</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&#x27;12px&#x27;</span>, <span class="number">1</span>) <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">null</span>))     <span class="comment">// NaN -&gt;parseInt(&#x27;null&#x27;, 10)</span></span><br></pre></td></tr></table></figure>
+<p><strong>从左往右查找 [val] 中，找到所有符合 [radix] 进制的内容，直到遇到不符合的停止查找</strong>（不论后面是否还有符合的）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">parseInt</span>(<span class="string">&#x27;12px&#x27;</span>)    <span class="comment">// 12</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&#x27;12px&#x27;</span>, <span class="number">1</span>) <span class="comment">// NaN</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Number</span>(<span class="literal">null</span>) <span class="comment">//0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">null</span>))     <span class="comment">// NaN -&gt;parseInt(&#x27;null&#x27;, 10)</span></span><br><span class="line"><span class="built_in">Number</span>(<span class="string">&#x27;&#x27;</span>) <span class="comment">//0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&#x27;&#x27;</span>) <span class="comment">//NaN</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>radix 2-36 之间</li>
@@ -351,13 +347,44 @@
 
 
 
-<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><ul>
-<li><p>数据.toString()<br><strong>null、undefined 没有 toString() 这个方法</strong>，用了会报错，可以使用 String()</p>
+<h2 id="其他类型转换为字符串"><a href="#其他类型转换为字符串" class="headerlink" title="其他类型转换为字符串"></a>其他类型转换为字符串</h2><ul>
+<li><p><code>toString()</code><br><strong>null、undefined 没有 <code>toString()</code> 这个方法</strong>，用了会报错，可以使用 <code>String()</code></p>
+<p>需要排除 <code>Object.prototype.toString</code> 检测数据类型</p>
 </li>
-<li><p>String(数据)<br><code>String(null)</code> 返回结果 “null”<br><code>String(undefined)</code> 返回结果 “undefined “</p>
+<li><p>字符串/模板字符串拼接（<code>+</code> 除了数学运算还有字符串拼接）</p>
 </li>
 </ul>
-<h3 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h3><ul>
+<h3 id="字符串拼接"><a href="#字符串拼接" class="headerlink" title="+ 字符串拼接"></a>+ 字符串拼接</h3><p><strong>情况1：</strong><code>+</code> 左右两边有一边出现字符串或部分对象，则按照字符串拼接处理</p>
+<ul>
+<li>特殊：<code>&#123;&#125; + 10 -&gt; 10</code> {} 看做代码块（ES6块级上下文）</li>
+</ul>
+<p><strong>注意：不是所有对象都是字符串拼接</strong></p>
+<ul>
+<li>先去调取对象的 <code>Symbol.toPrimitive</code> 属性值，如果没有这个属性</li>
+<li>再去调取对象的 <code>valueOf</code> 获取原始值，如果不是原始值</li>
+<li>再去调用对象的 <code>toString</code> 转换为字符串（如果是想转换为数字，则还会调用 Number 处理）</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span> + <span class="string">&quot;10&quot;</span> <span class="comment">// &quot;1010&quot;</span></span><br><span class="line"><span class="number">10</span> + [<span class="number">10</span>] <span class="comment">// 1010; [10].toString() = &#x27;10&#x27;</span></span><br><span class="line"><span class="number">10</span> + <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">10</span>) <span class="comment">// 20; new Number(10).valueOf() = 10</span></span><br><span class="line">&#123;&#125; + <span class="number">10</span>   <span class="comment">// 10</span></span><br><span class="line"><span class="number">10</span> + &#123;&#125;   <span class="comment">// &quot;10[object Object]&quot;; &#123;&#125;.toString() = [object Object]</span></span><br><span class="line">(&#123;&#125; + <span class="number">10</span>) <span class="comment">// &quot;[object Object]10&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">  x: <span class="number">10</span>,</span><br><span class="line">  <span class="comment">// obj[Symbol.toPrimitive valueOf toString]</span></span><br><span class="line">  [<span class="built_in">Symbol</span>.toPrimitive](hint) &#123;</span><br><span class="line">    <span class="comment">// console.log(hint) // default string number</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.x</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">10</span> + obj) <span class="comment">// 20</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>情况2：</strong>只有一边有 <code>+</code> </p>
+<ul>
+<li><p><code>+</code> 只有一边或<code>++x</code>或<code>x++</code> ，都是数学运算</p>
+<p><code>10+(++x) </code>先把x累加1，然后和10运算</p>
+<p><code>10+(x++)</code> 先把x的值和10运算，然后x累加1</p>
+</li>
+<li><p>注意：<code>x++ </code>只会进行数学运算，<code>x+=1</code> 和 <code>x=x+1</code> 不仅会进行数学运算还可能进行字符串拼接</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+<span class="string">&quot;10&quot;</span> <span class="comment">// 10</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="string">&quot;10&quot;</span></span><br><span class="line"><span class="number">10</span>+(x++) <span class="comment">// 20</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = <span class="string">&quot;10&quot;</span></span><br><span class="line"><span class="number">10</span>+(++x) <span class="comment">// 21</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = <span class="string">&quot;10&quot;</span></span><br><span class="line">x+=<span class="number">1</span>    <span class="comment">// &quot;101&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>了解数据转换规则和字符串拼接后，来看一道题</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> result = <span class="number">100</span> + <span class="literal">true</span> + <span class="number">21.2</span> + <span class="literal">null</span> + <span class="literal">undefined</span> + <span class="string">&quot;Tencent&quot;</span> + [] + <span class="literal">null</span> + <span class="number">9</span> + <span class="literal">false</span>;</span><br><span class="line"><span class="built_in">console</span>.log(result); <span class="comment">// NaNTencentnull9false</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="其他类型转换为布尔"><a href="#其他类型转换为布尔" class="headerlink" title="其他类型转换为布尔"></a>其他类型转换为布尔</h2><ul>
 <li><p>![值]  转换为布尔并取反</p>
 </li>
 <li><p>!![值]  转换为布尔</p>
@@ -371,27 +398,6 @@
 <li>null</li>
 <li>undefined</li>
 </ul>
-<h3 id="字符串拼接"><a href="#字符串拼接" class="headerlink" title="+字符串拼接"></a>+字符串拼接</h3><ul>
-<li><p><code>+</code> 两边都有值，有一边出现字符串或对象，则为字符串拼接</p>
-<p>特殊：<code>&#123;&#125; + 10 -&gt; 10</code> {} 看做代码块（ES6块级上下文）</p>
-</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span> + <span class="string">&quot;10&quot;</span> <span class="comment">// &quot;1010&quot;</span></span><br><span class="line"><span class="number">10</span> + &#123;&#125;   <span class="comment">// &quot;10[object Object]&quot;</span></span><br><span class="line"><span class="number">10</span> + [<span class="number">10</span>] <span class="comment">// &quot;1010&quot;</span></span><br><span class="line">&#123;&#125; + <span class="number">10</span>   <span class="comment">// 10</span></span><br><span class="line">(&#123;&#125; + <span class="number">10</span>) <span class="comment">// &quot;[object Object]10&quot;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p><code>+</code> 只有一边或<code>++x</code>或<code>x++</code> ，都是数学运算</p>
-<p><code>10+(++x) </code>先把x累加1，然后和10运算</p>
-<p><code>10+(x++)</code> 先把x的值和10运算，然后x累加1</p>
-<p>注意：<code>x++ </code>只会进行数学运算，<code>x+=1</code> 和 <code>x=x+1</code> 不仅会进行数学运算还可能进行字符串拼接</p>
-</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+<span class="string">&quot;10&quot;</span> <span class="comment">// 10</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="string">&quot;10&quot;</span></span><br><span class="line"><span class="number">10</span>+(x++) <span class="comment">// 20</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = <span class="string">&quot;10&quot;</span></span><br><span class="line"><span class="number">10</span>+(++x) <span class="comment">// 21</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = <span class="string">&quot;10&quot;</span></span><br><span class="line">x+=<span class="number">1</span>    <span class="comment">// &quot;101&quot;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>了解数据转换规则和字符串拼接后，来看一道题</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> result = <span class="number">100</span> + <span class="literal">true</span> + <span class="number">21.2</span> + <span class="literal">null</span> + <span class="literal">undefined</span> + <span class="string">&quot;Tencent&quot;</span> + [] + <span class="literal">null</span> + <span class="number">9</span> + <span class="literal">false</span>;</span><br><span class="line"><span class="built_in">console</span>.log(result); <span class="comment">// NaNTencentnull9false</span></span><br></pre></td></tr></table></figure>
-
 
     </div>
 
@@ -440,8 +446,6 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/JavaScript/" rel="tag"><i class="fa fa-tag"></i> JavaScript</a>
-              <a href="/tags/%E5%9F%BA%E7%A1%80/" rel="tag"><i class="fa fa-tag"></i> 基础</a>
-              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"><i class="fa fa-tag"></i> 前端</a>
               <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" rel="tag"><i class="fa fa-tag"></i> 数据类型转换</a>
               <a href="/tags/%E9%A2%98%E8%A7%A3/" rel="tag"><i class="fa fa-tag"></i> 题解</a>
           </div>
@@ -533,7 +537,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E8%BD%AC%E6%8D%A2"><span class="nav-text">对象转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Number"><span class="nav-text">Number</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parseInt"><span class="nav-text">parseInt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String"><span class="nav-text">String</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Boolean"><span class="nav-text">Boolean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5"><span class="nav-text">+字符串拼接</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99"><span class="nav-text">对象数据转换规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%95%B0%E5%AD%97"><span class="nav-text">其他类型转换为数字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Number"><span class="nav-text">Number</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parseInt"><span class="nav-text">parseInt</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-text">其他类型转换为字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5"><span class="nav-text">+ 字符串拼接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%B8%83%E5%B0%94"><span class="nav-text">其他类型转换为布尔</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -549,20 +553,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-count">88</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -619,12 +623,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">124k</span>
+    <span title="站点总字数">141k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:53</span>
+    <span title="站点阅读时长">2:08</span>
 </div>
 
 <!--

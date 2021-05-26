@@ -6,6 +6,7 @@ tags:
 categories: 网络
 author: LiLyn
 copyright: ture
+abbrlink: 2623edef
 ---
 ## 客户端和服务端之间的信息通信
 
