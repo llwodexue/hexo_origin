@@ -3,7 +3,6 @@ title: Swiper使用案例
 tags:
   - Swiper
   - CSS
-  - 前端
 categories: 前端插件
 author: LiLyn
 copyright: ture
@@ -326,5 +325,4 @@ new Swiper('.swiper-focus', {
 - 效果如下：
 
 ![效果4](https://img-blog.csdnimg.cn/2020082616193980.gif#pic_center)
-
 

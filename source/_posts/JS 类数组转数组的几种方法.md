@@ -2,8 +2,6 @@
 title: JS 类数组转数组的四种方法
 tags:
   - JavaScript
-  - 基础
-  - 前端
   - 数组
 categories: JavaScript
 author: LiLyn

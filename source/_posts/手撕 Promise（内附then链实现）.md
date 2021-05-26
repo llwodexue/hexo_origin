@@ -4,6 +4,7 @@ tags:
   - JavaScript
   - Promise
   - then链
+  - 源码分析
 categories: JavaScript
 author: LiLyn
 copyright: ture

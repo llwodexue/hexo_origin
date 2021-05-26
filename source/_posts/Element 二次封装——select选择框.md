@@ -2,10 +2,10 @@
 title: Element 二次封装——select选择框
 tags:
   - Vue
-  - select
   - Element
   - v-model
   - $attr $listeners
+  - 封装
 categories: Vue
 author: LiLyn
 copyright: ture

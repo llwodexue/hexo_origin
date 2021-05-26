@@ -3,10 +3,7 @@ title: JS 实现轮播图（附jQuery版本）
 tags:
   - JavaScript
   - jQuery
-  - 轮播图
   - 防抖
-  - Ajax
-  - animate
 categories: JavaScript
 author: LiLyn
 copyright: ture

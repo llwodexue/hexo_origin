@@ -1,9 +1,9 @@
 ---
 title: vscode造成电脑卡顿
 tags:
-  - Vscode问题
+  - Vscode
   - 电脑卡顿
-  - 插件问题
+  - 问题
 categories: 基础配置
 author: LiLyn
 copyright: ture

@@ -3,7 +3,7 @@ title: Axios 二次封装
 tags:
   - Vue
   - Axios
-  - 二次封装
+  - 封装
 categories: Vue
 author: LiLyn
 copyright: ture

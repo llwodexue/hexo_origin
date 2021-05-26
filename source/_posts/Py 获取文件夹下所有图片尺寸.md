@@ -4,7 +4,6 @@ tags:
   - Python
   - 获取图片尺寸
   - 批处理
-  - 写入到csv
 categories: Python
 author: LiLyn
 copyright: ture

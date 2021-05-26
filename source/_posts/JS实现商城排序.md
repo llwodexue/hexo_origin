@@ -2,7 +2,7 @@
 title: JS实现商城排序
 tags:
   - JavaScript
-  - flex
+  - 排序
   - DocumentFragment
 categories: JavaScript
 author: LiLyn

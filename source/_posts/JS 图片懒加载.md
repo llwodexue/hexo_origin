@@ -4,7 +4,6 @@ tags:
   - JavaScript
   - 延迟加载
   - 懒加载
-  - utils
 categories: JavaScript
 author: LiLyn
 copyright: ture

@@ -3,7 +3,6 @@ title: JS 垃圾回收与性能优化
 tags:
   - JavaScript
   - 垃圾回收
-  - 前端
   - 性能优化
 categories: JavaScript
 author: LiLyn

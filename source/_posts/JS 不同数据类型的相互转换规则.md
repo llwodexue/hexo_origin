@@ -2,8 +2,6 @@
 title: JS 不同数据类型的相互转换规则
 tags:
   - JavaScript
-  - 基础
-  - 前端
   - 数据类型转换
   - 题解
 categories: JavaScript
@@ -39,7 +37,7 @@ null == undefined // true
 
 
 
-### 对象转换
+## 对象数据转换规则
 
 > 原始值：number string boolean null undefined symbol bigint
 
@@ -117,9 +115,11 @@ if (a == 1 && a == 2 && a == 3) {
 
 
 
+## 其他类型转换为数字
+
 ### Number
 
-> == 比较，数学运算（+不仅仅是数学运算，还有字符串拼接）
+一般用于隐式转换【数学运算、isNaN、==比较...】
 
 - 字符串：
   - 如果是空字符穿，转换结果 0
@@ -129,6 +129,8 @@ if (a == 1 && a == 2 && a == 3) {
   - false：转换为0
 - **null：转换为0**
 - **undefined：NaN**
+- Symbol：报错
+- BigInt ：正常转换
 - 对象：**遵循对象数据转换规则**
 
 ```js
@@ -142,21 +144,23 @@ Number("")          // 0
 Number([])          // 0  Number([]) ==> [].toString() ==> "" ==> Number("") ==> 0
 ```
 
-
-
 ### parseInt
 
 `parseInt([val], [radix])`
 
-- [val] 必须是一个字符串，如果不是，也要默认转换为字符串
+- [val] **必须是一个字符串，如果不是，也要默认转换为字符串**
 - [radix] 不设置（写零）：按十进制处理，如果字符串以`0x`开头，默认是16进制
 
-从左往右查找 [val] 中，找到所有符合 [radix] 进制的内容，直到遇到不符合的停止查找（不论后面是否还有符合的）
+**从左往右查找 [val] 中，找到所有符合 [radix] 进制的内容，直到遇到不符合的停止查找**（不论后面是否还有符合的）
 
 ```js
 parseInt('12px')    // 12
 parseInt('12px', 1) // NaN
+
+Number(null) //0
 parseInt(null))     // NaN ->parseInt('null', 10)
+Number('') //0
+parseInt('') //NaN
 ```
 
 - radix 2-36 之间
@@ -169,46 +173,47 @@ console.log(arr); // [ 27, NaN, 1, 1, 27 ]
 
 
 
-### String
+## 其他类型转换为字符串
 
-- 数据.toString()
-  **null、undefined 没有 toString() 这个方法**，用了会报错，可以使用 String()
+- `toString()`
+  **null、undefined 没有 `toString()` 这个方法**，用了会报错，可以使用 `String()`
 
-- String(数据)
-  `String(null)` 返回结果 "null"
-  `String(undefined)` 返回结果 "undefined "
+  需要排除 `Object.prototype.toString` 检测数据类型
+  
+- 字符串/模板字符串拼接（`+` 除了数学运算还有字符串拼接）
 
+### + 字符串拼接
 
+**情况1：**`+` 左右两边有一边出现字符串或部分对象，则按照字符串拼接处理
 
-### Boolean
+- 特殊：`{} + 10 -> 10` {} 看做代码块（ES6块级上下文）
 
-- ![值]  转换为布尔并取反
+**注意：不是所有对象都是字符串拼接**
 
-- !![值]  转换为布尔
-
-**除了以下几种结果都是false，剩余的都是true**
-
-- NaN
-- 0
-- ""
-- null
-- undefined
-
-
-
-### +字符串拼接
-
-- `+` 两边都有值，有一边出现字符串或对象，则为字符串拼接
-
-  特殊：`{} + 10 -> 10` {} 看做代码块（ES6块级上下文）
+- 先去调取对象的 `Symbol.toPrimitive` 属性值，如果没有这个属性
+- 再去调取对象的 `valueOf` 获取原始值，如果不是原始值
+- 再去调用对象的 `toString` 转换为字符串（如果是想转换为数字，则还会调用 Number 处理）
 
 ```js
 10 + "10" // "1010"
-10 + {}   // "10[object Object]"
-10 + [10] // "1010"
+10 + [10] // 1010; [10].toString() = '10'
+10 + new Number(10) // 20; new Number(10).valueOf() = 10
 {} + 10   // 10
+10 + {}   // "10[object Object]"; {}.toString() = [object Object]
 ({} + 10) // "[object Object]10"
+
+let obj = {
+  x: 10,
+  // obj[Symbol.toPrimitive valueOf toString]
+  [Symbol.toPrimitive](hint) {
+    // console.log(hint) // default string number
+    return this.x
+  },
+}
+console.log(10 + obj) // 20
 ```
+
+**情况2：**只有一边有 `+` 
 
 - `+` 只有一边或`++x`或`x++` ，都是数学运算
 
@@ -216,7 +221,7 @@ console.log(arr); // [ 27, NaN, 1, 1, 27 ]
 
   `10+(x++)` 先把x的值和10运算，然后x累加1
 
-  注意：`x++ `只会进行数学运算，`x+=1` 和 `x=x+1` 不仅会进行数学运算还可能进行字符串拼接
+- 注意：`x++ `只会进行数学运算，`x+=1` 和 `x=x+1` 不仅会进行数学运算还可能进行字符串拼接
 
 ```js
 +"10" // 10
@@ -237,3 +242,18 @@ let result = 100 + true + 21.2 + null + undefined + "Tencent" + [] + null + 9 + 
 console.log(result); // NaNTencentnull9false
 ```
 
+
+
+## 其他类型转换为布尔
+
+- ![值]  转换为布尔并取反
+
+- !![值]  转换为布尔
+
+**除了以下几种结果都是false，剩余的都是true**
+
+- NaN
+- 0
+- ""
+- null
+- undefined

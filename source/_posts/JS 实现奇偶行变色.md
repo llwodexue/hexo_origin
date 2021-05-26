@@ -3,7 +3,6 @@ title: JS 实现奇偶行变色
 tags:
   - JavaScript
   - 问题
-  - 前端
   - 闭包
   - this
 categories: JavaScript
