@@ -295,6 +295,18 @@ export default {
 }
 ```
 
+### 注意：弹框组件国际化问题
+
+- 弹窗组件最好不要加 `confirmButtonText` 和 `cancelButtonText` 参数，不然可能会对国际化造成影响
+
+```js
+this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+  confirmButtonText: '确定',
+  cancelButtonText: '取消',
+  type: 'warning',
+})
+```
+
 ## 推荐参考
 
 [前端国际化之Vue-i18n源码分析](https://segmentfault.com/a/1190000008752459)

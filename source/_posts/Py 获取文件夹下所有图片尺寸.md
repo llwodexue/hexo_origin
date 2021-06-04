@@ -4,6 +4,7 @@ tags:
   - Python
   - 获取图片尺寸
   - 批处理
+  - 导出Excel
 categories: Python
 author: LiLyn
 copyright: ture
