@@ -1,5 +1,5 @@
 ---
-title: 获取文件夹下所有图片尺寸
+title: Python 获取文件夹下所有图片尺寸
 tags:
   - Python
   - 获取图片尺寸

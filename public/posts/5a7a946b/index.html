@@ -22,18 +22,19 @@
 
   <meta name="description" content="有时候我们爬取了一堆图片，需要知道这些图片尺寸大小或名字以便日后处理。一个一个弄很是费劲，我们可以用 python 批量获取一下并生成 csv  如果图片后缀比较多（png jpg jpeg bmp），可以在 suffix里进行添加">
 <meta property="og:type" content="article">
-<meta property="og:title" content="获取文件夹下所有图片尺寸">
+<meta property="og:title" content="Python 获取文件夹下所有图片尺寸">
 <meta property="og:url" content="http://llmysnow.top/posts/5a7a946b/index.html">
 <meta property="og:site_name" content="奇幻的梦之旅">
 <meta property="og:description" content="有时候我们爬取了一堆图片，需要知道这些图片尺寸大小或名字以便日后处理。一个一个弄很是费劲，我们可以用 python 批量获取一下并生成 csv  如果图片后缀比较多（png jpg jpeg bmp），可以在 suffix里进行添加">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/python-img/%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E5%A4%B9%E6%89%80%E6%9C%89%E5%9B%BE%E7%89%87%E5%B0%BA%E5%AF%B8.jpg">
 <meta property="article:published_time" content="2020-11-27T10:44:47.895Z">
-<meta property="article:modified_time" content="2021-05-26T01:22:58.197Z">
+<meta property="article:modified_time" content="2021-06-10T06:57:03.901Z">
 <meta property="article:author" content="LiLyn">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="获取图片尺寸">
 <meta property="article:tag" content="批处理">
+<meta property="article:tag" content="导出Excel">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://gitee.com/lilyn/pic/raw/master/python-img/%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E5%A4%B9%E6%89%80%E6%9C%89%E5%9B%BE%E7%89%87%E5%B0%BA%E5%AF%B8.jpg">
 
@@ -50,7 +51,7 @@
   };
 </script>
 
-  <title>获取文件夹下所有图片尺寸 | 奇幻的梦之旅</title>
+  <title>Python 获取文件夹下所有图片尺寸 | 奇幻的梦之旅</title>
   
 
 
@@ -209,7 +210,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          获取文件夹下所有图片尺寸
+          Python 获取文件夹下所有图片尺寸
         </h1>
 
         <div class="post-meta">
@@ -296,9 +297,9 @@
     <img src="https://gitee.com/lilyn/pic/raw/master/logo.jpg">
   </article>
   <article class="box-right">
-    <p><span>本文标题:</span><a href="/posts/5a7a946b/">获取文件夹下所有图片尺寸</a></p>
+    <p><span>本文标题:</span><a href="/posts/5a7a946b/">Python 获取文件夹下所有图片尺寸</a></p>
     <p><span>文章作者:</span><a href="/" title="访问 LiLyn 的个人博客">LiLyn</a></p>
-    <p><span>原始链接:</span><a href="/posts/5a7a946b/" title="获取文件夹下所有图片尺寸">http://llmysnow.top/posts/5a7a946b/</a>
+    <p><span>原始链接:</span><a href="/posts/5a7a946b/" title="Python 获取文件夹下所有图片尺寸">http://llmysnow.top/posts/5a7a946b/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/5a7a946b/"  aria-label="复制成功！"></i></span>
   </p>
     <p><span>许可协议:</span>转载请保留原文链接及作者。</p>  
@@ -326,6 +327,7 @@
               <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
               <a href="/tags/%E8%8E%B7%E5%8F%96%E5%9B%BE%E7%89%87%E5%B0%BA%E5%AF%B8/" rel="tag"><i class="fa fa-tag"></i> 获取图片尺寸</a>
               <a href="/tags/%E6%89%B9%E5%A4%84%E7%90%86/" rel="tag"><i class="fa fa-tag"></i> 批处理</a>
+              <a href="/tags/%E5%AF%BC%E5%87%BAExcel/" rel="tag"><i class="fa fa-tag"></i> 导出Excel</a>
           </div>
 		 
 		<!--post-tags 彩色标签-->
@@ -431,7 +433,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -444,7 +446,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">88</span>
+        <span class="site-state-item-count">97</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -501,12 +503,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">141k</span>
+    <span title="站点总字数">163k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:08</span>
+    <span title="站点阅读时长">2:28</span>
 </div>
 
 <!--
