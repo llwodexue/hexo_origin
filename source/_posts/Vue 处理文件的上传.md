@@ -1,9 +1,8 @@
 ---
-title: Vue 处理文件的下载和上传（FormData/Blob）
+title: Vue 处理文件的上传
 tags:
   - Vue
   - FormData
-  - Blob
 categories: Vue
 author: LiLyn
 copyright: ture
@@ -103,52 +102,4 @@ formData.has('key')
     },
   }
 </script>
-```
-
-## Blob 下载
-
-Blob 通常用于存储大文件，典型的 Blob 内容是一张图片或一个音频
-
-1. 默认情况下 axios 不会处理二进制数据，即请求可以正常被浏览器接收，但 axios 不会去处理。需要在请求的时候设置 `responseType: 'blob'` 才可以
-2. 拿到文件流之后，需要生成一个 URL 才可以下载，可以通过`URL.createObjectURL()`方法生成一个链接
-3. a 标签添加文件名
-   正常情况下，通过 `window.location = url` 就可以下载文件。浏览器判断这个链接是一个资源而不是页面的时候，就会下载文件
-   但是通过文件流生成的 url 对应的资源是没有文件名的，需要添加文件名。这时候可以用到 a 标签
-   ，a 标签我们通常会用到 href 属性，但是其实还有一个 download 属性，这个属性就指定了下载的文件名
-
-```js
-const mimeMap = {
-  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  zip: 'application/zip',
-}
-
-export function downLoadZip(url) {
-  axios
-    .get({
-      url: url,
-      responseType: 'blob',
-    })
-    .then(res => {
-      resolveBlob(res, mimeMap.zip)
-    })
-}
-
-export function resolveBlob(res, mimeType) {
-  // 创建a标签，并处理二级制数据
-  const aLink = document.createElement('a')
-  const blob = new Blob([res.data], { type: mimeType })
-  // 生成下载链接
-  const URL = window.URL || window.webkitURL
-  aLink.href = URL.createObjectURL(blob)
-  // 匹配出文件名
-  const disposition = res.headers['content-disposition']
-  const fileName = /filename="([^;]+)"/.exec(a)[1]
-  // 设置下载文件名称并下载
-  aLink.setAttribute('download', fileName)
-  document.body.appendChild(aLink)
-  aLink.click()
-  // 释放URL对象
-  window.URL.revokeObjectURL(aLink.href)
-  document.body.removeChild(aLink)
-}
 ```

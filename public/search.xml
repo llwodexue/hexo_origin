@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Vue 处理文件的下载（后端Excel导出）</title>
+    <url>/posts/14d3abe4/</url>
+    <content><![CDATA[<p>大概有两种方法（通常对应的是需要不需要携带 token），原理都是通过 <code>a</code> 标签下载</p>
+<ol>
+<li>通过 Ajax 请求，拿到 <code>response</code> ，转换为 blob 格式（主要是为了处理 type），为其生成下载链接，下载即可</li>
+<li>拼接 URL，拼出来对应请求链接，直接访问即可</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="后端文件流"><a href="#后端文件流" class="headerlink" title="后端文件流"></a>后端文件流</h2><ul>
+<li>首先点击导出 Excel ，这里调用接口成功</li>
+</ul>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%AF%BC%E5%87%BAExcel%E6%8E%A5%E5%8F%A3%E6%88%90%E5%8A%9F.jpg"></p>
+<ul>
+<li>接下来看一下后台返回的数据是什么样，是文件流格式（<code>OutputStream</code>）</li>
+</ul>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%90%8E%E7%AB%AF%E8%BF%94%E5%9B%9E%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81.jpg"></p>
+<p>在处理之前，说几个要注意的点</p>
+<ol>
+<li><strong>注意：后端在这里一般会设置如下几个请求头</strong></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 设置返回类型为excel</span></span><br><span class="line">response.setContentType(<span class="string">&quot;application/vnd.ms-excel; charset=UTF-8&quot;</span>);  </span><br><span class="line">	</span><br><span class="line"><span class="comment">// 设置返回文件名为filename.xls </span></span><br><span class="line">response.setHeader(<span class="string">&quot;Content-Disposition&quot;</span>, <span class="string">&quot;filename.xls&quot;</span>);  </span><br><span class="line">response.setHeader(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;no-cache&quot;</span>);  </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>注意：前端在 Axios 响应拦截的时候，需要对其进行处理。</strong>一般我们都是把 <code>response.data</code> 进行返回，但是这里我们需要把整个 <code>response</code> 返回（因为文件名在 headers 里面）</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&#x27;axios&#x27;</span></span><br><span class="line"><span class="keyword">const</span> mimeMap = &#123;</span><br><span class="line">  xlsx: <span class="string">&#x27;application/vnd.ms-excel&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> service = axios.create(&#123;</span><br><span class="line">  baseURL: process.env.NODE_ENV === <span class="string">&#x27;development&#x27;</span> ? <span class="string">&#x27;&#x27;</span> : <span class="string">&#x27;http://127.0.0.1:9999&#x27;</span></span><br><span class="line">  withCredentials: <span class="literal">true</span>,</span><br><span class="line">  timeout: <span class="number">5000</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 响应拦截器</span></span><br><span class="line">service.interceptors.response.use(</span><br><span class="line">  response =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> res = response.data</span><br><span class="line">    <span class="keyword">if</span> (res.type === mimeMap.xlsx) &#123;</span><br><span class="line">      <span class="keyword">return</span> response</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125;,</span><br><span class="line">  error =&gt; <span class="built_in">console</span>.log(error)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> service</span><br></pre></td></tr></table></figure>
+
+<p>接下来要处理这个文件流，大概有两种方法（通常对应的是需要不需要携带 token），原理都是通过 <code>a</code> 标签下载</p>
+<ol>
+<li>通过 Ajax 请求，拿到 <code>response</code> ，转换为 blob 格式（主要是为了处理 type），为其生成下载链接，下载即可</li>
+<li>拼接 URL，拼出来对应请求链接，直接访问即可</li>
+</ol>
+<h2 id="通过-Blob-下载"><a href="#通过-Blob-下载" class="headerlink" title="通过 Blob 下载"></a>通过 Blob 下载</h2><p>Blob 通常用于存储大文件，典型的 Blob 内容是一张图片或一个音频</p>
+<ol>
+<li>默认情况下 axios 不会处理二进制数据，即请求可以正常被浏览器接收，但 axios 不会去处理。<strong>需要在请求的时候设置 <code>responseType: &#39;blob&#39;</code> 才可以</strong></li>
+<li>拿到文件流之后，需要生成一个 URL 才可以下载，可以<strong>通过<code>URL.createObjectURL()</code>方法生成一个链接</strong></li>
+<li>a 标签添加文件名<br>正常情况下，通过 <code>window.location = url</code> 就可以下载文件。浏览器判断这个链接是一个资源而不是页面的时候，就会下载文件。但是通过文件流生成的 url 对应的资源是没有文件名的，需要添加文件名。这时候可以用到 download 属性指定下载的文件名</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> mimeMap = &#123;</span><br><span class="line">  xlsx: <span class="string">&#x27;application/vnd.ms-excel&#x27;</span>,</span><br><span class="line">  zip: <span class="string">&#x27;application/zip&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> toExcel = <span class="function"><span class="params">params</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> request(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;/dayReportToExcel/toExcel&#x27;</span>,</span><br><span class="line">    responseType: <span class="string">&#x27;blob&#x27;</span>,</span><br><span class="line">    params</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> resolveBlob(res, mimeMap.xlsx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveBlob</span>(<span class="params">res, mimeType</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 创建a标签，并处理二级制数据</span></span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([res.data], &#123; <span class="attr">type</span>: mimeType &#125;)</span><br><span class="line">  <span class="comment">// 生成下载链接</span></span><br><span class="line">  <span class="keyword">const</span> URL = <span class="built_in">window</span>.URL || <span class="built_in">window</span>.webkitURL</span><br><span class="line">  aLink.href = URL.createObjectURL(blob)</span><br><span class="line">  <span class="comment">// 设置下载文件名称</span></span><br><span class="line">  <span class="keyword">const</span> fileName = res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]</span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, fileName)</span><br><span class="line">  <span class="comment">// 下载</span></span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(aLink)</span><br><span class="line">  aLink.click()</span><br><span class="line">  <span class="comment">// 释放URL对象</span></span><br><span class="line">  <span class="built_in">window</span>.URL.revokeObjectURL(aLink.href)</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(aLink)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="拼接-URL-下载"><a href="#拼接-URL-下载" class="headerlink" title="拼接 URL 下载"></a>拼接 URL 下载</h2><p>如果可以直接通过 URL 下载文件，则可以不需要发送 Ajax 请求（前提是没有 token、headers 验证），直接下载</p>
+<ul>
+<li>可以使用 <code>window.open(url)</code></li>
+<li>可以使用 <code>a</code> 标签进行下载</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> qs <span class="keyword">from</span> <span class="string">&#x27;qs&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">downloadExcel</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> url = <span class="built_in">window</span>.location.origin + <span class="string">&#x27;/dayReportToExcel/toExcel?&#x27;</span> + qs.stringify(params)</span><br><span class="line">  <span class="comment">// window.open(url)</span></span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;target&#x27;</span>, <span class="string">&#x27;_blank&#x27;</span>)</span><br><span class="line">  aLink.href = url</span><br><span class="line">  aLink.click()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Vue</category>
+      </categories>
+      <tags>
+        <tag>Vue</tag>
+        <tag>Blob</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Python 批量获取文件夹文件名称和数量</title>
     <url>/posts/5a7a946b/</url>
     <content><![CDATA[<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ul>
@@ -9,10 +66,12 @@
 <p>floder 获取文件夹名称/数量</p>
 </li>
 <li><p>可以服务器或 CMD 中使用（不能在 Git Bash 中使用）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python getFile.py &#123;image path&#125; &#123;file/floder&#125;</span><br></pre></td></tr></table></figure>
-
 </li>
 </ul>
+<a id="more"></a>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python getFile.py &#123;image path&#125; &#123;file/floder&#125;</span><br></pre></td></tr></table></figure>
+
 <p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E6%89%B9%E9%87%8F%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B61.jpg"></p>
 <h2 id="文件名-getFile-py"><a href="#文件名-getFile-py" class="headerlink" title="文件名 getFile.py"></a>文件名 getFile.py</h2><p>效果如下：</p>
 <p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E6%89%B9%E9%87%8F%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B62.jpg"></p>
@@ -1434,7 +1493,7 @@
       </tags>
   </entry>
   <entry>
-    <title>Vue 处理文件的下载和上传（FormData/Blob）</title>
+    <title>Vue 处理文件的上传</title>
     <url>/posts/4cfe3e8b/</url>
     <content><![CDATA[<h2 id="FormData-上传"><a href="#FormData-上传" class="headerlink" title="FormData 上传"></a>FormData 上传</h2><p>将本地数据上传或导入数据库，有时候需要使用 FormData 对象。FormData 接口提供了一种表示表单数据的键值对 <code>key/value</code> 的构造方式，组成一个 queryString 提交到后台</p>
 <a id="more"></a>
@@ -1445,21 +1504,13 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> formData = <span class="keyword">new</span> FormData()</span><br><span class="line"><span class="comment">// 获取值</span></span><br><span class="line">formData.get(<span class="string">&#x27;key&#x27;</span>)</span><br><span class="line"><span class="comment">// 添加数据</span></span><br><span class="line">formData.append(<span class="string">&#x27;key&#x27;</span>, value)</span><br><span class="line"><span class="comment">// 设置、修改数据</span></span><br><span class="line">formData.set(<span class="string">&#x27;key&#x27;</span>, value)</span><br><span class="line"><span class="comment">// 删除数据</span></span><br><span class="line">formData.delete(<span class="string">&#x27;key&#x27;</span>)</span><br><span class="line"><span class="comment">// 判断数据是否存在</span></span><br><span class="line">formData.has(<span class="string">&#x27;key&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="Vue-上传数据"><a href="#Vue-上传数据" class="headerlink" title="Vue 上传数据"></a>Vue 上传数据</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    &lt;input</span><br><span class="line">      ref=&quot;uploadFile&quot;</span><br><span class="line">      type=&quot;file&quot;</span><br><span class="line">      multiple</span><br><span class="line">      accept=&quot;.png&quot;</span><br><span class="line">      style=&quot;display: none&quot;</span><br><span class="line">      @change=&quot;upload($event)&quot;</span><br><span class="line">    /&gt;</span><br><span class="line">    <span class="tag">&lt;<span class="name">el-button</span> <span class="attr">size</span>=<span class="string">&quot;small&quot;</span> <span class="attr">type</span>=<span class="string">&quot;primary&quot;</span> @<span class="attr">click</span>=<span class="string">&quot;$refs.uploadFile.click()&quot;</span></span></span><br><span class="line"><span class="tag">      &gt;</span>浏览&lt;/el-button</span><br><span class="line">    &gt;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line">    methods: &#123;</span><br><span class="line"><span class="javascript">      <span class="function"><span class="title">upload</span>(<span class="params">e</span>)</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> files = e.target.files</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> suffix = <span class="string">&#x27;.png&#x27;</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> flag = <span class="literal">true</span></span></span><br><span class="line"><span class="javascript">        files.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">const</span> isSuffix = item.name.endsWith(suffix)</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (!isSuffix) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">this</span>.$message.error(</span></span><br><span class="line"><span class="javascript">              <span class="string">`<span class="subst">$&#123;item.name&#125;</span> 文件类型不符，请上传后缀名为 <span class="subst">$&#123;suffix&#125;</span> 的文件`</span></span></span><br><span class="line">            )</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> (flag = <span class="literal">false</span>)</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (flag) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (files.length === <span class="number">0</span>) <span class="keyword">return</span></span></span><br><span class="line"><span class="javascript">          <span class="keyword">const</span> formData = <span class="keyword">new</span> <span class="built_in">window</span>.FormData()</span></span><br><span class="line"><span class="javascript">          files.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">            formData.append(<span class="string">&#x27;file&#x27;</span>, item)</span></span><br><span class="line">          &#125;)</span><br><span class="line"><span class="javascript">          <span class="keyword">const</span> config = &#123;</span></span><br><span class="line">            headers: &#123;</span><br><span class="line"><span class="javascript">              <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;multipart/form-data&#x27;</span>,</span></span><br><span class="line"><span class="javascript">              type: <span class="string">&#x27;file&#x27;</span>,</span></span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;</span><br><span class="line"><span class="javascript">          <span class="built_in">this</span>.$axios</span></span><br><span class="line"><span class="javascript">            .post(<span class="string">&#x27;····请求接口····&#x27;</span>, formData, config)</span></span><br><span class="line"><span class="javascript">            .then(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">              <span class="built_in">this</span>.$message.success(<span class="string">&#x27;导入成功!&#x27;</span>)</span></span><br><span class="line">            &#125;)</span><br><span class="line"><span class="javascript">            .catch(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">              <span class="built_in">this</span>.$message.error(<span class="string">&#x27;导入失败!&#x27;</span>)</span></span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="Blob-下载"><a href="#Blob-下载" class="headerlink" title="Blob 下载"></a>Blob 下载</h2><p>Blob 通常用于存储大文件，典型的 Blob 内容是一张图片或一个音频</p>
-<ol>
-<li>默认情况下 axios 不会处理二进制数据，即请求可以正常被浏览器接收，但 axios 不会去处理。需要在请求的时候设置 <code>responseType: &#39;blob&#39;</code> 才可以</li>
-<li>拿到文件流之后，需要生成一个 URL 才可以下载，可以通过<code>URL.createObjectURL()</code>方法生成一个链接</li>
-<li>a 标签添加文件名<br>正常情况下，通过 <code>window.location = url</code> 就可以下载文件。浏览器判断这个链接是一个资源而不是页面的时候，就会下载文件<br>但是通过文件流生成的 url 对应的资源是没有文件名的，需要添加文件名。这时候可以用到 a 标签<br>，a 标签我们通常会用到 href 属性，但是其实还有一个 download 属性，这个属性就指定了下载的文件名</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> mimeMap = &#123;</span><br><span class="line">  xlsx: <span class="string">&#x27;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&#x27;</span>,</span><br><span class="line">  zip: <span class="string">&#x27;application/zip&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">downLoadZip</span>(<span class="params">url</span>) </span>&#123;</span><br><span class="line">  axios</span><br><span class="line">    .get(&#123;</span><br><span class="line">      url: url,</span><br><span class="line">      responseType: <span class="string">&#x27;blob&#x27;</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      resolveBlob(res, mimeMap.zip)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveBlob</span>(<span class="params">res, mimeType</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 创建a标签，并处理二级制数据</span></span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([res.data], &#123; <span class="attr">type</span>: mimeType &#125;)</span><br><span class="line">  <span class="comment">// 生成下载链接</span></span><br><span class="line">  <span class="keyword">const</span> URL = <span class="built_in">window</span>.URL || <span class="built_in">window</span>.webkitURL</span><br><span class="line">  aLink.href = URL.createObjectURL(blob)</span><br><span class="line">  <span class="comment">// 匹配出文件名</span></span><br><span class="line">  <span class="keyword">const</span> disposition = res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]</span><br><span class="line">  <span class="keyword">const</span> fileName = <span class="regexp">/filename=&quot;([^;]+)&quot;/</span>.exec(a)[<span class="number">1</span>]</span><br><span class="line">  <span class="comment">// 设置下载文件名称并下载</span></span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, fileName)</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(aLink)</span><br><span class="line">  aLink.click()</span><br><span class="line">  <span class="comment">// 释放URL对象</span></span><br><span class="line">  <span class="built_in">window</span>.URL.revokeObjectURL(aLink.href)</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(aLink)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+]]></content>
       <categories>
         <category>Vue</category>
       </categories>
       <tags>
         <tag>Vue</tag>
         <tag>FormData</tag>
-        <tag>Blob</tag>
       </tags>
   </entry>
   <entry>

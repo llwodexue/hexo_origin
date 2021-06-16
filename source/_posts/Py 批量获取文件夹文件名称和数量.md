@@ -19,6 +19,9 @@ abbrlink: 5a7a946b
   floder 获取文件夹名称/数量
 
 - 可以服务器或 CMD 中使用（不能在 Git Bash 中使用）
+
+<!--more-->
+
 ```bash
 python getFile.py {image path} {file/floder}
 ```

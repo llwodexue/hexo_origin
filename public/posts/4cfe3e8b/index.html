@@ -22,17 +22,16 @@
 
   <meta name="description" content="FormData 上传将本地数据上传或导入数据库，有时候需要使用 FormData 对象。FormData 接口提供了一种表示表单数据的键值对 key&#x2F;value 的构造方式，组成一个 queryString 提交到后台">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vue 处理文件的下载和上传（FormData&#x2F;Blob）">
+<meta property="og:title" content="Vue 处理文件的上传">
 <meta property="og:url" content="http://llmysnow.top/posts/4cfe3e8b/index.html">
 <meta property="og:site_name" content="奇幻的梦之旅">
 <meta property="og:description" content="FormData 上传将本地数据上传或导入数据库，有时候需要使用 FormData 对象。FormData 接口提供了一种表示表单数据的键值对 key&#x2F;value 的构造方式，组成一个 queryString 提交到后台">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-05-06T08:35:16.810Z">
-<meta property="article:modified_time" content="2021-05-06T08:52:34.057Z">
+<meta property="article:modified_time" content="2021-06-16T02:50:34.429Z">
 <meta property="article:author" content="LiLyn">
 <meta property="article:tag" content="Vue">
 <meta property="article:tag" content="FormData">
-<meta property="article:tag" content="Blob">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://llmysnow.top/posts/4cfe3e8b/">
@@ -48,7 +47,7 @@
   };
 </script>
 
-  <title>Vue 处理文件的下载和上传（FormData/Blob） | 奇幻的梦之旅</title>
+  <title>Vue 处理文件的上传 | 奇幻的梦之旅</title>
   
 
 
@@ -207,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Vue 处理文件的下载和上传（FormData/Blob）
+          Vue 处理文件的上传
         </h1>
 
         <div class="post-meta">
@@ -235,14 +234,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3k</span>
+              <span>1.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -264,13 +263,6 @@
 
 <h3 id="Vue-上传数据"><a href="#Vue-上传数据" class="headerlink" title="Vue 上传数据"></a>Vue 上传数据</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    &lt;input</span><br><span class="line">      ref=&quot;uploadFile&quot;</span><br><span class="line">      type=&quot;file&quot;</span><br><span class="line">      multiple</span><br><span class="line">      accept=&quot;.png&quot;</span><br><span class="line">      style=&quot;display: none&quot;</span><br><span class="line">      @change=&quot;upload($event)&quot;</span><br><span class="line">    /&gt;</span><br><span class="line">    <span class="tag">&lt;<span class="name">el-button</span> <span class="attr">size</span>=<span class="string">&quot;small&quot;</span> <span class="attr">type</span>=<span class="string">&quot;primary&quot;</span> @<span class="attr">click</span>=<span class="string">&quot;$refs.uploadFile.click()&quot;</span></span></span><br><span class="line"><span class="tag">      &gt;</span>浏览&lt;/el-button</span><br><span class="line">    &gt;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line">    methods: &#123;</span><br><span class="line"><span class="javascript">      <span class="function"><span class="title">upload</span>(<span class="params">e</span>)</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> files = e.target.files</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> suffix = <span class="string">&#x27;.png&#x27;</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> flag = <span class="literal">true</span></span></span><br><span class="line"><span class="javascript">        files.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">const</span> isSuffix = item.name.endsWith(suffix)</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (!isSuffix) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">this</span>.$message.error(</span></span><br><span class="line"><span class="javascript">              <span class="string">`<span class="subst">$&#123;item.name&#125;</span> 文件类型不符，请上传后缀名为 <span class="subst">$&#123;suffix&#125;</span> 的文件`</span></span></span><br><span class="line">            )</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> (flag = <span class="literal">false</span>)</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (flag) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (files.length === <span class="number">0</span>) <span class="keyword">return</span></span></span><br><span class="line"><span class="javascript">          <span class="keyword">const</span> formData = <span class="keyword">new</span> <span class="built_in">window</span>.FormData()</span></span><br><span class="line"><span class="javascript">          files.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">            formData.append(<span class="string">&#x27;file&#x27;</span>, item)</span></span><br><span class="line">          &#125;)</span><br><span class="line"><span class="javascript">          <span class="keyword">const</span> config = &#123;</span></span><br><span class="line">            headers: &#123;</span><br><span class="line"><span class="javascript">              <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;multipart/form-data&#x27;</span>,</span></span><br><span class="line"><span class="javascript">              type: <span class="string">&#x27;file&#x27;</span>,</span></span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;</span><br><span class="line"><span class="javascript">          <span class="built_in">this</span>.$axios</span></span><br><span class="line"><span class="javascript">            .post(<span class="string">&#x27;····请求接口····&#x27;</span>, formData, config)</span></span><br><span class="line"><span class="javascript">            .then(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">              <span class="built_in">this</span>.$message.success(<span class="string">&#x27;导入成功!&#x27;</span>)</span></span><br><span class="line">            &#125;)</span><br><span class="line"><span class="javascript">            .catch(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">              <span class="built_in">this</span>.$message.error(<span class="string">&#x27;导入失败!&#x27;</span>)</span></span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="Blob-下载"><a href="#Blob-下载" class="headerlink" title="Blob 下载"></a>Blob 下载</h2><p>Blob 通常用于存储大文件，典型的 Blob 内容是一张图片或一个音频</p>
-<ol>
-<li>默认情况下 axios 不会处理二进制数据，即请求可以正常被浏览器接收，但 axios 不会去处理。需要在请求的时候设置 <code>responseType: &#39;blob&#39;</code> 才可以</li>
-<li>拿到文件流之后，需要生成一个 URL 才可以下载，可以通过<code>URL.createObjectURL()</code>方法生成一个链接</li>
-<li>a 标签添加文件名<br>正常情况下，通过 <code>window.location = url</code> 就可以下载文件。浏览器判断这个链接是一个资源而不是页面的时候，就会下载文件<br>但是通过文件流生成的 url 对应的资源是没有文件名的，需要添加文件名。这时候可以用到 a 标签<br>，a 标签我们通常会用到 href 属性，但是其实还有一个 download 属性，这个属性就指定了下载的文件名</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mimeMap = &#123;</span><br><span class="line">  xlsx: <span class="string">&#x27;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&#x27;</span>,</span><br><span class="line">  zip: <span class="string">&#x27;application/zip&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">downLoadZip</span>(<span class="params">url</span>) </span>&#123;</span><br><span class="line">  axios</span><br><span class="line">    .get(&#123;</span><br><span class="line">      url: url,</span><br><span class="line">      responseType: <span class="string">&#x27;blob&#x27;</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      resolveBlob(res, mimeMap.zip)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveBlob</span>(<span class="params">res, mimeType</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 创建a标签，并处理二级制数据</span></span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([res.data], &#123; <span class="attr">type</span>: mimeType &#125;)</span><br><span class="line">  <span class="comment">// 生成下载链接</span></span><br><span class="line">  <span class="keyword">const</span> URL = <span class="built_in">window</span>.URL || <span class="built_in">window</span>.webkitURL</span><br><span class="line">  aLink.href = URL.createObjectURL(blob)</span><br><span class="line">  <span class="comment">// 匹配出文件名</span></span><br><span class="line">  <span class="keyword">const</span> disposition = res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]</span><br><span class="line">  <span class="keyword">const</span> fileName = <span class="regexp">/filename=&quot;([^;]+)&quot;/</span>.exec(a)[<span class="number">1</span>]</span><br><span class="line">  <span class="comment">// 设置下载文件名称并下载</span></span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, fileName)</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(aLink)</span><br><span class="line">  aLink.click()</span><br><span class="line">  <span class="comment">// 释放URL对象</span></span><br><span class="line">  <span class="built_in">window</span>.URL.revokeObjectURL(aLink.href)</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(aLink)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -290,9 +282,9 @@
     <img src="https://gitee.com/lilyn/pic/raw/master/logo.jpg">
   </article>
   <article class="box-right">
-    <p><span>本文标题:</span><a href="/posts/4cfe3e8b/">Vue 处理文件的下载和上传（FormData/Blob）</a></p>
+    <p><span>本文标题:</span><a href="/posts/4cfe3e8b/">Vue 处理文件的上传</a></p>
     <p><span>文章作者:</span><a href="/" title="访问 LiLyn 的个人博客">LiLyn</a></p>
-    <p><span>原始链接:</span><a href="/posts/4cfe3e8b/" title="Vue 处理文件的下载和上传（FormData/Blob）">http://llmysnow.top/posts/4cfe3e8b/</a>
+    <p><span>原始链接:</span><a href="/posts/4cfe3e8b/" title="Vue 处理文件的上传">http://llmysnow.top/posts/4cfe3e8b/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/4cfe3e8b/"  aria-label="复制成功！"></i></span>
   </p>
     <p><span>许可协议:</span>转载请保留原文链接及作者。</p>  
@@ -319,7 +311,6 @@
           <div class="post-tags">
               <a href="/tags/Vue/" rel="tag"><i class="fa fa-tag"></i> Vue</a>
               <a href="/tags/FormData/" rel="tag"><i class="fa fa-tag"></i> FormData</a>
-              <a href="/tags/Blob/" rel="tag"><i class="fa fa-tag"></i> Blob</a>
           </div>
 		 
 		<!--post-tags 彩色标签-->
@@ -409,7 +400,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FormData-%E4%B8%8A%E4%BC%A0"><span class="nav-text">FormData 上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA-FormData-%E5%AF%B9%E8%B1%A1%E5%AE%9E%E4%BE%8B"><span class="nav-text">创建一个 FormData 对象实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FormData-%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-text">FormData 常用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue-%E4%B8%8A%E4%BC%A0%E6%95%B0%E6%8D%AE"><span class="nav-text">Vue 上传数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Blob-%E4%B8%8B%E8%BD%BD"><span class="nav-text">Blob 下载</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FormData-%E4%B8%8A%E4%BC%A0"><span class="nav-text">FormData 上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA-FormData-%E5%AF%B9%E8%B1%A1%E5%AE%9E%E4%BE%8B"><span class="nav-text">创建一个 FormData 对象实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FormData-%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-text">FormData 常用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue-%E4%B8%8A%E4%BC%A0%E6%95%B0%E6%8D%AE"><span class="nav-text">Vue 上传数据</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -425,7 +416,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -495,12 +486,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">163k</span>
+    <span title="站点总字数">164k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:28</span>
+    <span title="站点阅读时长">2:29</span>
 </div>
 
 <!--

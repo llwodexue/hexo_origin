@@ -20,25 +20,24 @@
     var CONFIG = {"hostname":"llmysnow.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="介绍jsencrypt、md5、sha等加密算法在Vue中如何使用">
+  <meta name="description" content="大概有两种方法（通常对应的是需要不需要携带 token），原理都是通过 a 标签下载  通过 Ajax 请求，拿到 response ，转换为 blob 格式（主要是为了处理 type），为其生成下载链接，下载即可 拼接 URL，拼出来对应请求链接，直接访问即可">
 <meta property="og:type" content="article">
-<meta property="og:title" content="前端 JS 加密常用方法（RSA MD5 SHA）">
-<meta property="og:url" content="http://llmysnow.top/posts/9f5130f2/index.html">
+<meta property="og:title" content="Vue 处理文件的下载（后端Excel导出）">
+<meta property="og:url" content="http://llmysnow.top/posts/14d3abe4/index.html">
 <meta property="og:site_name" content="奇幻的梦之旅">
-<meta property="og:description" content="介绍jsencrypt、md5、sha等加密算法在Vue中如何使用">
+<meta property="og:description" content="大概有两种方法（通常对应的是需要不需要携带 token），原理都是通过 a 标签下载  通过 Ajax 请求，拿到 response ，转换为 blob 格式（主要是为了处理 type），为其生成下载链接，下载即可 拼接 URL，拼出来对应请求链接，直接访问即可">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/rsa%E5%85%AC%E9%92%A5%E7%A7%81%E9%92%A5.jpg">
-<meta property="article:published_time" content="2021-05-06T08:36:02.084Z">
-<meta property="article:modified_time" content="2021-05-06T08:52:12.631Z">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%AF%BC%E5%87%BAExcel%E6%8E%A5%E5%8F%A3%E6%88%90%E5%8A%9F.jpg">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%90%8E%E7%AB%AF%E8%BF%94%E5%9B%9E%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81.jpg">
+<meta property="article:published_time" content="2021-06-16T02:50:00.003Z">
+<meta property="article:modified_time" content="2021-06-16T08:19:01.423Z">
 <meta property="article:author" content="LiLyn">
 <meta property="article:tag" content="Vue">
-<meta property="article:tag" content="jsencrypt">
-<meta property="article:tag" content="md5">
-<meta property="article:tag" content="sha">
+<meta property="article:tag" content="Blob">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/rsa%E5%85%AC%E9%92%A5%E7%A7%81%E9%92%A5.jpg">
+<meta name="twitter:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%AF%BC%E5%87%BAExcel%E6%8E%A5%E5%8F%A3%E6%88%90%E5%8A%9F.jpg">
 
-<link rel="canonical" href="http://llmysnow.top/posts/9f5130f2/">
+<link rel="canonical" href="http://llmysnow.top/posts/14d3abe4/">
 
 
 <script id="page-configurations">
@@ -51,7 +50,7 @@
   };
 </script>
 
-  <title>前端 JS 加密常用方法（RSA MD5 SHA） | 奇幻的梦之旅</title>
+  <title>Vue 处理文件的下载（后端Excel导出） | 奇幻的梦之旅</title>
   
 
 
@@ -197,7 +196,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/9f5130f2/">
+    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/14d3abe4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/logo.jpg">
@@ -210,7 +209,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          前端 JS 加密常用方法（RSA MD5 SHA）
+          Vue 处理文件的下载（后端Excel导出）
         </h1>
 
         <div class="post-meta">
@@ -220,7 +219,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-05-06 16:36:02" itemprop="dateCreated datePublished" datetime="2021-05-06T16:36:02+08:00">2021-05-06</time>
+              <time title="创建时间：2021-06-16 10:50:00" itemprop="dateCreated datePublished" datetime="2021-06-16T10:50:00+08:00">2021-06-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -238,16 +237,15 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>2.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
-            <div class="post-description">介绍jsencrypt、md5、sha等加密算法在Vue中如何使用</div>
 
         </div>
       </header>
@@ -258,36 +256,52 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="jsencrypt-进行-RSA-加密"><a href="#jsencrypt-进行-RSA-加密" class="headerlink" title="jsencrypt 进行 RSA 加密"></a>jsencrypt 进行 RSA 加密</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i jsencrypt</span><br></pre></td></tr></table></figure>
+        <p>大概有两种方法（通常对应的是需要不需要携带 token），原理都是通过 <code>a</code> 标签下载</p>
+<ol>
+<li>通过 Ajax 请求，拿到 <code>response</code> ，转换为 blob 格式（主要是为了处理 type），为其生成下载链接，下载即可</li>
+<li>拼接 URL，拼出来对应请求链接，直接访问即可</li>
+</ol>
+<a id="more"></a>
 
-<p><a target="_blank" rel="noopener" href="http://web.chacuo.net/netrsakeypair">生成 RSA 密钥对</a></p>
-<p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/rsa%E5%85%AC%E9%92%A5%E7%A7%81%E9%92%A5.jpg"></p>
-<ul>
-<li>将生产的公钥和私钥复制过来</li>
+<h2 id="后端文件流"><a href="#后端文件流" class="headerlink" title="后端文件流"></a>后端文件流</h2><ul>
+<li>首先点击导出 Excel ，这里调用接口成功</li>
 </ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> JSEncrypt <span class="keyword">from</span> <span class="string">&#x27;jsencrypt/bin/jsencrypt&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> publicKey = <span class="string">`非对称加密公钥`</span></span><br><span class="line"><span class="keyword">const</span> privateKey = <span class="string">`非对称加密私钥`</span></span><br><span class="line"><span class="keyword">const</span> txt = <span class="string">&#x27;123&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 加密 */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">encrypt</span>(<span class="params">pass</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> encryptor = <span class="keyword">new</span> JSEncrypt() <span class="comment">// 创建加密对象实例</span></span><br><span class="line">  encryptor.setPublicKey(publicKey) <span class="comment">// 设置公钥</span></span><br><span class="line">  <span class="keyword">return</span> encryptor.encrypt(pass) <span class="comment">// 对内容进行加密</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 解密 */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">decrypt</span>(<span class="params">pass</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> decryptor = <span class="keyword">new</span> JSEncrypt() <span class="comment">// 创建解密对象实例</span></span><br><span class="line">  decryptor.setPrivateKey(privateKey) <span class="comment">// 设置私钥</span></span><br><span class="line">  <span class="keyword">return</span> decryptor.decrypt(pass) <span class="comment">// 拿私钥解密内容</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(decrypt(encrypt(txt))) <span class="comment">// &#x27;123&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="blueimp-md5-进行-MD5-加密"><a href="#blueimp-md5-进行-MD5-加密" class="headerlink" title="blueimp-md5 进行 MD5 加密"></a>blueimp-md5 进行 MD5 加密</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i blueimp-md5</span><br></pre></td></tr></table></figure>
-
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%AF%BC%E5%87%BAExcel%E6%8E%A5%E5%8F%A3%E6%88%90%E5%8A%9F.jpg"></p>
 <ul>
-<li>使用 MD5 加密一般会结合处理字符串的方法</li>
+<li>接下来看一下后台返回的数据是什么样，是文件流格式（<code>OutputStream</code>）</li>
 </ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> md5 <span class="keyword">from</span> <span class="string">&#x27;blueimp-md5&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> txt = <span class="string">&#x27;123&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">passTrans</span>(<span class="params">pass</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> md5(pass).substring(<span class="number">4</span>).split(<span class="string">&#x27;&#x27;</span>).reverse().join(<span class="string">&#x27;&#x27;</span>).substring(<span class="number">4</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(passTrans(txt)) <span class="comment">// 32d25170b469b57095ca269b</span></span><br></pre></td></tr></table></figure>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%90%8E%E7%AB%AF%E8%BF%94%E5%9B%9E%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81.jpg"></p>
+<p>在处理之前，说几个要注意的点</p>
+<ol>
+<li><strong>注意：后端在这里一般会设置如下几个请求头</strong></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置返回类型为excel</span></span><br><span class="line">response.setContentType(<span class="string">&quot;application/vnd.ms-excel; charset=UTF-8&quot;</span>);  </span><br><span class="line">	</span><br><span class="line"><span class="comment">// 设置返回文件名为filename.xls </span></span><br><span class="line">response.setHeader(<span class="string">&quot;Content-Disposition&quot;</span>, <span class="string">&quot;filename.xls&quot;</span>);  </span><br><span class="line">response.setHeader(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;no-cache&quot;</span>);  </span><br></pre></td></tr></table></figure>
 
-<h2 id="sha-进行-SHA-加密"><a href="#sha-进行-SHA-加密" class="headerlink" title="sha 进行 SHA 加密"></a>sha 进行 SHA 加密</h2><p>SHA 家族的五个算法，分别是 SHA-1、SHA-224、SHA-256、SHA-384，和 SHA-512，由美国国家安全局（NSA）所规划，并由美国国家规范与技能研究院（NIST）发布，这里只对 SHA-1 和 SHA-256 进行演示</p>
+<ol start="2">
+<li><strong>注意：前端在 Axios 响应拦截的时候，需要对其进行处理。</strong>一般我们都是把 <code>response.data</code> 进行返回，但是这里我们需要把整个 <code>response</code> 返回（因为文件名在 headers 里面）</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&#x27;axios&#x27;</span></span><br><span class="line"><span class="keyword">const</span> mimeMap = &#123;</span><br><span class="line">  xlsx: <span class="string">&#x27;application/vnd.ms-excel&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> service = axios.create(&#123;</span><br><span class="line">  baseURL: process.env.NODE_ENV === <span class="string">&#x27;development&#x27;</span> ? <span class="string">&#x27;&#x27;</span> : <span class="string">&#x27;http://127.0.0.1:9999&#x27;</span></span><br><span class="line">  withCredentials: <span class="literal">true</span>,</span><br><span class="line">  timeout: <span class="number">5000</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 响应拦截器</span></span><br><span class="line">service.interceptors.response.use(</span><br><span class="line">  response =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> res = response.data</span><br><span class="line">    <span class="keyword">if</span> (res.type === mimeMap.xlsx) &#123;</span><br><span class="line">      <span class="keyword">return</span> response</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125;,</span><br><span class="line">  error =&gt; <span class="built_in">console</span>.log(error)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> service</span><br></pre></td></tr></table></figure>
+
+<p>接下来要处理这个文件流，大概有两种方法（通常对应的是需要不需要携带 token），原理都是通过 <code>a</code> 标签下载</p>
+<ol>
+<li>通过 Ajax 请求，拿到 <code>response</code> ，转换为 blob 格式（主要是为了处理 type），为其生成下载链接，下载即可</li>
+<li>拼接 URL，拼出来对应请求链接，直接访问即可</li>
+</ol>
+<h2 id="通过-Blob-下载"><a href="#通过-Blob-下载" class="headerlink" title="通过 Blob 下载"></a>通过 Blob 下载</h2><p>Blob 通常用于存储大文件，典型的 Blob 内容是一张图片或一个音频</p>
+<ol>
+<li>默认情况下 axios 不会处理二进制数据，即请求可以正常被浏览器接收，但 axios 不会去处理。<strong>需要在请求的时候设置 <code>responseType: &#39;blob&#39;</code> 才可以</strong></li>
+<li>拿到文件流之后，需要生成一个 URL 才可以下载，可以<strong>通过<code>URL.createObjectURL()</code>方法生成一个链接</strong></li>
+<li>a 标签添加文件名<br>正常情况下，通过 <code>window.location = url</code> 就可以下载文件。浏览器判断这个链接是一个资源而不是页面的时候，就会下载文件。但是通过文件流生成的 url 对应的资源是没有文件名的，需要添加文件名。这时候可以用到 download 属性指定下载的文件名</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mimeMap = &#123;</span><br><span class="line">  xlsx: <span class="string">&#x27;application/vnd.ms-excel&#x27;</span>,</span><br><span class="line">  zip: <span class="string">&#x27;application/zip&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> toExcel = <span class="function"><span class="params">params</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> request(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;/dayReportToExcel/toExcel&#x27;</span>,</span><br><span class="line">    responseType: <span class="string">&#x27;blob&#x27;</span>,</span><br><span class="line">    params</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> resolveBlob(res, mimeMap.xlsx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveBlob</span>(<span class="params">res, mimeType</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 创建a标签，并处理二级制数据</span></span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([res.data], &#123; <span class="attr">type</span>: mimeType &#125;)</span><br><span class="line">  <span class="comment">// 生成下载链接</span></span><br><span class="line">  <span class="keyword">const</span> URL = <span class="built_in">window</span>.URL || <span class="built_in">window</span>.webkitURL</span><br><span class="line">  aLink.href = URL.createObjectURL(blob)</span><br><span class="line">  <span class="comment">// 设置下载文件名称</span></span><br><span class="line">  <span class="keyword">const</span> fileName = res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]</span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, fileName)</span><br><span class="line">  <span class="comment">// 下载</span></span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(aLink)</span><br><span class="line">  aLink.click()</span><br><span class="line">  <span class="comment">// 释放URL对象</span></span><br><span class="line">  <span class="built_in">window</span>.URL.revokeObjectURL(aLink.href)</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(aLink)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="拼接-URL-下载"><a href="#拼接-URL-下载" class="headerlink" title="拼接 URL 下载"></a>拼接 URL 下载</h2><p>如果可以直接通过 URL 下载文件，则可以不需要发送 Ajax 请求（前提是没有 token、headers 验证），直接下载</p>
 <ul>
-<li>SHA-1</li>
+<li>可以使用 <code>window.open(url)</code></li>
+<li>可以使用 <code>a</code> 标签进行下载</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install js-sha1</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> qs <span class="keyword">from</span> <span class="string">&#x27;qs&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">downloadExcel</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> url = <span class="built_in">window</span>.location.origin + <span class="string">&#x27;/dayReportToExcel/toExcel?&#x27;</span> + qs.stringify(params)</span><br><span class="line">  <span class="comment">// window.open(url)</span></span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;target&#x27;</span>, <span class="string">&#x27;_blank&#x27;</span>)</span><br><span class="line">  aLink.href = url</span><br><span class="line">  aLink.click()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sha1 <span class="keyword">from</span> <span class="string">&#x27;js-sha1&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> txt = <span class="string">&#x27;123&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">passTrans</span>(<span class="params">pass</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> sha1(pass)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(passTrans(txt)) <span class="comment">// 40bd001563085fc35165329ea1ff5c5ecbdbbeef</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>SHA-256</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install js-sha256</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; sha256 &#125; <span class="keyword">from</span> <span class="string">&#x27;js-sha256&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> txt = <span class="string">&#x27;123&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">passTrans</span>(<span class="params">pass</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> sha256(pass)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(passTrans(txt)) <span class="comment">// a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3</span></span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -307,10 +321,10 @@
     <img src="https://gitee.com/lilyn/pic/raw/master/logo.jpg">
   </article>
   <article class="box-right">
-    <p><span>本文标题:</span><a href="/posts/9f5130f2/">前端 JS 加密常用方法（RSA MD5 SHA）</a></p>
+    <p><span>本文标题:</span><a href="/posts/14d3abe4/">Vue 处理文件的下载（后端Excel导出）</a></p>
     <p><span>文章作者:</span><a href="/" title="访问 LiLyn 的个人博客">LiLyn</a></p>
-    <p><span>原始链接:</span><a href="/posts/9f5130f2/" title="前端 JS 加密常用方法（RSA MD5 SHA）">http://llmysnow.top/posts/9f5130f2/</a>
-    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/9f5130f2/"  aria-label="复制成功！"></i></span>
+    <p><span>原始链接:</span><a href="/posts/14d3abe4/" title="Vue 处理文件的下载（后端Excel导出）">http://llmysnow.top/posts/14d3abe4/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/14d3abe4/"  aria-label="复制成功！"></i></span>
   </p>
     <p><span>许可协议:</span>转载请保留原文链接及作者。</p>  
   </article>
@@ -335,9 +349,7 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Vue/" rel="tag"><i class="fa fa-tag"></i> Vue</a>
-              <a href="/tags/jsencrypt/" rel="tag"><i class="fa fa-tag"></i> jsencrypt</a>
-              <a href="/tags/md5/" rel="tag"><i class="fa fa-tag"></i> md5</a>
-              <a href="/tags/sha/" rel="tag"><i class="fa fa-tag"></i> sha</a>
+              <a href="/tags/Blob/" rel="tag"><i class="fa fa-tag"></i> Blob</a>
           </div>
 		 
 		<!--post-tags 彩色标签-->
@@ -362,13 +374,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/posts/4cfe3e8b/" rel="prev" title="Vue 处理文件的上传">
-      <i class="fa fa-chevron-left"></i> Vue 处理文件的上传
+    <a href="/posts/5a7a946b/" rel="prev" title="Python 批量获取文件夹文件名称和数量">
+      <i class="fa fa-chevron-left"></i> Python 批量获取文件夹文件名称和数量
     </a></div>
-      <div class="post-nav-item">
-    <a href="/posts/379f43e/" rel="next" title="Element 日期选择器清除问题（Axios get请求问题）">
-      Element 日期选择器清除问题（Axios get请求问题） <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -427,7 +436,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#jsencrypt-%E8%BF%9B%E8%A1%8C-RSA-%E5%8A%A0%E5%AF%86"><span class="nav-text">jsencrypt 进行 RSA 加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#blueimp-md5-%E8%BF%9B%E8%A1%8C-MD5-%E5%8A%A0%E5%AF%86"><span class="nav-text">blueimp-md5 进行 MD5 加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sha-%E8%BF%9B%E8%A1%8C-SHA-%E5%8A%A0%E5%AF%86"><span class="nav-text">sha 进行 SHA 加密</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF%E6%96%87%E4%BB%B6%E6%B5%81"><span class="nav-text">后端文件流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-Blob-%E4%B8%8B%E8%BD%BD"><span class="nav-text">通过 Blob 下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%BC%E6%8E%A5-URL-%E4%B8%8B%E8%BD%BD"><span class="nav-text">拼接 URL 下载</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
