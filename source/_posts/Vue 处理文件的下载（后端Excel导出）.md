@@ -43,9 +43,6 @@ response.setHeader("Cache-Control", "no-cache");
 
 ```js
 import axios from 'axios'
-const mimeMap = {
-  xlsx: 'application/vnd.ms-excel'
-}
 
 const service = axios.create({
   baseURL: process.env.NODE_ENV === 'development' ? '' : 'http://127.0.0.1:9999'
@@ -56,11 +53,10 @@ const service = axios.create({
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    const res = response.data
-    if (res.type === mimeMap.xlsx) {
+    if (response.config.responseType === 'blob') {
       return response
     }
-    return res
+    return response.data
   },
   error => console.log(error)
 )
@@ -112,6 +108,18 @@ export function resolveBlob(res, mimeType) {
   window.URL.revokeObjectURL(aLink.href)
   document.body.removeChild(aLink)
 }
+```
+
+注意：一般情况下文件名都是需要匹配的，后端传过来的可能是这样的，首选需要 `decodeURI` 解码一下，再用正则把文件名匹配出来（替换设置下载文件名那里即可）
+
+![](https://gitee.com/lilyn/pic/raw/master/company-img/Excel%E6%96%87%E4%BB%B6%E5%90%8D.jpg)
+
+```js
+const pat = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
+const contentDisposition = decodeURI(res.headers['content-disposition'])
+var result = pat.exec(contentDisposition)
+const fileName = result[1]
+aLink.setAttribute('download', fileName)
 ```
 
 ## 拼接 URL 下载
