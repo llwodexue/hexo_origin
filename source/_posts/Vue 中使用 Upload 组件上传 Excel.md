@@ -1,10 +1,20 @@
 ---
-abbrlink: '0'
+title: Vue 中使用 Upload 组件上传 Excel
+tags:
+  - Vue
+  - Element
+  - 封装
+categories: Vue
+author: LiLyn
+copyright: ture
+abbrlink: 5c61fd6a
 ---
 vue 中使用 Element 的 upload 组件上传 Excel，大致可以分两种情况
 
 1. 使用 `action` 上传到服务器
 2. 使用 `axios` 上传到服务器
+
+<!--more-->
 
 **注意：上传文件可能由于前后端格式不统一导致上传失败**
 
