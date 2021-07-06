@@ -30,28 +30,35 @@ vue 中使用 Element 的 upload 组件上传 Excel，大致可以分两种情�
 
 **注意：使用 `action` ，需要后端做跨域处理。比如 Nginx [反向代理](https://juejin.cn/post/6844903782556368910)、CORS 等**
 
-- 代码如下：
+效果如下：
+
+![](https://gitee.com/lilyn/pic/raw/master/js-img/%E4%B8%8A%E4%BC%A0xlsx.gif)
+
+备注：
+
+1. 如果希望使用 ajax 发送请求可以配置 `http-request`
+2. Window 电脑可以选择 `所有文件（*.*）` ，之后可以上传任意文件，最好在上传之前做个 `before-upload` 判断类型处理
+
+代码如下：
 
 ```html
 <template>
   <div>
     <el-upload
       ref="upload"
-      accept=".xlsx .xls"
+      :accept="fileType.join(',')"
       :limit="1"
       :headers="upload.headers"
       :action="upload.url"
       :disabled="upload.isUploading"
+      :before-upload="beforeUpload"
       :on-progress="handleFileProgress"
       :on-success="handleFileSuccess"
       :auto-upload="false"
       drag
     >
       <i class="el-icon-upload" />
-      <div class="el-upload__text">
-        将文件拖到此处，或
-        <em>点击上传</em>
-      </div>
+      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       <div slot="tip" class="el-upload__tip" style="color: red">
         提示：仅允许导入“xls”或“xlsx”格式文件！
       </div>
@@ -66,6 +73,7 @@ export default {
   name: 'Upload',
   data() {
     return {
+      fileType: ['.xlsx', '.xls'],
       upload: {
         // 设置上传的请求头部
         headers: { Authorization: getToken() },
@@ -89,6 +97,14 @@ export default {
     // 提交上传文件
     submitUpload() {
       this.$refs.upload.submit()
+    },
+    // 上传文件之前的钩子
+    beforeUpload(file) {
+      const isXlsx = file.type === 'application/vnd.ms-excel'
+      if (!isXlsx) {
+        this.$message.error('上传文件只能是 xlsx 或 xls 格式')
+      }
+      return isXlsx
     }
   }
 }
@@ -129,6 +145,8 @@ export default {
 - `Loading.service(options)` 以服务的方式调用的 Loading 需要异步关闭
 
   需结合 `this.$nextTick()` 使用
+
+代码如下：
 
 ```html
 <template>

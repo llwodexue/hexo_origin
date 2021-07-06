@@ -12,7 +12,7 @@ abbrlink: 14d3abe4
 大概有两种方法（通常对应的是需要不需要携带 token），原理都是通过 `a` 标签下载
 
 1. 通过 Ajax 请求，拿到 `response` ，转换为 blob 格式（主要是为了处理 type），为其生成下载链接，下载即可
-2. 拼接 URL，拼出来对应请求链接，直接访问即可
+2. 直接拼接 URL，拼出来对应请求链接，直接访问即可（不需要二次 token 认证）
 
 <!--more-->
 
@@ -30,25 +30,42 @@ abbrlink: 14d3abe4
 
 1. **注意：后端在这里一般会设置如下几个请求头**
 
+   后端还可能开启 jwt token 验证，如果开启请移步第 2 点请求拦截设置 headers
+
 ```java
 // 设置返回类型为excel
 response.setContentType("application/vnd.ms-excel; charset=UTF-8");  
-	
 // 设置返回文件名为filename.xls 
-response.setHeader("Content-Disposition", "filename.xls");  
+response.setHeader("Content-Disposition", "filename.xls"); 
+// 请求或响应消息不能走缓存
 response.setHeader("Cache-Control", "no-cache");  
 ```
 
-2. **注意：前端在 Axios 响应拦截的时候，需要对其进行处理。**一般我们都是把 `response.data` 进行返回，但是这里我们需要把整个 `response` 返回（因为文件名在 headers 里面）
+2. **注意：前端在 Axios 请求和响应拦截的时候，需要对其进行处理**
+
+   请求拦截一般我们都是会设置 headers，这里只是简单处理一下，实际会根据不同情况设置 headers
+
+   响应拦截一般我们都是把 `response.data` 进行返回，但是这里我们需要把整个 `response` 返回（因为文件名在 headers 里面）
 
 ```js
 import axios from 'axios'
+import { getToken } from '@/utils/auth'
+import { AUTHOR_KEY } from '@/global'
 
 const service = axios.create({
   baseURL: process.env.NODE_ENV === 'development' ? '' : 'http://127.0.0.1:9999'
   withCredentials: true,
   timeout: 5000
 })
+
+// 请求拦截器
+service.interceptors.request.use(
+  config => {
+    config.headers[AUTHOR_KEY] = getToken()
+    return config
+  },
+  error => console.log(error)
+)
 
 // 响应拦截器
 service.interceptors.response.use(
@@ -126,7 +143,6 @@ aLink.setAttribute('download', fileName)
 
 如果可以直接通过 URL 下载文件，则可以不需要发送 Ajax 请求（前提是没有 token、headers 验证），直接下载
 
-- 可以使用 `window.open(url)`
 - 可以使用 `a` 标签进行下载
 
 ```js
@@ -134,7 +150,6 @@ import qs from 'qs'
 
 export function downloadExcel(params) {
   const url = window.location.origin + '/dayReportToExcel/toExcel?' + qs.stringify(params)
-  // window.open(url)
   const aLink = document.createElement('a')
   aLink.setAttribute('download', '')
   aLink.setAttribute('target', '_blank')
@@ -142,3 +157,15 @@ export function downloadExcel(params) {
   aLink.click()
 }
 ```
+
+- 可以使用 `window.open(url, '_blank')`
+
+```js
+import qs from 'qs'
+
+export function downloadExcel(params) {
+  const url = window.location.origin + '/dayReportToExcel/toExcel?' + qs.stringify(params)
+  window.open(url, '_blank')
+}
+```
+
