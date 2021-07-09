@@ -20,16 +20,17 @@
     var CONFIG = {"hostname":"llmysnow.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="需求： 起始日期和截止日期是两个单独组件 选择起始日期后截止日期不能小于起始日期 选择截止日期后起始日期不能大于截止日期">
+  <meta name="description" content="需求： 选择起始日期后截止日期不能小于起始日期 选择截止日期后起始日期不能大于截止日期">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Element 限制可选日期范围（开始日期结束日期）">
-<meta property="og:url" content="http://llmysnow.top/posts/53e5f3e7/index.html">
+<meta property="og:title" content="Element 可选日期范围限制或检验（开始日期结束日期）">
+<meta property="og:url" content="http://llmysnow.top/posts/94396d70/index.html">
 <meta property="og:site_name" content="奇幻的梦之旅">
-<meta property="og:description" content="需求： 起始日期和截止日期是两个单独组件 选择起始日期后截止日期不能小于起始日期 选择截止日期后起始日期不能大于截止日期">
+<meta property="og:description" content="需求： 选择起始日期后截止日期不能小于起始日期 选择截止日期后起始日期不能大于截止日期">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E8%B5%B7%E5%A7%8B%E6%97%A5%E6%9C%9F%E6%88%AA%E6%AD%A2%E6%97%A5%E6%9C%9F.gif">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/js-img/%E8%A1%A8%E5%8D%95%E9%AA%8C%E8%AF%81_%E8%B5%B7%E5%A7%8B%E6%97%A5%E6%9C%9F%E5%92%8C%E6%88%AA%E6%AD%A2%E6%97%A5%E6%9C%9F.gif">
 <meta property="article:published_time" content="2021-06-10T06:22:57.065Z">
-<meta property="article:modified_time" content="2021-06-10T07:51:59.102Z">
+<meta property="article:modified_time" content="2021-07-08T01:08:03.144Z">
 <meta property="article:author" content="LiLyn">
 <meta property="article:tag" content="Vue">
 <meta property="article:tag" content="Element">
@@ -37,7 +38,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E8%B5%B7%E5%A7%8B%E6%97%A5%E6%9C%9F%E6%88%AA%E6%AD%A2%E6%97%A5%E6%9C%9F.gif">
 
-<link rel="canonical" href="http://llmysnow.top/posts/53e5f3e7/">
+<link rel="canonical" href="http://llmysnow.top/posts/94396d70/">
 
 
 <script id="page-configurations">
@@ -50,7 +51,7 @@
   };
 </script>
 
-  <title>Element 限制可选日期范围（开始日期结束日期） | 奇幻的梦之旅</title>
+  <title>Element 可选日期范围限制或检验（开始日期结束日期） | 奇幻的梦之旅</title>
   
 
 
@@ -196,7 +197,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/53e5f3e7/">
+    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/94396d70/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/logo.jpg">
@@ -209,7 +210,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Element 限制可选日期范围（开始日期结束日期）
+          Element 可选日期范围限制或检验（开始日期结束日期）
         </h1>
 
         <div class="post-meta">
@@ -237,14 +238,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>3.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -256,16 +257,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="需求："><a href="#需求：" class="headerlink" title="需求："></a>需求：</h2><ol>
-<li>起始日期和截止日期是两个单独组件</li>
+        <h2 id="需求："><a href="#需求：" class="headerlink" title="需求："></a>需求：</h2><ol start="2">
 <li>选择起始日期后截止日期不能小于起始日期</li>
 <li>选择截止日期后起始日期不能大于截止日期</li>
 </ol>
 <a id="more"></a>
 
+<p>有两种实现方法：</p>
+<ol>
+<li><p>选择起始日期，起始日期之前的日期就不让你选择</p>
 <p>效果如下：</p>
 <p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E8%B5%B7%E5%A7%8B%E6%97%A5%E6%9C%9F%E6%88%AA%E6%AD%A2%E6%97%A5%E6%9C%9F.gif"></p>
-<h2 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h2><ul>
+</li>
+<li><p>选择起始日期，表单校验截止日期不能小于起始日期</p>
+<p>效果如下：</p>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/js-img/%E8%A1%A8%E5%8D%95%E9%AA%8C%E8%AF%81_%E8%B5%B7%E5%A7%8B%E6%97%A5%E6%9C%9F%E5%92%8C%E6%88%AA%E6%AD%A2%E6%97%A5%E6%9C%9F.gif"></p>
+</li>
+</ol>
+<h2 id="第一种情况：不让选"><a href="#第一种情况：不让选" class="headerlink" title="第一种情况：不让选"></a>第一种情况：不让选</h2><ul>
 <li>首先不能使用 Element 中的 DatePicker 选择日期范围</li>
 <li>给 DatePicker 动态配置 pick-options 中的 disableDate 即可对可选日期进行限制</li>
 </ul>
@@ -276,6 +285,16 @@
 <li>截止日期如果不能超过当前日期需要减一天（<code>24 * 3600 * 1000 = 8.64e7 </code>）</li>
 </ol>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">el-form</span> <span class="attr">ref</span>=<span class="string">&quot;form&quot;</span> <span class="attr">:model</span>=<span class="string">&quot;form&quot;</span> <span class="attr">label-width</span>=<span class="string">&quot;100px&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">el-form-item</span> <span class="attr">label</span>=<span class="string">&quot;起始日期&quot;</span> <span class="attr">prop</span>=<span class="string">&quot;startDate&quot;</span>&gt;</span></span><br><span class="line">      &lt;el-date-picker</span><br><span class="line">        v-model=&quot;form.startDate&quot;</span><br><span class="line">        value-format=&quot;yyyy-MM-dd&quot;</span><br><span class="line">        clearable</span><br><span class="line">        type=&quot;date&quot;</span><br><span class="line">        placeholder=&quot;请选择起始日期&quot;</span><br><span class="line">        :picker-options=&quot;dateTimeStartFunc&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">el-form-item</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">el-form-item</span> <span class="attr">label</span>=<span class="string">&quot;截止日期&quot;</span> <span class="attr">prop</span>=<span class="string">&quot;stopDate&quot;</span>&gt;</span></span><br><span class="line">      &lt;el-date-picker</span><br><span class="line">        v-model=&quot;form.stopDate&quot;</span><br><span class="line">        value-format=&quot;yyyy-MM-dd&quot;</span><br><span class="line">        clearable</span><br><span class="line">        type=&quot;date&quot;</span><br><span class="line">        placeholder=&quot;请选择截止日期&quot;</span><br><span class="line">        :picker-options=&quot;dateTimeEndFunc&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">el-form-item</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">el-form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">  <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line">      form: &#123;</span><br><span class="line"><span class="javascript">        startDate: <span class="string">&#x27;&#x27;</span>,</span></span><br><span class="line"><span class="javascript">        stopDate: <span class="string">&#x27;&#x27;</span></span></span><br><span class="line">      &#125;,</span><br><span class="line">      dateTimeStartFunc: &#123;</span><br><span class="line"><span class="javascript">        disabledDate: <span class="function"><span class="params">time</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (<span class="built_in">this</span>.form.stopDate) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> time.getTime() &gt; <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="built_in">this</span>.form.stopDate).getTime()</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      dateTimeEndFunc: &#123;</span><br><span class="line"><span class="javascript">        disabledDate: <span class="function"><span class="params">time</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (<span class="built_in">this</span>.form.startDate) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> time.getTime() &lt; <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="built_in">this</span>.form.startDate).getTime() - <span class="number">8.64e7</span></span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="第二种情况：表单校验"><a href="#第二种情况：表单校验" class="headerlink" title="第二种情况：表单校验"></a>第二种情况：表单校验</h2><ul>
+<li>使用 DatePicker 的 validateField 来对部分表单字段进行校验，如下需动态校验 startDate 和 stopDate</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ol>
+<li>这里需要结合 watch 来使用，不然会出现<code>截止日期必须大于起始日期</code> 不会随着只改变起始日期的情况下消失</li>
+<li>这里可以把表单校验方法抽出去，以后后续修改</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;el-form ref=<span class="string">&quot;form&quot;</span> :model=<span class="string">&quot;form&quot;</span> label-width=<span class="string">&quot;100px&quot;</span> :rules=<span class="string">&quot;rules&quot;</span>&gt;</span><br><span class="line">    &lt;el-form-item label=<span class="string">&quot;起始日期&quot;</span> prop=<span class="string">&quot;startDate&quot;</span>&gt;</span><br><span class="line">      &lt;el-date-picker</span><br><span class="line">        v-model=<span class="string">&quot;form.startDate&quot;</span></span><br><span class="line">        value-format=<span class="string">&quot;yyyy-MM-dd&quot;</span></span><br><span class="line">        clearable</span><br><span class="line">        type=<span class="string">&quot;date&quot;</span></span><br><span class="line">        placeholder=<span class="string">&quot;请选择起始日期&quot;</span></span><br><span class="line">      /&gt;</span><br><span class="line">    &lt;/el-form-item&gt;</span><br><span class="line">    &lt;el-form-item label=<span class="string">&quot;截止日期&quot;</span> prop=<span class="string">&quot;stopDate&quot;</span>&gt;</span><br><span class="line">      &lt;el-date-picker</span><br><span class="line">        v-model=<span class="string">&quot;form.stopDate&quot;</span></span><br><span class="line">        value-format=<span class="string">&quot;yyyy-MM-dd&quot;</span></span><br><span class="line">        clearable</span><br><span class="line">        type=<span class="string">&quot;date&quot;</span></span><br><span class="line">        placeholder=<span class="string">&quot;请选择截止日期&quot;</span></span><br><span class="line">      /&gt;</span><br><span class="line">    &lt;/el-form-item&gt;</span><br><span class="line">  &lt;/el-form&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> checkEndTime = <span class="function">(<span class="params">rule, value, callback</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.ValidatorEndTime(rule, value, callback, <span class="built_in">this</span>.form.startDate)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      form: &#123;</span><br><span class="line">        startDate: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        stopDate: <span class="string">&#x27;&#x27;</span></span><br><span class="line">      &#125;,</span><br><span class="line">      rules: &#123;</span><br><span class="line">        startDate: [&#123; <span class="attr">required</span>: <span class="literal">true</span>, <span class="attr">message</span>: <span class="string">&#x27;请选择起始日期&#x27;</span>, <span class="attr">trigger</span>: <span class="string">&#x27;change&#x27;</span> &#125;],</span><br><span class="line">        stopDate: [&#123; <span class="attr">required</span>: <span class="literal">true</span>, <span class="attr">validator</span>: checkEndTime, <span class="attr">trigger</span>: <span class="string">&#x27;change&#x27;</span> &#125;]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    <span class="string">&#x27;form.startDate&#x27;</span>() &#123;</span><br><span class="line">      <span class="built_in">this</span>.validateReset([<span class="string">&#x27;startDate&#x27;</span>, <span class="string">&#x27;stopDate&#x27;</span>])</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&#x27;form.stopDate&#x27;</span>() &#123;</span><br><span class="line">      <span class="built_in">this</span>.validateReset([<span class="string">&#x27;startDate&#x27;</span>, <span class="string">&#x27;stopDate&#x27;</span>])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    <span class="function"><span class="title">validateReset</span>(<span class="params">arr</span>)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.$refs[<span class="string">&#x27;form&#x27;</span>].validateField(arr)</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="title">ValidatorEndTime</span>(<span class="params">rule, value, callback, start</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (!value) &#123;</span><br><span class="line">        callback(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;请选择截止日期&#x27;</span>))</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!start) &#123;</span><br><span class="line">          callback(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;请选择起始日期！&#x27;</span>))</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Date</span>.parse(start) &gt; <span class="built_in">Date</span>.parse(value)) &#123;</span><br><span class="line">          callback(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;截止日期必须大于起始日期！&#x27;</span>))</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          callback()</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -297,10 +316,10 @@
     <img src="https://gitee.com/lilyn/pic/raw/master/logo.jpg">
   </article>
   <article class="box-right">
-    <p><span>本文标题:</span><a href="/posts/53e5f3e7/">Element 限制可选日期范围（开始日期结束日期）</a></p>
+    <p><span>本文标题:</span><a href="/posts/94396d70/">Element 可选日期范围限制或检验（开始日期结束日期）</a></p>
     <p><span>文章作者:</span><a href="/" title="访问 LiLyn 的个人博客">LiLyn</a></p>
-    <p><span>原始链接:</span><a href="/posts/53e5f3e7/" title="Element 限制可选日期范围（开始日期结束日期）">http://llmysnow.top/posts/53e5f3e7/</a>
-    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/53e5f3e7/"  aria-label="复制成功！"></i></span>
+    <p><span>原始链接:</span><a href="/posts/94396d70/" title="Element 可选日期范围限制或检验（开始日期结束日期）">http://llmysnow.top/posts/94396d70/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/94396d70/"  aria-label="复制成功！"></i></span>
   </p>
     <p><span>许可协议:</span>转载请保留原文链接及作者。</p>  
   </article>
@@ -416,7 +435,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%EF%BC%9A"><span class="nav-text">需求：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-text">代码：</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%EF%BC%9A"><span class="nav-text">需求：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%8D%E8%AE%A9%E9%80%89"><span class="nav-text">第一种情况：不让选</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9A%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C"><span class="nav-text">第二种情况：表单校验</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -502,12 +521,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">178k</span>
+    <span title="站点总字数">180k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:42</span>
+    <span title="站点阅读时长">2:44</span>
 </div>
 
 <!--
