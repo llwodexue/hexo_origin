@@ -14,7 +14,7 @@ copyright: ture
 abbrlink: 6362a5
 ---
 
-### JS基本数据类型
+## JS基本数据类型
 
 - 基础数据类型按值进行访问的，可以操作保存在变量中的实际值
 - 引用数据类型，不允许直接访问值，不能直接操作对象的内存空间，在操作对象时，实际操作的是引用
@@ -23,7 +23,7 @@ abbrlink: 6362a5
 
 <br>
 
-### 存储方式
+## 存储方式
 
 再看一下存储方式，结合深浅拷贝的定义就会理解一些了
 
@@ -34,9 +34,9 @@ abbrlink: 6362a5
 
 <br>
 
-### 深拷贝 和 浅拷贝
+## 深拷贝和浅拷贝
 
-**浅拷贝方式**
+### 浅拷贝
 
 1. 直接进行赋值
 
@@ -49,11 +49,9 @@ abbrlink: 6362a5
 
 2. 如果拷贝的是普通对象
 
-   - `Object.assign(target, source)`
+   `Object.assign(target, source)`
 
    ES6 新增的对象方法，它可以实现第一层的“深拷贝”，但无法实现多层深拷贝
-
-   对于 a 对象所有的属性和方法都进行了深拷贝，但是 a 对象的属性 data 是对象，它拷贝的是地址，也就是浅拷贝
 
    ```js
    var a = { name: "lion", age: 6 }
@@ -73,89 +71,97 @@ abbrlink: 6362a5
    var [...c] = a;
    var d = a.slice();
    ```
+   
+4. 没有递归的 for 循环
 
-<br>
+   ```js
+   let obj = {
+     name: 'bird',
+     age: 12,
+     arr: [10, 20, 30]
+   }
+   
+   let obj2 = {}
+   for (let key in obj) {
+     if (!obj.hasOwnProperty(key)) break
+     obj2[key] = obj[key]
+   }
+   ```
 
-**拷贝对象**
+### 深拷贝
 
-```js
-var a = {
-    name: "bird",
-    data: {num:10}
-};
-var b = a;
-b.name = "lion";
-console.log(a.name); // lion
+1. `JSON.parse() 和 JSON.stringify`
 
-var c = {};
-Object.assign(c, a);
-c.name = "cat";
-console.log(a.name); // lion，发现 a中的name并没有改变
-c.data.num = 5;
-console.log(c.data.num); // 5，说明 data 对象没有被深拷贝
-```
+   只能转换 JSON 支持的数据类型，可以参考 [JSON 数据类型](https://www.json.org/json-en.html)
 
-**拷贝数组**
+   - `bigint` 不能直接转换为字符串
+   - 对于 `symbol/undefined/function` 转换为字符串的时候就丢失了
+   - 正则对象、Error 错误对象会变为空对象，Date日期对象会变为字符串
+   - 无法处理 "套娃" 操作
 
-```js
-// concat 不修改原数组，会浅拷贝原数组
-var a = [1,2,{name:"bird"}];
-var b = a.concat();
-b[2].name = "cat";
-console.log(a[2].name); // cat
+   ```js
+   let obj = {
+     // num: 10n, // Uncaught TypeError: Do not know how to serialize a BigInt
+     sy: Symbol('AA'),
+     un: undefined,
+     fn: function() {},
+     reg: /\d+/,
+     err: new Error('error'),
+     time: new Date(),
+   }
+   // obj.obj = obj // Uncaught TypeError: Converting circular structure to JSON
+   
+   let obj2 = JSON.parse(JSON.stringify(obj))
+   console.log(obj2)
+   // { err: {}, reg: {}, time: "2020-07-10T01:43:11.344Z" }
+   ```
 
-// ES6扩展运算符
-var [...c] = a;
+   只能处理数字、字符串、布尔、null、object（普通对象/数组对象）...
 
-// slice 不修改原数组，会浅拷贝原数组
-var d = a.slice();
-```
+2. 递归赋值
 
-<br>
+   Lodash/underscore 类库有 clone/deepClone
 
-**深拷贝方式**
+   如下方法写是不行的，比如正则、错误对象、日期对象会变为普通对象
 
-1. 递归赋值
-2. `JSON.parse() 和 JSON.stringify`
+   ```js
+   let obj = {
+     name: 'bird',
+     age: 12,
+     arr: [10, 20, 30],
+     child: {
+       chinese: 90,
+       math: 100,
+       english: 80,
+     },
+     num: 10n,
+     sy: Symbol('AA'),
+     un: undefined,
+     ul: null,
+     fn: function() {},
+     reg: /\d+/,
+     err: new Error('error'),
+     time: new Date(),
+   }
+   
+   function deepClone(obj) {
+     let objClone = Array.isArray(obj) ? [] : {}
+     if (obj && typeof obj === 'object') {
+       for (let key in obj) {
+         if (!obj.hasOwnProperty(key)) return
+         if (obj[key] && typeof obj[key] === 'object') {
+           objClone[key] = this.deepClone(obj[key])
+         } else {
+           objClone[key] = obj[key]
+         }
+       }
+     }
+     return objClone
+   }
+   
+   let obj2 = deepClone(obj)
+   console.log(obj2)
+   ```
 
-<br>
-
-**实例**
-
-```js
-var a = {
-    name: "bird",
-    data: {num:10},
-    say: ()=>console.log("say")
-};
-var b = {};
-
-// 递归赋值
-function deepClone(obj) {
-    let objClone = Array.isArray(obj) ? [] : {};
-    if (obj && typeof obj === "object") {
-        for (let key in obj) {
-            // 判断是不是自有属性，而不是继承属性
-            if (obj.hasOwnProperty(key)) {
-                // 判断 obj 子元素是否为对象或数组，如果是，递归复制
-                if (obj[key] && typeof obj[key] === "object") {
-                    objClone[key] = this.deepClone(obj[key]);
-                } else {
-                    // 如果不是，简单复制
-                    objClone[key] = obj[key];
-                }
-            }
-        }
-    }
-    return objClone;
-}
-var c = deepClone(a);
-c.name = 'cat';
-console.log(a.name); // bird
-
-// JSON.parse 和 JSON.stringify()
-var d = JSON.parse(JSON.stringify(a));
-d.name = "lion";
-console.log(a.name); // bird
-```
+   
 
