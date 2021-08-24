@@ -45,7 +45,6 @@ npm install vue-i18n@8
 ```js
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import Cookies from 'js-cookie'
 
 Vue.use(VueI18n)
 
@@ -57,14 +56,17 @@ const lang = {
   zhTW: zhTWLocale,
   en: enLocale
 }
+// 默认语言
+const loadLanguage = 'zh'
 
 langFiles.keys().forEach(key => {
   messages[k] = langFiles(key).default
 })
 
 function getLanguage() {
-  let locale = Cookies.get('lang') || 'zh'
-  if (!(locale in messages)) locale = 'zh'
+  // 第一次进入页面或手动清除设置默认语言
+  localStorage.getItem('lang') ? null : localStorage.setItem('lang', loadLanguage)
+  if (!(locale in messages)) locale = loadLanguage
   return locale
 }
 
@@ -142,15 +144,15 @@ export default {
           age: '14'
         }
       ],
-      language: sessionStorage.getItem('lang') || 'zh'
+      language: localStorage.getItem('lang')
     }
   },
   methods: {
     handleSetLanguage(lang) {
       this.$i18n.locale = lang
       this.language = lang
-      sessionStorage.setItem('lang', lang)
-      location.reload();
+      localStorage.setItem('lang', lang)
+      // location.reload();
     }
   }
 }
@@ -224,7 +226,6 @@ new Vue({
 ```js
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import Cookies from 'js-cookie'
 import enLocale from 'element-ui/lib/locale/lang/en'
 import zhCNLocale from 'element-ui/lib/locale/lang/zh-CN'
 import zhTWLocale from 'element-ui/lib/locale/lang/zh-TW'
@@ -239,15 +240,20 @@ const lang = {
   zhTW: zhTWLocale,
   en: enLocale
 }
+// 默认语言
+const loadLanguage = 'zh'
 
 langFiles.keys().forEach(key => {
   const k = regExp.exec(key)[1]
+  // 合并Element国际化配置
   messages[k] = Object.assign(langFiles(key).default, lang[k])
 })
 
 function getLanguage() {
-  let locale = Cookies.get('lang') || 'zh'
-  if (!(locale in messages)) locale = 'zh'
+  // 第一次进入页面或手动清除设置默认语言
+  localStorage.getItem('lang') ? null : localStorage.setItem('lang', loadLanguage)
+  let locale = localStorage.getItem('lang')
+  if (!(locale in messages)) locale = loadLanguage
   return locale
 }
 
@@ -345,7 +351,48 @@ export default {
 
 ```
 
-这样面包屑导航和路由导航的国际化也做完了
+## 3.导航守卫国际化
+
+因为导航守卫中拿不到 `this`，所以我采用了一种取巧的方式。首先在 router 文件中引入 lang 下的 i18n，之后直接取 i18n 下的 `messages` 和 `locale` 即可拿到对应语言文件
+
+```js
+import router from './router/index'
+import i18n from '@jp/lang' // lang i18n
+import { Message } from 'element-ui'
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css' // progress bar style
+import { getToken, removeToken, removeTokenExpired } from '@/utils/auth' // get token from cookie
+import { isDebugger } from '@/settings'
+
+const whiteList = ['/login', '/'] // no redirect whitelist
+
+router.beforeEach((to, from, next) => {
+  NProgress.start()
+  document.title = getPageTitle(to.meta.title)
+  const hasToken = getToken()
+  if (isDebugger || (hasToken && to.path !== '/login')) {
+    next()
+  } else {
+    if (whiteList.indexOf(to.path) !== -1) {
+      next()
+    } else {
+      const locale = i18n.locale
+      const msg = i18n.messages[locale]
+      Message.error(msg.info.tokenExpire)
+      removeToken()
+      removeTokenExpired()
+      next({ path: '/login' })
+      NProgress.done()
+    }
+  }
+})
+
+router.afterEach(() => {
+  NProgress.done()
+})
+```
+
+这时路由、面包屑导航及导航守卫国际化基本做完事了
 
 # 组件篇
 
@@ -401,7 +448,7 @@ for (const item in viewsC) {
 
    所以这个不是一个好方法，推荐使用计算属性
 
-出于复用性将方法抽到 utils 方法库中，直接写是不行的（Element 内部对其 this 进行了处理），需要结合 `bind/call/apply` 来使用
+**一般出于复用性将方法抽到 utils 方法库中，直接写是不行的**（Element 内部对其 this 进行了处理），需要结合 `bind/call/apply` 来使用
 
 `pattern: '[^ \x22]+'` 是校验不能全部为空格
 
@@ -710,7 +757,7 @@ this.$msgbox({
 
 ### 组件里接收使用
 
-使用 split 最好结合循环使用，这样不管多少层没事（不过这个方法还是不太好，后续想想怎么优化）
+说白了就是模仿 `$t` 的功能。不过使用 split 最好结合循环使用，这样不管多少层没事（这个方法还有点是不太好，后续想想怎么优化）
 
 ```html
 <template>
@@ -808,4 +855,6 @@ module.exports = {
 [vue中如何使用i18n实现国际化](https://segmentfault.com/a/1190000016445415)
 
 [Element国际化](https://element.eleme.cn/#/zh-CN/component/i18n)
+
+[elementUI——locale，国际化方案](https://www.jianshu.com/p/c49296f13a17)
 
