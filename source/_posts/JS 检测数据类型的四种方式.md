@@ -26,7 +26,7 @@ JavaScript 有八种数据类型：
 
 ### typeof
 
-> 底层原理：typeof 是按照"值"在计算机存储的"二进制"值来检测的，凡是以000开始的都认为是对象
+> 底层原理：typeof 是按照"值"在计算机存储的"二进制"值来检测的，凡是以 000 开始的都认为是对象
 
 返回结果是一个字符串（全小写字母），可返回的类型有：
 
@@ -39,7 +39,7 @@ JavaScript 有八种数据类型：
 - "symbol"
 - "bigint"
 
-**注意：**`typeof null` 返回的是 "object"，`typeof 变量（不存在）` 返回的是 "undefined"
+**注意：** `typeof null` 返回的是 "object"，`typeof 变量（不存在）` 返回的是 "undefined"
 
 ```js
 typeof null;  // "object"
@@ -58,20 +58,21 @@ JS 最初为了性能考虑使用低位存储变量信息，000 开头代表对�
 
 ### instanceof
 
-> 底层原理：首先查找 `Symbol.hasInstance`，如果存在，基于这个检测。如果没有，则基于原型链`__proto__`查找，只要出现这个类的原型，结果就是true
+> 底层原理：首先查找 `Symbol.hasInstance`，如果存在，基于这个检测。如果没有，则基于原型链`__proto__`查找，只要出现这个类的原型，结果就是 true
 
 ![dir(Function.prototype)](https://gitee.com/lilyn/pic/raw/master/js-img/dir(Function.prototype).jpg)
 
+基于ES6 class 方式设置静态私有属性构建 `Symbol.hasInstance` 才会生效
+
 ```js
 class Fn {
-    // 基于ES6 class方式构建Symbol.hasInstance才会生效
-    static[Symbol.hasInstance]() {
-        console.log("OK");
-        return false;
-    }
+  static [Symbol.hasInstance]() {
+    console.log('OK')
+    return false
+  }
 }
-let f = new Fn;
-console.log(f instanceof Fn); // OK false
+let f = new Fn()
+console.log(f instanceof Fn) // OK false
 ```
 
 **注意：**
@@ -80,43 +81,47 @@ console.log(f instanceof Fn); // OK false
 - 原型链可以重构，导致结果可能不准确
 
 ```js
-var arr = [1, 2, 3];
-arr instanceof Array;   // true
-arr instanceof Object;  // true
+[] instanceof Array      // true
+[] instanceof RegExp     // false
+[] instanceof Object     // true
 
-null instanceof Object;  // false
+null instanceof Object   // false
+"" instanceof String     // false
+true instanceof Boolean  // false
+
 123 instanceof Number;   // false
-"" instanceof String;    // false
-true instanceof Boolean; // false
+(1).toFixed(2)           // '1.00' 浏览器有一个把1转换为对象格式1的操作 Object(1) 装箱
 ```
 
 #### 封装 instanceOf
 
 ```js
-function instance_of(target, ctor) {
-    let tType = typeof target,
-        cType = typeof ctor;
-    // 保证ctor是一个构造函数
-    if (cType !== "function" || !ctor.prototype) throw new TypeError("ctor is not a constructor!");
-    // 不处理原始值，排除null undefined 字面量
-    if (target == null) return false;
-    if (!/^(object|function)$/i.test(tType)) return false;
-    // 优先检测 Symbol.hasInstance
-    if (typeof ctor[Symbol.hasInstance] === "function") {
-        return ctor[Symbol.hasInstance](target);
-    }
-    // 没有这个属性，再按照 ctor.prototype 是否出现在 example 的原型链上检测
-    let prototype = Object.getPrototypeOf(target);
-    while (prototype) {
-        if (prototype == ctor.prototype) return true;
-        prototype = Object.getPrototypeOf(prototype);
-    }
-    return false;
+function instance_of(obj, Ctor) {
+  // 数据格式准确性校验
+  if (Ctor === null) throw new TypeError("Right-hand side of 'instanceof' is not callable")
+  if (!Ctor.prototype) throw new TypeError("Function has non-object prototype 'undefined' in instanceof check")
+  if (typeof Ctor !== 'function') throw new TypeError("Right-hand side of 'instanceof' is not callable")
+
+  // 原始值类型直接忽略
+  if (obj === null) return false
+  if (!/^(object|function)$/.test(typeof obj)) return false
+
+  // 先检测是否有Symbol.hasInstance这个属性
+  if (typeof Ctor[Symbol.hasInstance] === 'function') return Ctor[Symbol.hasInstance](obj)
+
+  // 最后才会按照原型链进行处理
+  let prototype = Object.getPrototypeOf(obj)
+  while (prototype) {
+    if (prototype === Ctor.prototype) return true
+    prototype = Object.getPrototypeOf(prototype)
+  }
+  return false
 }
 
-console.log(instance_of([], Array));  // true
-console.log(instance_of([], RegExp)); // false
-console.log(instance_of([], Object)); // true
+console.log(instance_of([12, 23], Array)) // true
+// console.log(instance_of(null, null))
+// console.log(instance_of(null, () => {}))
+// console.log(instance_of(null, {}))
 ```
 
 
@@ -129,6 +134,7 @@ constructor 可以得知某个实例对象，到底是哪一个构造函数产�
 
 ```js
 true.constructor === Boolean; // true
+
 var a = {};
 a.constructor; // Object()
 a.constructor = 3;
@@ -137,26 +143,31 @@ a.constructor; // 3
 
 ### Object.prototype.toString.call()
 
-> 底层原理：除了null/undefined，大部分数据类型所属类的原型上，都有toString方法；但是除了 Object.prototype.toString 用来检测数据类型，其余的都是转换为字符串的
+> 底层原理：除了 null/undefined，大部分数据类型所属类的原型上，都有toString方法；但是除了 `Object.prototype.toString` 用来检测数据类型，其余的都是转换为字符串的
 >
 > - 返回值："[object ?]"
 >   - 先查找 [val] 的 `Symbol.toStringTag` （先找私有的，私有没有则向所属类原型上找），属性值就是"?"的值
 >   - 没有，则内部是返回当前实例所属构造函数的名字 `“[object Number/String/Null/Undefined/Object/Array/Function/GeneratorFunction...]”`
 
 ```js
-class Fn {}
-Fn.prototype[Symbol.toStringTag] = 'Fn';
-let f = new Fn;
-console.log(Object.prototype.toString.call(f)); // [object Fn]
+let class2type = {},
+  toString = class2type.toString
+
+function Fn() {
+  this.x = 100
+}
+
+Fn.prototype = {
+  constructor: Fn,
+  getX() {},
+  [Symbol.toStringTag]: 'Fn',
+}
+
+let f = new Fn()
+console.log(toString.call(f)) // "[object Fn]" 默认是"[object Object]"
 ```
 
 
-
-对于 Object，直接调用 toString 就可以返回 `"[object Object]"`。而对于其他对象，则需要通过 call/apply 来调用才能正确返回类型信息
-
-```js
-Object.prototype.toString.call(null); // "[object Null]"
-```
 
 我们可以封装一个 isType 方法对类型进行判断
 
@@ -198,4 +209,3 @@ window.toString === Object.prototype.toString; // 浏览器：true
 global.toString === Object.prototype.toString; // node：true
 ```
 
-不过不推荐这么写，毕竟查找原型链还得花上一阵子时间

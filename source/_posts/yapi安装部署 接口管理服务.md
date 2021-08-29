@@ -23,11 +23,11 @@ abbrlink: bb3fd12a
 - nodejs（7.6+)
 - mongodb（2.6+）
 
-**安装Node注意：**最好安装14版本之前的，推荐12版本的，不然可能Node版本过高，导致无法成功部署
+**安装Node注意：** 最好安装14版本之前的，推荐12版本的，不然可能Node版本过高，导致无法成功部署
 
 下载链接：[Node v12.12.0/ (nodejs.org)](https://nodejs.org/download/release/v12.12.0/)
 
-**安装MongoDB注意：**选择 Custom：自定义安装路径。安装MongDB需要取消这个勾选，不然会死等...（剩下一路next）
+**安装MongoDB注意：** 选择 Custom：自定义安装路径。安装MongDB需要取消这个勾选，不然会死等...（剩下一路next）
 
 ![install mongodb](https://gitee.com/lilyn/pic/raw/master/js-img/install%20mongodb.png)
 

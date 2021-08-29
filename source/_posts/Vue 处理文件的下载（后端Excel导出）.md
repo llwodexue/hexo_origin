@@ -2,7 +2,8 @@
 title: Vue 处理文件的下载（后端Excel导出）
 tags:
   - Vue
-  - Blob
+  - Excel
+  - 跨域处理
 categories: Vue
 author: LiLyn
 copyright: ture
@@ -26,11 +27,15 @@ abbrlink: 14d3abe4
 
 ![](https://gitee.com/lilyn/pic/raw/master/company-img/%E5%90%8E%E7%AB%AF%E8%BF%94%E5%9B%9E%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81.jpg)
 
-在处理之前，说几个要注意的点
+在处理之前，说几个要注意的点！！！
 
 1. **注意：后端在这里一般会设置如下几个请求头**
 
    后端还可能开启 jwt token 验证，如果开启请移步第 2 点请求拦截设置 headers
+   
+   **注意： 由于跨域浏览器处于安全考虑不让自定义响应头通过 JS 获取** （详见： [JS 无法获取响应 header 的 Content-Disposition 字段](https://blog.csdn.net/PGguoqi/article/details/106824957) ），也就是说 `Content-Disposition` 前端在 Network 里是能看到的，但是无法通过 JS 获取到，这里后端需要将其暴露出去
+   
+   跨域情况默认只暴露：`Cache-Control`、`Content-Language`、`Content-Type`、`Expires`、`Last-Modified`、`Pragma` 六个属性
 
 ```java
 // 设置返回类型为excel
@@ -38,7 +43,9 @@ response.setContentType("application/vnd.ms-excel; charset=UTF-8");
 // 设置返回文件名为filename.xls 
 response.setHeader("Content-Disposition", "filename.xls"); 
 // 请求或响应消息不能走缓存
-response.setHeader("Cache-Control", "no-cache");  
+response.setHeader("Cache-Control", "no-cache");
+// 将Content-Disposition暴露出去，这样就可以用过JS获取到了
+response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 ```
 
 2. **注意：前端在 Axios 请求和响应拦截的时候，需要对其进行处理**
@@ -95,6 +102,8 @@ Blob 通常用于存储大文件，典型的 Blob 内容是一张图片或一个
 3. a 标签添加文件名
    正常情况下，通过 `window.location = url` 就可以下载文件。浏览器判断这个链接是一个资源而不是页面的时候，就会下载文件。但是通过文件流生成的 url 对应的资源是没有文件名的，需要添加文件名。这时候可以用到 download 属性指定下载的文件名
 
+由于有浏览器问题可能会出现 `content-disposition` 匹配不到，最好做一下判断看 `content-disposition` 和 `Content-Disposition` 哪个能取到
+
 ```js
 const mimeMap = {
   xlsx: 'application/vnd.ms-excel',
@@ -116,7 +125,9 @@ export function resolveBlob(res, mimeType) {
   const URL = window.URL || window.webkitURL
   aLink.href = URL.createObjectURL(blob)
   // 设置下载文件名称
-  const fileName = res.headers['content-disposition']
+  let fileName = ''
+  if (res.headers['content-disposition']) fileName = res.headers['content-disposition']
+  if (res.headers['Content-Disposition']) fileName = res.headers['Content-Disposition']
   aLink.setAttribute('download', fileName)
   // 下载
   document.body.appendChild(aLink)
@@ -132,11 +143,26 @@ export function resolveBlob(res, mimeType) {
 ![](https://gitee.com/lilyn/pic/raw/master/company-img/Excel%E6%96%87%E4%BB%B6%E5%90%8D.jpg)
 
 ```js
-const pat = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
-const contentDisposition = decodeURI(res.headers['content-disposition'])
-var result = pat.exec(contentDisposition)
-const fileName = result[1]
-aLink.setAttribute('download', fileName)
+export function resolveBlob(res, mimeType) {
+  const aLink = document.createElement('a')
+  const blob = new Blob([res.data], { type: mimeType })
+  const pat = new RegExp('filename=([^;]+\\.[^\\.;]+)')
+  let contentDisposition
+  if (res.headers['content-disposition']) contentDisposition = res.headers['content-disposition']
+  if (res.headers['Content-Disposition']) contentDisposition = res.headers['Content-Disposition']
+  const result = pat.exec(decodeURI(contentDisposition))
+  let fileName = result && result[1]
+  const URL = window.URL || window.webkitURL
+  aLink.href = URL.createObjectURL(blob)
+  // 如果Content-Disposition没有暴露，给文件一个默认名字
+  if (fileName == null) fileName = '日报表'
+  aLink.setAttribute('download', fileName)
+  document.body.appendChild(aLink)
+  aLink.click()
+  // 释放URL对象
+  window.URL.revokeObjectURL(aLink.href)
+  document.body.removeChild(aLink)
+}
 ```
 
 ## 拼接 URL 下载

@@ -10,7 +10,7 @@ copyright: ture
 abbrlink: a688a8da
 ---
 
-### 应用场景
+## 应用场景
 
 取消请求偶尔会用到，以下是两个工作中可能用到的场景
 
@@ -20,7 +20,7 @@ abbrlink: a688a8da
 
 <!--more-->
 
-### 取消单个请求（结合生命周期使用）
+## 取消单个请求（结合生命周期使用）
 
 - 页面销毁时取消请求
 - 重复发送请求取消上一次请求
@@ -61,7 +61,7 @@ export default {
 }
 ```
 
-### 取消所有请求（结合导航守卫）
+## 取消所有请求（结合导航守卫）
 
 思路：在请求拦截器中，给所有请求加一个 token，设置全局变量 source 控制 cancel token，在路由变化时调用 cancel 方法
 
@@ -84,7 +84,7 @@ router.beforeEach((to, from, next) => {
 })
 ```
 
-### axios 取消请求原理
+## axios 取消请求原理
 
 axios 是对 XMLHttpRequest 的封装，使用 XMLHttpRequest 实例的 abort()方法
 

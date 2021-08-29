@@ -33,7 +33,7 @@ vue 中使用 Element 的 upload 组件上传 Excel，大致可以分两种情�
 - accept：可选择的文件类型，例如：`image/*`
 - multiple：允许用户选择多个文件
 
-监听 input file 的 onchange 事件，打印 `this.files` 是**选取的文件集合**，每一项就是选择的文件。每一项 files 包含如下属性：
+监听 input file 的 onchange 事件，打印 `this.files` 是 **选取的文件集合**，每一项就是选择的文件。每一项 files 包含如下属性：
 
 - lastModified
 - lastModifiedDate

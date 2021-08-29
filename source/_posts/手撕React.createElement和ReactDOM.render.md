@@ -11,7 +11,7 @@ copyright: ture
 abbrlink: 7e319c36
 ---
 
-### 准备工作
+## 准备工作
 
 ```bash
 npm install create-react-app -g
@@ -71,7 +71,7 @@ ReactDOM.render(
      - 如果是元素节点，则把元素依次变为 createElement 格式，把执行的返回值，作为参数传递进来
 3. ReactDOM.render，把虚拟 DOM 对象转换为真实 DOM 对象
 
-### React 中 createElement 函数
+## React 中 createElement 函数
 
 **React.createElement 返回值**
 
@@ -152,7 +152,7 @@ const each = function each(obj, callback) {
 }
 ```
 
-### ReactDOM 中 render 函数
+## ReactDOM 中 render 函数
 
 ```js
 ReactDOM.render = function render(obj, container, callback) {

@@ -1,9 +1,10 @@
 ---
-title: Vue 大量数据展示 卡顿解决方案（滚动展示）
+title: Vue 大量数据展示卡顿解决方案（长列表优化）
 tags:
   - Vue
-  - 滚动展示
+  - 长列表优化
   - 大数据
+  - 滚动展示
 categories: Vue
 author: LiLyn
 copyright: ture

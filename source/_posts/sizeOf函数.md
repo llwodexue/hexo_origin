@@ -3,6 +3,7 @@ title: JS 实现 sizeOf 函数，计算 object 占用了多少个 bytes
 tags:
   - 字节数
   - JavaScript
+  - 面试题
 categories: JavaScript
 author: LiLyn
 copyright: ture

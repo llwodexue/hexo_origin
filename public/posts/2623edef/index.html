@@ -34,10 +34,11 @@
 <meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/OSI%20TCP.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200430211431423.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4Njg5Mzk1,size_16,color_FFFFFF,t_70#pic_center">
 <meta property="article:published_time" content="2021-05-24T07:48:01.285Z">
-<meta property="article:modified_time" content="2021-05-26T01:29:13.551Z">
+<meta property="article:modified_time" content="2021-08-27T07:50:58.234Z">
 <meta property="article:author" content="LiLyn">
-<meta property="article:tag" content="性能优化">
 <meta property="article:tag" content="HTTP网络层">
+<meta property="article:tag" content="优化">
+<meta property="article:tag" content="HTTP通信">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://gitee.com/lilyn/pic/raw/master/js-img/URL%E8%A7%A3%E6%9E%90.jpg">
 
@@ -297,7 +298,7 @@
 <li>URL：统一资源定位符</li>
 <li>URN：统一资源名称</li>
 </ul>
-<p><strong>传输协议：</strong>用什么样的协议负责客户端和服务端的信息传输</p>
+<p><strong>传输协议：</strong> 用什么样的协议负责客户端和服务端的信息传输</p>
 <ul>
 <li><p>HTTP：超文本传输协议</p>
 <p>除了传输文本还可以传输其余的信息，例如：文件流、二进制或者 Buffer 格式或者 BASE64 格式的数据</p>
@@ -307,7 +308,7 @@
 <li><p>FTP：文件的上传下载</p>
 </li>
 </ul>
-<p><strong>域名：</strong>对服务器外网 IP 的一个重命名</p>
+<p><strong>域名：</strong> 对服务器外网 IP 的一个重命名</p>
 <p><code>www.baidu.com</code></p>
 <ul>
 <li>顶级域名 <code>baidu.com</code></li>
@@ -316,7 +317,7 @@
 <li>三级域名 <code>image.video.baidu.com</code></li>
 </ul>
 <p>域名和服务器购买完后，需要在 DNS 服务器生成一条解析记录，用于以后的 DNS 解析</p>
-<p><strong>端口号：</strong>区分同一台服务器上不同的服务的</p>
+<p><strong>端口号：</strong> 区分同一台服务器上不同的服务的</p>
 <ul>
 <li><p>取值范围：0~65535 之间</p>
 </li>
@@ -326,7 +327,7 @@
 <p>FTP -&gt; 21</p>
 </li>
 </ul>
-<p><strong>请求资源的路径名称：</strong>基于路径找到客户端需要的资源文件</p>
+<p><strong>请求资源的路径名称：</strong> 基于路径找到客户端需要的资源文件</p>
 <p>看到的 URL 地址可能是重写后的【看到的地址在文件目录不存在】</p>
 <ul>
 <li><p>ajax 数据请求 <code>/api/list</code></p>
@@ -359,7 +360,7 @@
 <li>也可以基于自己设定的加密机制规则处理（对称加密）</li>
 <li>对于某些数据，需要采用不可解密的（非对称加密），例如：md5</li>
 </ul>
-<h3 id="缓存检测"><a href="#缓存检测" class="headerlink" title="缓存检测"></a>缓存检测</h3><p><strong>缓存处理是基于 HTTP 网络层进行优化的一个非常重要的手段</strong>【针对资源文件请求】</p>
+<h3 id="缓存检测"><a href="#缓存检测" class="headerlink" title="缓存检测"></a>缓存检测</h3><p><strong>缓存处理是基于 HTTP 网络层进行优化的一个非常重要的手段</strong> 【针对资源文件请求】</p>
 <p>强缓存还是协商缓存都是服务器设置的，客户端浏览器自己会根据返回的一些信息，进行相关处理，无需前端单独设置东西</p>
 <p><strong>缓存位置：</strong></p>
 <ul>
@@ -369,7 +370,7 @@
 <p>打开网页：查找硬盘缓存中是否有匹配，如有则使用，如没有则发送网络请求</p>
 <p>普通刷新（F5）：因 TAB 没关闭，因此内存缓存是可用的，会被优先使用，其次才是硬盘缓存</p>
 <p>强制刷新（Ctrl + F5）：浏览器不使用缓存，因此发送的请求头均带有 <code>Cache-Control: no-cache</code>，服务器直接返回 200 和最新内容</p>
-<p><strong>强缓存：</strong> <code>Expires / Cache-Control</code></p>
+<p><strong>强缓存：</strong>  <code>Expires / Cache-Control</code></p>
 <blockquote>
 <p>Expires：缓存过期时间，用来指定资源到期的事件（HTTP/1.0）</p>
 <p>Cache-Control：<code>cache-control: public, max-age=2592000</code> 第一次拿到资源后的 2592000 秒内（30 天），再次发生请求，读取缓存中的信息（HTTP/1.1）</p>
@@ -483,7 +484,7 @@
 <p>TCP 三次握手通俗理解，C→S：在不在，S→C：我在你在不在，C→S：我在</p>
 <p><strong>三次握手为什么不用两次或四次？</strong></p>
 <ul>
-<li>TCP 作为一种可靠传输控制协议，其核心思想：<strong>既要保证数据可靠传输，又要提高传输的效率</strong></li>
+<li>TCP 作为一种可靠传输控制协议，其核心思想： <strong>既要保证数据可靠传输，又要提高传输的效率</strong></li>
 <li>两次握手只能保证客户端给服务器端的信息收到了，不能保证服务端给客户端的信息收到了（不够稳定）</li>
 <li>四次握手就多余了，因为服务端已经知道客户端收到信息了，再给客户端发信息就没有意义了</li>
 </ul>
@@ -578,18 +579,18 @@
 <li>图片延迟加载</li>
 </ul>
 <h2 id="HTTP1-0-VS-HTTP1-1-VS-HTTP2-0"><a href="#HTTP1-0-VS-HTTP1-1-VS-HTTP2-0" class="headerlink" title="HTTP1.0 VS HTTP1.1 VS HTTP2.0"></a>HTTP1.0 VS HTTP1.1 VS HTTP2.0</h2><h3 id="HTTP1-0-VS-HTTP1-1-区别："><a href="#HTTP1-0-VS-HTTP1-1-区别：" class="headerlink" title="HTTP1.0 VS HTTP1.1 区别："></a>HTTP1.0 VS HTTP1.1 区别：</h3><ul>
-<li><strong>缓存处理：</strong>HTTP1.0 中主要使用 Last-Modified、Expires 来做缓存判断标准，HTTP1.1 则引入了更多的缓存控制策略：ETag、Cache-Control…</li>
-<li><strong>带宽优化及网络连接的使用：</strong>HTTP1.1 支持断点续传，即返回码是 206（Partial Content）</li>
-<li><strong>长连接：</strong>HTTP1.1 中默认开启 <code>Connection: keep-alive</code>，一定程度上弥补了 HTTP1.0 每次请求都要创建连接的缺点</li>
-<li><strong>错误通知的管理：</strong>在 HTTP1.1 中新增了 24 个错误状态响应码，如 409（Conflict）表示请求的资源与资源的当前状态发生冲突；410（Gone）表示服务器上的某个资源被永久性的删除…</li>
-<li><strong>Host 头处理：</strong>在 HTTP1.0 中认为每台服务器都绑定一个唯一的 IP 地址，因此，请求消息中的 URL 并没有传递主机名（hostname）。但随着虚拟主机技术的发展，在一台物理服务器上可以存在多个虚拟主机（Multi-homed Web Servers），并且它们共享一个 IP 地址。HTTP1.1 的请求消息和响应消息都应支持 Host 头域，且请求消息中如果没有 Host 头域会报告一个错误（400 Bad Request）</li>
+<li><strong>缓存处理：</strong> HTTP1.0 中主要使用 Last-Modified、Expires 来做缓存判断标准，HTTP1.1 则引入了更多的缓存控制策略：ETag、Cache-Control…</li>
+<li><strong>带宽优化及网络连接的使用：</strong> HTTP1.1 支持断点续传，即返回码是 206（Partial Content）</li>
+<li><strong>长连接：</strong> HTTP1.1 中默认开启 <code>Connection: keep-alive</code>，一定程度上弥补了 HTTP1.0 每次请求都要创建连接的缺点</li>
+<li><strong>错误通知的管理：</strong> 在 HTTP1.1 中新增了 24 个错误状态响应码，如 409（Conflict）表示请求的资源与资源的当前状态发生冲突；410（Gone）表示服务器上的某个资源被永久性的删除…</li>
+<li><strong>Host 头处理：</strong> 在 HTTP1.0 中认为每台服务器都绑定一个唯一的 IP 地址，因此，请求消息中的 URL 并没有传递主机名（hostname）。但随着虚拟主机技术的发展，在一台物理服务器上可以存在多个虚拟主机（Multi-homed Web Servers），并且它们共享一个 IP 地址。HTTP1.1 的请求消息和响应消息都应支持 Host 头域，且请求消息中如果没有 Host 头域会报告一个错误（400 Bad Request）</li>
 </ul>
 <h3 id="HTTP2-0-VS-HTTP1-x-的新特性："><a href="#HTTP2-0-VS-HTTP1-x-的新特性：" class="headerlink" title="HTTP2.0 VS HTTP1.x 的新特性："></a>HTTP2.0 VS HTTP1.x 的新特性：</h3><ul>
-<li><p><strong>新的二进制格式（Binary Format）：</strong>HTTP1.x 的解析是基于文本，基于文本协议的格式解析存在天然缺陷，文本的表现形式有多样性，要做到健壮性考虑的场景必然很多，二进制则不同，只认 0 和 1 的组合，基于这种考虑 HTTP2.0 的协议解析决定采用二进制格式，实现方便且健壮</p>
+<li><p><strong>新的二进制格式（Binary Format）：</strong> HTTP1.x 的解析是基于文本，基于文本协议的格式解析存在天然缺陷，文本的表现形式有多样性，要做到健壮性考虑的场景必然很多，二进制则不同，只认 0 和 1 的组合，基于这种考虑 HTTP2.0 的协议解析决定采用二进制格式，实现方便且健壮</p>
 </li>
-<li><p><strong>header 压缩：</strong>HTTP1.x 的 header 带有大量信息，而且每次都要重复发送，HTTP2.0 使用 encoder 来减少需要传输的 header 大小，通讯双方各自 cache 一份 header fields 表，既避免了重复 header 的传输，又减小了需要传输的大小</p>
+<li><p><strong>header 压缩：</strong> HTTP1.x 的 header 带有大量信息，而且每次都要重复发送，HTTP2.0 使用 encoder 来减少需要传输的 header 大小，通讯双方各自 cache 一份 header fields 表，既避免了重复 header 的传输，又减小了需要传输的大小</p>
 </li>
-<li><p><strong>服务端推送（server push）：</strong>例如我的网页有一个 sytle.css 的请求，在客户端收到 sytle.css 数据的同时，服务端会将 sytle.js 的文件推送给客户端，当客户端再次尝试获取 sytle.js 时就可以直接从缓存中获取到，不用再发请求了</p>
+<li><p><strong>服务端推送（server push）：</strong> 例如我的网页有一个 sytle.css 的请求，在客户端收到 sytle.css 数据的同时，服务端会将 sytle.js 的文件推送给客户端，当客户端再次尝试获取 sytle.js 时就可以直接从缓存中获取到，不用再发请求了</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Link: <span class="tag">&lt;/<span class="name">styles.css</span>&gt;</span>; rel=preload; as=style, <span class="tag">&lt;/<span class="name">example.png</span>&gt;</span>; rel=preload; as=image</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><strong>多路复用（MultiPlexing）</strong></p>
@@ -645,8 +646,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag"><i class="fa fa-tag"></i> 性能优化</a>
               <a href="/tags/HTTP%E7%BD%91%E7%BB%9C%E5%B1%82/" rel="tag"><i class="fa fa-tag"></i> HTTP网络层</a>
+              <a href="/tags/%E4%BC%98%E5%8C%96/" rel="tag"><i class="fa fa-tag"></i> 优化</a>
+              <a href="/tags/HTTP%E9%80%9A%E4%BF%A1/" rel="tag"><i class="fa fa-tag"></i> HTTP通信</a>
           </div>
 		 
 		<!--post-tags 彩色标签-->
@@ -752,20 +754,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">102</span>
+        <span class="site-state-item-count">108</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -822,12 +824,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">212k</span>
+    <span title="站点总字数">241k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:13</span>
+    <span title="站点阅读时长">3:39</span>
 </div>
 
 <!--

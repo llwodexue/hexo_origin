@@ -31,10 +31,11 @@
 <meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%90%8E%E7%AB%AF%E8%BF%94%E5%9B%9E%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81.jpg">
 <meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/Excel%E6%96%87%E4%BB%B6%E5%90%8D.jpg">
 <meta property="article:published_time" content="2021-06-16T02:50:00.003Z">
-<meta property="article:modified_time" content="2021-07-05T06:46:19.909Z">
+<meta property="article:modified_time" content="2021-08-27T07:46:03.382Z">
 <meta property="article:author" content="LiLyn">
 <meta property="article:tag" content="Vue">
-<meta property="article:tag" content="Blob">
+<meta property="article:tag" content="Excel">
+<meta property="article:tag" content="跨域处理">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%AF%BC%E5%87%BAExcel%E6%8E%A5%E5%8F%A3%E6%88%90%E5%8A%9F.jpg">
 
@@ -238,14 +239,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.7k</span>
+              <span>5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -272,13 +273,15 @@
 <li>接下来看一下后台返回的数据是什么样，是文件流格式（<code>OutputStream</code>）</li>
 </ul>
 <p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/%E5%90%8E%E7%AB%AF%E8%BF%94%E5%9B%9E%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81.jpg"></p>
-<p>在处理之前，说几个要注意的点</p>
+<p>在处理之前，说几个要注意的点！！！</p>
 <ol>
 <li><p><strong>注意：后端在这里一般会设置如下几个请求头</strong></p>
 <p>后端还可能开启 jwt token 验证，如果开启请移步第 2 点请求拦截设置 headers</p>
+<p><strong>注意： 由于跨域浏览器处于安全考虑不让自定义响应头通过 JS 获取</strong> （详见： <a target="_blank" rel="noopener" href="https://blog.csdn.net/PGguoqi/article/details/106824957">JS 无法获取响应 header 的 Content-Disposition 字段</a> ），也就是说 <code>Content-Disposition</code> 前端在 Network 里是能看到的，但是无法通过 JS 获取到，这里后端需要将其暴露出去</p>
+<p>跨域情况默认只暴露：<code>Cache-Control</code>、<code>Content-Language</code>、<code>Content-Type</code>、<code>Expires</code>、<code>Last-Modified</code>、<code>Pragma</code> 六个属性</p>
 </li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置返回类型为excel</span></span><br><span class="line">response.setContentType(<span class="string">&quot;application/vnd.ms-excel; charset=UTF-8&quot;</span>);  </span><br><span class="line"><span class="comment">// 设置返回文件名为filename.xls </span></span><br><span class="line">response.setHeader(<span class="string">&quot;Content-Disposition&quot;</span>, <span class="string">&quot;filename.xls&quot;</span>); </span><br><span class="line"><span class="comment">// 请求或响应消息不能走缓存</span></span><br><span class="line">response.setHeader(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;no-cache&quot;</span>);  </span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置返回类型为excel</span></span><br><span class="line">response.setContentType(<span class="string">&quot;application/vnd.ms-excel; charset=UTF-8&quot;</span>);  </span><br><span class="line"><span class="comment">// 设置返回文件名为filename.xls </span></span><br><span class="line">response.setHeader(<span class="string">&quot;Content-Disposition&quot;</span>, <span class="string">&quot;filename.xls&quot;</span>); </span><br><span class="line"><span class="comment">// 请求或响应消息不能走缓存</span></span><br><span class="line">response.setHeader(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;no-cache&quot;</span>);</span><br><span class="line"><span class="comment">// 将Content-Disposition暴露出去，这样就可以用过JS获取到了</span></span><br><span class="line">response.setHeader(<span class="string">&quot;Access-Control-Expose-Headers&quot;</span>, <span class="string">&quot;Content-Disposition&quot;</span>);</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li><p><strong>注意：前端在 Axios 请求和响应拦截的时候，需要对其进行处理</strong></p>
@@ -299,11 +302,12 @@
 <li>拿到文件流之后，需要生成一个 URL 才可以下载，可以<strong>通过<code>URL.createObjectURL()</code>方法生成一个链接</strong></li>
 <li>a 标签添加文件名<br>正常情况下，通过 <code>window.location = url</code> 就可以下载文件。浏览器判断这个链接是一个资源而不是页面的时候，就会下载文件。但是通过文件流生成的 url 对应的资源是没有文件名的，需要添加文件名。这时候可以用到 download 属性指定下载的文件名</li>
 </ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mimeMap = &#123;</span><br><span class="line">  xlsx: <span class="string">&#x27;application/vnd.ms-excel&#x27;</span>,</span><br><span class="line">  zip: <span class="string">&#x27;application/zip&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> toExcel = <span class="function"><span class="params">params</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> request(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;/dayReportToExcel/toExcel&#x27;</span>,</span><br><span class="line">    responseType: <span class="string">&#x27;blob&#x27;</span>,</span><br><span class="line">    params</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> resolveBlob(res, mimeMap.xlsx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveBlob</span>(<span class="params">res, mimeType</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 创建a标签，并处理二级制数据</span></span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([res.data], &#123; <span class="attr">type</span>: mimeType &#125;)</span><br><span class="line">  <span class="comment">// 生成下载链接</span></span><br><span class="line">  <span class="keyword">const</span> URL = <span class="built_in">window</span>.URL || <span class="built_in">window</span>.webkitURL</span><br><span class="line">  aLink.href = URL.createObjectURL(blob)</span><br><span class="line">  <span class="comment">// 设置下载文件名称</span></span><br><span class="line">  <span class="keyword">const</span> fileName = res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]</span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, fileName)</span><br><span class="line">  <span class="comment">// 下载</span></span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(aLink)</span><br><span class="line">  aLink.click()</span><br><span class="line">  <span class="comment">// 释放URL对象</span></span><br><span class="line">  <span class="built_in">window</span>.URL.revokeObjectURL(aLink.href)</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(aLink)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于有浏览器问题可能会出现 <code>content-disposition</code> 匹配不到，最好做一下判断看 <code>content-disposition</code> 和 <code>Content-Disposition</code> 哪个能取到</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mimeMap = &#123;</span><br><span class="line">  xlsx: <span class="string">&#x27;application/vnd.ms-excel&#x27;</span>,</span><br><span class="line">  zip: <span class="string">&#x27;application/zip&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> toExcel = <span class="function"><span class="params">params</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> request(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;/dayReportToExcel/toExcel&#x27;</span>,</span><br><span class="line">    responseType: <span class="string">&#x27;blob&#x27;</span>,</span><br><span class="line">    params</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> resolveBlob(res, mimeMap.xlsx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveBlob</span>(<span class="params">res, mimeType</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 创建a标签，并处理二级制数据</span></span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([res.data], &#123; <span class="attr">type</span>: mimeType &#125;)</span><br><span class="line">  <span class="comment">// 生成下载链接</span></span><br><span class="line">  <span class="keyword">const</span> URL = <span class="built_in">window</span>.URL || <span class="built_in">window</span>.webkitURL</span><br><span class="line">  aLink.href = URL.createObjectURL(blob)</span><br><span class="line">  <span class="comment">// 设置下载文件名称</span></span><br><span class="line">  <span class="keyword">let</span> fileName = <span class="string">&#x27;&#x27;</span></span><br><span class="line">  <span class="keyword">if</span> (res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]) fileName = res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]</span><br><span class="line">  <span class="keyword">if</span> (res.headers[<span class="string">&#x27;Content-Disposition&#x27;</span>]) fileName = res.headers[<span class="string">&#x27;Content-Disposition&#x27;</span>]</span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, fileName)</span><br><span class="line">  <span class="comment">// 下载</span></span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(aLink)</span><br><span class="line">  aLink.click()</span><br><span class="line">  <span class="comment">// 释放URL对象</span></span><br><span class="line">  <span class="built_in">window</span>.URL.revokeObjectURL(aLink.href)</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(aLink)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>注意：一般情况下文件名都是需要匹配的，后端传过来的可能是这样的，首选需要 <code>decodeURI</code> 解码一下，再用正则把文件名匹配出来（替换设置下载文件名那里即可）</p>
 <p><img data-src="https://gitee.com/lilyn/pic/raw/master/company-img/Excel%E6%96%87%E4%BB%B6%E5%90%8D.jpg"></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pat = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">&#x27;filename=([^;]+\\.[^\\.;]+);*&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> contentDisposition = <span class="built_in">decodeURI</span>(res.headers[<span class="string">&#x27;content-disposition&#x27;</span>])</span><br><span class="line"><span class="keyword">var</span> result = pat.exec(contentDisposition)</span><br><span class="line"><span class="keyword">const</span> fileName = result[<span class="number">1</span>]</span><br><span class="line">aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, fileName)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveBlob</span>(<span class="params">res, mimeType</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> aLink = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([res.data], &#123; <span class="attr">type</span>: mimeType &#125;)</span><br><span class="line">  <span class="keyword">const</span> pat = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">&#x27;filename=([^;]+\\.[^\\.;]+)&#x27;</span>)</span><br><span class="line">  <span class="keyword">let</span> contentDisposition</span><br><span class="line">  <span class="keyword">if</span> (res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]) contentDisposition = res.headers[<span class="string">&#x27;content-disposition&#x27;</span>]</span><br><span class="line">  <span class="keyword">if</span> (res.headers[<span class="string">&#x27;Content-Disposition&#x27;</span>]) contentDisposition = res.headers[<span class="string">&#x27;Content-Disposition&#x27;</span>]</span><br><span class="line">  <span class="keyword">const</span> result = pat.exec(<span class="built_in">decodeURI</span>(contentDisposition))</span><br><span class="line">  <span class="keyword">let</span> fileName = result &amp;&amp; result[<span class="number">1</span>]</span><br><span class="line">  <span class="keyword">const</span> URL = <span class="built_in">window</span>.URL || <span class="built_in">window</span>.webkitURL</span><br><span class="line">  aLink.href = URL.createObjectURL(blob)</span><br><span class="line">  <span class="comment">// 如果Content-Disposition没有暴露，给文件一个默认名字</span></span><br><span class="line">  <span class="keyword">if</span> (fileName == <span class="literal">null</span>) fileName = <span class="string">&#x27;日报表&#x27;</span></span><br><span class="line">  aLink.setAttribute(<span class="string">&#x27;download&#x27;</span>, fileName)</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(aLink)</span><br><span class="line">  aLink.click()</span><br><span class="line">  <span class="comment">// 释放URL对象</span></span><br><span class="line">  <span class="built_in">window</span>.URL.revokeObjectURL(aLink.href)</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(aLink)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="拼接-URL-下载"><a href="#拼接-URL-下载" class="headerlink" title="拼接 URL 下载"></a>拼接 URL 下载</h2><p>如果可以直接通过 URL 下载文件，则可以不需要发送 Ajax 请求（前提是没有 token、headers 验证），直接下载</p>
 <ul>
@@ -364,7 +368,8 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Vue/" rel="tag"><i class="fa fa-tag"></i> Vue</a>
-              <a href="/tags/Blob/" rel="tag"><i class="fa fa-tag"></i> Blob</a>
+              <a href="/tags/Excel/" rel="tag"><i class="fa fa-tag"></i> Excel</a>
+              <a href="/tags/%E8%B7%A8%E5%9F%9F%E5%A4%84%E7%90%86/" rel="tag"><i class="fa fa-tag"></i> 跨域处理</a>
           </div>
 		 
 		<!--post-tags 彩色标签-->
@@ -470,20 +475,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">102</span>
+        <span class="site-state-item-count">108</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -540,12 +545,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">212k</span>
+    <span title="站点总字数">241k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:13</span>
+    <span title="站点阅读时长">3:39</span>
 </div>
 
 <!--

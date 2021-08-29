@@ -186,6 +186,98 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/3c79077c/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.jpg">
+      <meta itemprop="name" content="LiLyn">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="奇幻的梦之旅">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/3c79077c/" class="post-title-link" itemprop="url">检测公有属性的封装</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-28 15:58:49" itemprop="dateCreated datePublished" datetime="2020-12-28T15:58:49+08:00">2020-12-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>检测公有属性方法用 in+hasOwnProperty 结合会有一些弊端，比如：某个属性既是私有的，也是公有的，就检测不出来了。使用 Object.getPrototypeOf+hasOwnProperty 可以准确检测</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/3c79077c/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+	<div>
+		  
+	</div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/399b5a63/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -956,7 +1048,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/3792d7db/" class="post-title-link" itemprop="url">JS 原型继承</a>
+            <a href="/posts/3792d7db/" class="post-title-link" itemprop="url">JS 继承的四种方式</a>
         </h2>
 
         <div class="post-meta">
@@ -984,14 +1076,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.6k</span>
+              <span>4.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -1003,108 +1095,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>继承机制使得不同的实例可以共享构造函数的原型对象的属性和方法</p>
+          <h2 id="类三大特性"><a href="#类三大特性" class="headerlink" title="类三大特性"></a>类三大特性</h2><p>JS 本身是基于面向对象开发的编程语言。类：封装、继承、多态</p>
+<ul>
+<li><p>封装：类是一个函数，把实现一个功能的代码进行封装，以此实现 “低耦合高内聚”</p>
+</li>
+<li><p>多态：主要就是重载、重写两点</p>
+<p>重写：子类重写父类上的方法（伴随着继承运行）</p>
+<p>重载：相同的方法，由于参数或返回值不同，具备了不同的功能（JS 中不具备严格意义的重载；JS 中的重载，同一个方法内，根据传参不同实现不同的功能）</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 函数重载（两个函数名称相同，参数个数/类型不同）</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">...rest: <span class="built_in">number</span>[]</span>): <span class="title">number</span></span></span><br><span class="line"><span class="function"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">...rest: <span class="built_in">string</span>[]</span>): <span class="title">string</span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">...rest: <span class="built_in">any</span>[]</span>): <span class="title">any</span> </span>&#123;</span></span></span><br><span class="line"><span class="function"><span class="function">  <span class="title">let</span> <span class="title">first</span> = <span class="title">rest</span>[0]</span></span></span><br><span class="line"><span class="function"><span class="function">  <span class="title">if</span> (<span class="params"><span class="keyword">typeof</span> first === <span class="string">&#x27;string&#x27;</span></span>) </span>&#123;</span></span><br><span class="line"><span class="function">    <span class="title">return</span> <span class="title">rest</span>.<span class="title">join</span>(<span class="params"><span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function">  &#125;</span></span><br><span class="line"><span class="function">  <span class="title">if</span> (<span class="params"><span class="keyword">typeof</span> first === <span class="string">&#x27;number&#x27;</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> rest.reduce(<span class="function">(<span class="params">pre, cur</span>) =&gt;</span> pre + cur)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>继承：子类继承父类的方法</p>
+<p>其它语言的继承跟生活中的继承很相似，子基因修改了但不会影响父（单独拷贝一份）</p>
+</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/posts/3792d7db/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-	<div>
-		  
-	</div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/5d2789f/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/logo.jpg">
-      <meta itemprop="name" content="LiLyn">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="奇幻的梦之旅">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/5d2789f/" class="post-title-link" itemprop="url">JS 检测数据类型的四种方式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-03 20:52:23" itemprop="dateCreated datePublished" datetime="2020-12-03T20:52:23+08:00">2020-12-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>JavaScript 有八种数据类型：</p>
-<p>基本数据类型：Boolean、Number、String、null、undefined、Symbol(ES6新增)、BigInt（ES2020引入）</p>
-<p>引用数据类型：Object</p>
-<blockquote>
-<p>Symbol：表示独一无二的值</p>
-<p>BigInt：用来解决 JavaScript 中数字只能到 53 个二进制位，大于这个范围的整数，无法精确表示</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/5d2789f/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1199,20 +1205,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">102</span>
+        <span class="site-state-item-count">108</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1269,12 +1275,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">212k</span>
+    <span title="站点总字数">241k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:13</span>
+    <span title="站点阅读时长">3:39</span>
 </div>
 
 <!--
