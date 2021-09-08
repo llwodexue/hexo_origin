@@ -1,5 +1,5 @@
 ---
-title: 前端 JS 加密常用方法（非对称加密、对称加密）
+title: 前后端 JS 加密常用方法（非对称加密、对称加密）
 tags:
   - Vue
   - RSA
@@ -20,9 +20,11 @@ abbrlink: 9f5130f2
 
 彩虹表是对于散列函数做逆运算的表（空间换时间），密码安全度比较低是可以用彩虹表碰撞去破解的，可以在 [Free Rainbow Tables](https://freerainbowtables.com/) 上下载进行试验，如果试图解密，可以使用 [CMD5](https://cmd5.com/) 进行解密
 
-## crypto 进行不可逆加密
+## 不可逆加密（MD5 SHA）
 
 node 中有原生 crypto 模块，该模块提供了 hash、hmac、加密解密等一整套封装。因为是 node 中的模块，所以需要使用 `const crypto = require('crypto')` 来引入
+
+MD5、SHA1 也成散列算法
 
 ### crypto 进行 MD5 SHA 加密
 
@@ -72,7 +74,7 @@ sha256 a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3
 */
 ```
 
-### * 加盐和 hmac 算法
+### * 上面版本的加盐和 hmac 算法
 
 如果密码安全强度过低，是很容易被彩虹表碰撞上的，所以一般还会做一层加盐加字符串的处理，这样碰撞成功的概率就大大减少了
 
@@ -105,7 +107,11 @@ const md5 = str => createHmac('md5', str)
 console.log(md5(salt, psw)) // c9bce0c58ec62881aa5774a7d304b40a
 ```
 
-## blueimp-md5 进行 MD5 加密
+### blueimp-md5 进行 MD5 加密
+
+接下来简单说一下其他可能会用到的加密包
+
+- 注意：使用两次 md5 加密也是不安全的，也能被彩虹表碰撞到
 
 ```js
 /* npm i blueimp-md5 */
@@ -120,7 +126,7 @@ function passTrans(pass) {
 console.log(passTrans(txt)) // 202cb962ac59075b964b07152d234b70
 ```
 
-## sha 进行 SHA 加密
+### sha 进行 SHA 加密
 
 SHA 家族的五个算法，分别是 SHA-1、SHA-224、SHA-256、SHA-384，和 SHA-512，由美国国家安全局（NSA）所规划，并由美国国家规范与技能研究院（NIST）发布，这里只对 SHA-1 和 SHA-256 进行演示
 
@@ -154,9 +160,13 @@ function passTrans(pass) {
 console.log(passTrans(txt)) // a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3
 ```
 
-## crypto 进行 AES 加密（可逆）
 
-上述这些方法都是不可逆 hash 加密算法，接下来说一下可加密解密的算法。常见的有 `AES`、`DES`
+
+## 可逆加密（AES DES BASE64）
+
+### crypto 进行 AES 加密
+
+上述这些方法都是不可逆 hash 加密算法，接下来说一下可加密解密的算法。常见的有 `AES`、`DES`、`BASE64`
 
 ```js
 const crypto = require('crypto')
@@ -237,42 +247,76 @@ console.log('解密：', _src)
 */
 ```
 
-## crypto-js 进行 AES 加密（可逆）
+### * crypto-js 进行 AES 加密
 
-crypto-js 就不是 node 原生的了，需要 npm 下载
+由于 crypto 是 node 原生的，很多人可能又不习惯，下面介绍另一款 crypto-js 。这个需要 npm 下载，也可以直接去 [crypto-js GitHub](https://github.com/brix/crypto-js) 下载
 
-- mode：支持 CBC、CFB、CTR、ECB、OFB,，默认 CBC
+CryptoJS 在处理前需要对参数进行一下处理
+
+```js
+const wordArray = CryptoJS.enc.Utf8.parse(utf8String)
+const wordArray = CryptoJS.enc.Latin1.parse(latin1String)
+const wordArray = CryptoJS.enc.Hex.parse(hexString)
+const wordArray = CryptoJS.enc.Base64.parse(base64String)
+```
+
+CryptoJS 加密出的结果是一个对象：`CryptoJs.AES.encrypt(src, key, { iv, mode, padding })` ，所以需要对其进行文本处理 `toString()` 或 `+ ''`
+
+- key 是密钥，可以是接口返回的
+
+- iv 是密钥偏移量，一般都是接口返回的
+
+- mode：支持 CBC、CFB、CTR、ECB、OFB，默认 CBC
+
+  详细可见：[块加密 工作模式 ECB、CBC、PCBC、CFB、OFB、CTR](https://blog.csdn.net/jerry81333/article/details/78336616)
+
+  ECB 模式下，向量 iv 是没有用的。ECB 加密原理：根据加密块的大小分成若干块，之后将每块使用相同的秘钥单独加密即可
+
+  CBC 模式下，向量 iv 是有用的。CBC 加密原理：每个明文块进行异或后再进行加密，每个密文块都依赖前面的所有明文块
+
 - padding ：支持 Pkcs7、AnsiX923、Iso10126、NoPadding、ZeroPadding，默认 Pkcs7
+
+CryptoJS 解密密文必须是 BASE64 编码
+
+> 详细原理可以参考：[AES加密算法的详细介绍与实现](https://blog.csdn.net/qq_28205153/article/details/55798628)
+>
+> 前后端请求加密操作可以参考：[前后端API交互加密解密（js、Java）](https://www.cnblogs.com/wangweizhang/p/12883671.html)
 
 ```js
 /* npm i crypto-js */
-import CryptoJs from 'crypto-js'
-// const CryptoJs = require('crypto-js')
+// import CryptoJS from 'crypto-js'
+const CryptoJS = require('crypto-js')
 
 const keyStr = 'encode@3#!8^k.j$'
 const ivStr = 'vector@3#!8^k.j$'
-const key = CryptoJs.enc.Utf8.parse(keyStr) // 将字符串转换为WordArray类型
-const iv = CryptoJs.enc.Utf8.parse(ivStr)
 const txt = '123'
 
-function encrypt(data) {
-  const src = CryptoJs.enc.Utf8.parse(data)
-  const cipher = CryptoJs.AES.encrypt(src, key, {
+function encrypt(data, keyS, ivS) {
+  let key = keyS || keyStr
+  let iv = ivS || ivStr
+  key = CryptoJS.enc.Utf8.parse(key)
+  iv = CryptoJS.enc.Utf8.parse(iv)
+  const src = CryptoJS.enc.Utf8.parse(data)
+  const cipher = CryptoJS.AES.encrypt(src, key, {
     iv: iv, // 初始向量
-    mode: CryptoJs.mode.CBC, // 加密模式
-    padding: CryptoJs.pad.Pkcs7, // 填充方式
+    mode: CryptoJS.mode.CBC, // 加密模式
+    padding: CryptoJS.pad.Pkcs7, // 填充方式
   })
   const encrypted = cipher.toString()
   return encrypted
 }
 
-function decrypt(data) {
-  const cipher = CryptoJs.AES.decrypt(data, key, {
+function decrypt(data, keyS, ivS) {
+  let key = keyS || keyStr
+  let iv = ivS || ivStr
+  key = CryptoJS.enc.Utf8.parse(key)
+  iv = CryptoJS.enc.Utf8.parse(iv)
+  const cipher = CryptoJS.AES.decrypt(data, key, {
     iv: iv,
-    mode: CryptoJs.mode.CBC,
-    padding: CryptoJs.pad.Pkcs7,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
   })
-  const decrypted = cipher.toString(CryptoJs.enc.Utf8) // 返回的是加密之前的原始数据->字符串类型
+  const decrypted = cipher.toString(CryptoJS.enc.Utf8) // 返回的是加密之前的原始数据->字符串类型
   return decrypted
 }
 
@@ -287,6 +331,95 @@ console.log('解密：', _src)
 */
 ```
 
+### crypto-js 进行 DES 加密
+
+DES -> TripleDES -> RC4 -> AES（安全性会更高一些）
+
+- DES 其实只是把之前写 AES 的部分改成 DES
+- https （SSL 使用 40 位关键字作为 RC4 流加密算法）
+
+```js
+/* npm i crypto-js */
+// import CryptoJS from 'crypto-js'
+const CryptoJS = require('crypto-js')
+
+const keyStr = 'encode@3#!8^k.j$'
+const ivStr = 'vector@3#!8^k.j$'
+const txt = '123'
+
+function encrypt(data, keyS, ivS) {
+  let key = keyS || keyStr
+  let iv = ivS || ivStr
+  key = CryptoJS.enc.Utf8.parse(key)
+  iv = CryptoJS.enc.Utf8.parse(iv)
+  const src = CryptoJS.enc.Utf8.parse(data)
+  return CryptoJS.DES.encrypt(src, key, {
+    iv: iv, // 初始向量
+    mode: CryptoJS.mode.CBC, // 加密模式
+    padding: CryptoJS.pad.Pkcs7, // 填充方式
+  }).toString()
+}
+
+function decrypt(data, keyS, ivS) {
+  let key = keyS || keyStr
+  let iv = ivS || ivStr
+  key = CryptoJS.enc.Utf8.parse(key)
+  iv = CryptoJS.enc.Utf8.parse(iv)
+  return CryptoJS.DES.decrypt(data, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  }).toString(CryptoJS.enc.Utf8)
+}
+
+const sign = encrypt(txt)
+const _src = decrypt(sign)
+
+console.log('加密：', sign)
+console.log('解密：', _src)
+/*
+加密： OaCOFkaXIUc=
+解密： 123
+*/
+```
+
+### crypto-js 进行 BASE64 加密
+
+可以使用 window 自带的方法，不过使用这个是有缺陷的（无法处理中文）：
+
+- `window.btoa` 对字符串进行 BASE64 编码（注意：不能编码中文）
+- `window.atob` 对 BASE64 字符串进行解码（注意：转换含有中文的 BASE64 编码是不能正确解码的）
+
+```js
+/* npm i crypto-js */
+// import CryptoJS from 'crypto-js'
+const CryptoJS = require('crypto-js')
+
+const txt = '123算法'
+
+function encrypt(data) {
+  const encrypted = CryptoJS.enc.Utf8.parse(data)
+  const cipher = CryptoJS.enc.Base64.stringify(encrypted)
+  return cipher
+}
+
+function decrypt(data) {
+  const decrypted = CryptoJS.enc.Base64.parse(data)
+  const cipher = decrypted.toString(CryptoJS.enc.Utf8)
+  return cipher
+}
+
+const sign = encrypt(txt)
+const _src = decrypt(sign)
+
+console.log('加密：', sign)
+console.log('解密：', _src)
+/* 
+加密： MTIz566X5rOV
+解密： 123算法
+*/
+```
+
 #  非对称加密
 
 非对称加密会产生一对密钥（公钥负责加密、私钥负责解密），私钥无法解开说明公钥无效（抗抵赖性）。常见算法 RSA（大质数 ）、Elgamal、背包算法、Rabin、D-H、ECC（椭圆曲线加密算法）
@@ -294,6 +427,11 @@ console.log('解密：', _src)
 如下只对 RSA 算法进行说明
 
 ## jsencrypt 进行 RSA 加密
+
+加密算法分为对称加密和非对称加密，AES 是对称加密，RSA 是非对称加密
+
+- 接口加密一般会使用 AES，之所以用 AES 加密是因为效率高
+- RSA 会慢一些，一般会用做签名认证操作，防止请求被篡改
 
 > 参考：[RSA算法原理（一）](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html)
 >
@@ -309,6 +447,8 @@ console.log('解密：', _src)
 接下来需要生成一下 RSA 密钥对： [生成 RSA 密钥对](http://web.chacuo.net/netrsakeypair)，将生成的公钥私钥复制过去（一般复制公钥即可，私钥给后端）
 
 ![](https://gitee.com/lilyn/pic/raw/master/company-img/rsa%E5%85%AC%E9%92%A5%E7%A7%81%E9%92%A5.jpg)
+
+jsencrypt 包没有处理 node 中的情况，所以这里就不演示代码了，大家可以去 vue 里尝试一下
 
 ```js
 /* npm i jsencrypt */
@@ -333,5 +473,71 @@ function decrypt(pass) {
 }
 
 console.log(decrypt(encrypt(txt))) // '123'
+```
+
+## node-rsa 进行 RSA 加密
+
+前端一般用 jsencrypt 做加密，后端（Node）一般用 node-rsa 解密
+
+```js
+const publicKey = key.exportKey('pkcs8-public').toString('base64') // 可以给前端的公钥
+const privateKey = key.exportKey('pkcs8-private').toString('base64') // 私钥
+```
+
+为了增强数据交换的安全性，一般会进行签名和验证操作：
+
+- 由于客户端的公钥是公开的，发送请求被拦截（中间人）， **中间人是可以使用公钥对参数加密，替换拦截到的参数密文，发送给服务端** ，这样就导致服务端无法判断得到的请求是否是可信的客户端发送的了（请求头是对的，但是参数被中间人替换了）
+
+```js
+const nodeRSA = require('node-rsa')
+
+// 生成一个1024长度的密钥对
+const key = new nodeRSA({ b: 1024 })
+const publicKey = key.exportKey('pkcs8-public') // 公钥
+const privateKey = key.exportKey('pkcs8-private') // 私钥
+const txt = '123'
+
+// 使用公钥加密
+function encrypt(data) {
+  const pubKey = new nodeRSA(publicKey, 'pkcs8-public')
+  return pubKey.encrypt(Buffer.from(data), 'base64')
+}
+
+// 使用私钥解密
+function decrypt(data) {
+  const priKey = new nodeRSA(privateKey, 'pkcs8-private')
+  return priKey.decrypt(Buffer.from(data, 'base64'), 'utf8')
+}
+
+const sign = encrypt(txt)
+const _src = decrypt(sign)
+
+console.log('加密：', sign)
+console.log('解密：', _src)
+/* 
+加密： fBaBFVPv+96I/r6a2tfPbYWa0yjgJKQ+K2/E9obGNo0dYBOSBzW2PgnPOHX+/pq0wUZPxJzcwt5YcMtOsUNuZAYpaPZJ9o6IOEKj823HBNbyerDMUfU3rINCk2FilRuxFpQPmBZTbSvSumKligdtsh1Vz02DwdRgbJHp5bm4Hjk=
+解密： 123
+*/
+
+// 使用私钥对消息签名
+function signRSA(data) {
+  const priKey = new nodeRSA(privateKey, 'pkcs8-private')
+  return priKey.sign(Buffer.from(data), 'hex')
+}
+
+// 使用公钥验证签名
+function verifyRSA(decrypt, signs) {
+  const pubKey = new nodeRSA(publicKey, 'pkcs8-public')
+  return pubKey.verify(Buffer.from(decrypt), signs, 'utf8', 'hex')
+}
+
+const signature = signRSA(sign)
+
+console.log('私钥签名：' + signature)
+console.log('公钥验证：' + verifyRSA(sign, signature))
+/* 
+私钥签名：873ae60fa3a5a89850185632b53e54b7c9919d146f2464a857f83679d9862e0612973c891994f6f576d4c04913a8b0a17b9b3adaa3577fcb81d637b2ede0c4a1cffadcaa99b81d09a7edfa69a813cd9f87fe52d96c371f6af533dd5577fdc0f6f7dc6857e1a78d425c0be71f7c440e44e8f932c4ed8890dba007721d10832e92
+公钥验证：true
+*/
 ```
 
