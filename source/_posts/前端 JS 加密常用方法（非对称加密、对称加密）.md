@@ -280,7 +280,6 @@ CryptoJS 解密密文必须是 BASE64 编码
 
 > 详细原理可以参考：[AES加密算法的详细介绍与实现](https://blog.csdn.net/qq_28205153/article/details/55798628)
 >
-> 前后端请求加密操作可以参考：[前后端API交互加密解密（js、Java）](https://www.cnblogs.com/wangweizhang/p/12883671.html)
 
 ```js
 /* npm i crypto-js */
@@ -540,4 +539,69 @@ console.log('公钥验证：' + verifyRSA(sign, signature))
 公钥验证：true
 */
 ```
+
+# 前后端接口加密
+
+前端需要做的就是 2 件事情：
+
+1. 统一处理数据的响应，在渲染到页面之前进行解密操作
+
+   ```js
+   service.interceptors.response.use(
+     response => {
+       if (response.config.responseType === 'blob') {
+         return response
+       }
+       const res = response.data
+       if (typeof res === 'string') {
+         // 对response.data进行处理
+       }
+       return res
+     }
+   )
+   ```
+
+2. 请求的数据发出时，统一加密
+
+   get 请求对 data 进行加密
+
+   post 请求对 param 进行加密
+
+   ```js
+   service.interceptors.request.use(
+     config => {
+       if (config.method === 'post') {
+         const data = config.data
+         if (data) {
+           // 对config.data进行处理
+         }
+       } else if (config.method === 'get') {
+         const params = config.params
+         if (params) {
+           if (Object.keys(params).length !== 0) {
+             // 对config.params进行处理
+           }
+         }
+       }
+       return config
+     }
+   )
+   ```
+
+> 前后端请求加密操作可以参考：[前后端API交互加密解密（js、Java）](https://www.cnblogs.com/wangweizhang/p/12883671.html)
+
+到此为止前后端交互通信已经做了加密操作，接下来最重要的就是如何保证加密的 key 不泄露？
+
+- 服务端啊安全性较高，可以存储在数据库文件或配置文件中，前端就很危险了
+
+下面是动态获取加密 key 的方式：
+
+- 用 RSA 加密传输 AES 的秘钥，用 AES 加密数据，两者相互结合优势互补
+
+![](https://gitee.com/lilyn/pic/raw/master/js-img/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A5%E5%8F%A3%E5%8A%A0%E5%AF%86.png)
+
+1. 客户端发送请求，服务端用 RSA 生成一对公钥和私钥 pub1、pri1，将公钥 pub1 返给客户端
+2. 客户端拿到服务端返回的公钥 pub1 后，先用 RSA 算法生成一对公钥和私钥 pub2、pri2，之后用公钥 pub2 对 pub1 加密，加密之后传输给服务端
+3. 服务端收到客户端传输的密文，用私钥 pri1 解密（数据是用 pub1 加密的）拿到客户端生成的公钥 pub2
+4. 服务端用 AES 生成加密 key 用公钥 pub2 加密，返给客户端，客户端用 pri2 进行解密。以后服务端数据都通过 AES 加密，客户端用对应的 key 进行解密即可
 
