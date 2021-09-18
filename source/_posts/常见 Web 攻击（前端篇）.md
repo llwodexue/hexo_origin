@@ -151,12 +151,14 @@ ctx.set('Content-Security-Policy', "child-src 'none'")
 
 #### 转义字符（过滤）
 
+转义（应该在输出 HTML 进行，而不是在提交用户输入时）
+
 - 输入处理：用户输入、URL 参数、POST 请求参数、Ajax
 - 输出处理：转为实体名称
 
 ```ejs
 <% code %> 用于执行其中JavaScript代码
-<%= code %> 会对code进行html转义
+<%= code %> 会对code进行html转义（尽量使用这个）
 <%- code %> 不会进行转义
 ```
 

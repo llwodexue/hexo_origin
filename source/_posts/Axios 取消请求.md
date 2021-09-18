@@ -30,17 +30,22 @@ import axios from 'axios'
 import { generatePlan } from '@/api'
 
 export default {
+  data() {
+    return {
+      $cancel: null
+    }
+  },
   destroyed() {
     this.cancelPost()
   },
   methods: {
     generateList() {
+      const self = this
       this.$confirm('生成时间比较长，您是否确定生成？', '警告', {
         confirmButtonText: '确定',
         cancaelButtonText: '取消',
       })
         .then(() => {
-          const self = this
           this.cancelPost()
           // post请求
           return generatePlan({
@@ -53,6 +58,9 @@ export default {
           })
         })
         .catch(() => {})
+        .finally(() => {
+          self.$cancel = null
+        })
     },
   },
   cancelPost() {
@@ -104,3 +112,4 @@ if (config.cancelToken) {
   })
 }
 ```
+
