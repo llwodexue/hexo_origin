@@ -10,13 +10,13 @@ author: LiLyn
 copyright: ture
 abbrlink: 82482c19
 ---
-## 安装 i18n
+# 安装 i18n
 
 `internationalization` 这个单词中，i 和 n 之间有 18 个字母
 
 <!--more-->
 
-**注意：**当前 i18n 最新版本为 9 版本，9 版本没有 VueI18n，`import VueI18n from 'vue-i18n'` 解构会报错 `Cannot read property 'install' of undefined`
+**注意：** 当前 i18n 最新版本为 9 版本，9 版本没有 VueI18n，`import VueI18n from 'vue-i18n'` 解构会报错 `Cannot read property 'install' of undefined`
 
 - 这里为了让 Element 兼容，安装的是 8 版本的
 
@@ -43,6 +43,7 @@ npm install vue-i18n@8
 > ```
 
 ```js
+/* i18n/index.js */
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 
@@ -66,6 +67,7 @@ langFiles.keys().forEach(key => {
 function getLanguage() {
   // 第一次进入页面或手动清除设置默认语言
   localStorage.getItem('lang') ? null : localStorage.setItem('lang', loadLanguage)
+  let locale = localStorage.getItem('lang')
   if (!(locale in messages)) locale = loadLanguage
   return locale
 }
@@ -84,6 +86,7 @@ export default i18n
 ### main.js 引入
 
 ```js
+/* main.js */
 import Vue from 'vue'
 import App from './App.vue'
 import i18n from './i18n'
@@ -152,7 +155,7 @@ export default {
       this.$i18n.locale = lang
       this.language = lang
       localStorage.setItem('lang', lang)
-      // location.reload();
+      // window.location.reload()
     }
   }
 }
@@ -162,7 +165,7 @@ export default {
 ### 语言配置文件
 
 ```js
-// en.js
+/* en.js */
 export default {
   table: {
     date: 'Date',
@@ -171,7 +174,7 @@ export default {
   }
 }
 
-// zh.js
+/* zh.js */
 export default {
   table: {
     date: '日期',
@@ -194,13 +197,14 @@ for (const k in langs) {
 }
 ```
 
-## 2.Element 国际化（基础）
+## 2.Element 国际化
 
 ### main.js 引入
 
-- 参考兼容 `vue-i18n@6.x` 的步骤（需要手动处理）
+- 参考 [兼容 `vue-i18n@6.x`](https://element.eleme.cn/#/zh-CN/component/i18n#jian-rong-vue-i18n-6-x)  的步骤（需要手动处理）
 
 ```js
+/* main.js */
 import Vue from 'vue'
 import App from './App.vue'
 import i18n from './i18n'
@@ -224,6 +228,7 @@ new Vue({
 在 index.js 中使用 `Object.assign`  合并有一个好处：方便扩展（相对于在语言配置表引入使用扩展运算符）
 
 ```js
+/* i18n/index.js */
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import enLocale from 'element-ui/lib/locale/lang/en'
@@ -269,15 +274,46 @@ export default i18n
 
 # 路由导航篇
 
+这里有一些前端后端都可以处理，如果后端进行国际化处理，前端需要在请求拦截器里加 `Accept-Language` 请求头
+
+```js
+import axios from 'axios'
+
+const service = axios.create({
+  baseURL: process.env.VUE_APP_BASE_API,
+  withCredentials: true,
+  timeout: 5000
+})
+
+service.interceptors.request.use(
+  config => {
+    const langConfig = {
+      zh: 'zh_CN',
+      en: 'en_US',
+      zhTW: 'zh_TW',
+      other: 'other'
+    }
+    config.headers['Accept-Language'] = langConfig[locale]
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
+
+export default service
+```
+
 ## 1.路由菜单国际化
 
 ### * 使用 $te 判断是否存在语言包内
 
-- 首先需要处理一下标题名，如果这个名在语言配置文件中就直接返回，如果不在返回原信息中的标题
+- 首先需要处理一下菜单名，如果这个名在语言配置文件中就直接返回，如果不在返回原信息中的菜单。这个可以后端进行国际化处理，如果想修改 `UPDATE` 数据库一下即可
 
-  `$te`这个方法用以判断需要翻译的`key`在你提供的`语言包(messages)`中是否存在
+  `$te` 这个方法用以判断需要翻译的 `key` 在你提供的 `语言包(messages)` 中是否存在
 
 ```js
+/* utils/get-page-title.js */
 export function routeTitle(item) {
   const name = `sidebar.${item.path}`
   if (this.$te(name)) {
@@ -289,19 +325,19 @@ export function routeTitle(item) {
 
 ### 展示页面
 
-把每一项传到处理标题的方法中，这样路由菜单国际化基本完成了，如果有多级路由，基本同理
+把每一项传到处理菜单的方法中，这样路由菜单国际化基本完成了，如果有多级路由，基本同理
 
 ```html
 <template v-for="(item, index) in routesSystem">
-    <el-menu-item :index="index.toString()">{{ routeTitle(item) }}</el-menu-item>
+  <el-menu-item :index="index.toString()">{{ routeTitle(item) }}</el-menu-item>
 </template>
 
 <script>
 import { routeTitle } from '@/utils/get-page-title'
 export default {
-    methods: {
-        routeTitle // 声明一下
-    }
+  methods: {
+    routeTitle // 声明一下
+  }
 }
 </script>
 ```
@@ -309,10 +345,6 @@ export default {
 ## 2.面包屑导航国际化
 
 面包屑导航使用的是 `vue-element-admin` 的 Breadcrumb 组件
-
-- 我这里通过 `/` 去判断它是几级路由（暂时没有想到好方法）
-
-  因为我的例子有三级路由，一级二级路由放在 sidebar 对象中，三级路由放在 menu 中（如果都放在一个对象中，可以把这个判断去掉）
 
 ```html
 <template>
@@ -330,57 +362,77 @@ export default {
 <script>
 import { breadTitle } from '@/utils/get-page-title'
 export default {
-    breadTitle(item) {
-      let n = item.name
-      const p = item.path
-      if (n.includes('/')) n = n.slice(1)
-      let name
-      if (p.match(/\//g).length !== 3) {
-        name = `sidebar.${n}`
-      } else {
-        name = `menu.${n}`
-      }
-      if (this.$te(name)) {
-        return this.$t(name)
-      }
-      return item.meta.title
-    }
+  methods: {
+    breadTitle // 声明一下
   }
 }
 </script>
+```
 
+可以通过 `/` 去判断它是几级路由；也可以在路由的 `meta` 中设定一个标识，判断这个标识即可
+
+- 三级路由场景：一、二级路由可以放在 `sidebar` 对象中，三级路由放在 `menu` 中（当然也可以都放在一个对象里）
+
+```js
+/* utils/get-page-title.js */
+export function breadTitle(item) {
+  if (window.indexConfig.afterTitle) return item.meta.title
+  const n = item.name || item.path.slice(1)
+  let name
+  if (item.path.match(/\//g).length !== 3) {
+    name = `sidebar.${n}`
+  } else {
+    name = `menu.${n}`
+  }
+  if (this.$te(name)) {
+    return this.$t(name)
+  }
+  return item.meta.title
+}
 ```
 
 ## 3.导航守卫国际化
 
-因为导航守卫中拿不到 `this`，所以我采用了一种取巧的方式。首先在 router 文件中引入 lang 下的 i18n，之后直接取 i18n 下的 `messages` 和 `locale` 即可拿到对应语言文件
+因为导航守卫中拿不到 `this`，所以可以采用了一种取巧的方式。首先在 `router` 文件中引入 `i18n` 文件夹下的 `index.js`，之后直接取它的 `messages` 和 `locale` 即可拿到对应语言文件
+
+- 不过这样写会产生一个问题，就是切换语言无法实时更新，需要刷新状态
 
 ```js
+/* src/permission.js */
 import router from './router/index'
-import i18n from '@jp/lang' // lang i18n
-import { Message } from 'element-ui'
-import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css' // progress bar style
-import { getToken, removeToken, removeTokenExpired } from '@/utils/auth' // get token from cookie
-import { isDebugger } from '@/settings'
+import i18n from '@jp/i18n'
+import modal from '@jp/utils/modal' // 二次封装的弹出框
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+import { getToken, removeCookies, removeToken } from '@/utils/auth'
+import { isDebugger } from '@/settings' // 也可以维护在store里
 
-const whiteList = ['/login', '/'] // no redirect whitelist
+NProgress.configure({ showSpinner: false })
+
+const locale = i18n.locale
+const msg = i18n.messages[locale]
+const whiteList = ['/login']
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
-  document.title = getPageTitle(to.meta.title)
-  const hasToken = getToken()
-  if (isDebugger || (hasToken && to.path !== '/login')) {
-    next()
+  if (getToken()) {
+    document.title = getPageTitle(to.meta.title)
+    if (to.path === '/login') {
+      next({ path: '/' })
+    } else {
+      // debugger下不获取用户权限
+      if (isDebugger) {
+        next()
+      } else {
+        // 设置动态路由，拉取user_info...
+      }
+    }
   } else {
-    if (whiteList.indexOf(to.path) !== -1) {
+    if (whiteList.includes(to.path)) {
       next()
     } else {
-      const locale = i18n.locale
-      const msg = i18n.messages[locale]
-      Message.error(msg.info.tokenExpire)
-      removeToken()
-      removeTokenExpired()
+      removeCookies()
+      modal.msgError(msg.info.tokenExpire) // 弹出框国际化
       next({ path: '/login' })
       NProgress.done()
     }
@@ -392,7 +444,68 @@ router.afterEach(() => {
 })
 ```
 
-这时路由、面包屑导航及导航守卫国际化基本做完事了
+## 4.render 函数展示文字
+
+ `vue-element-admin` 里的 Item 组件，是采用 `render` 函数渲染的，这个一般
+
+```html
+<!-- src/layout/components/Sidebar/Item.vue -->
+<script>
+import { childTitle } from '@/utils/get-page-title'
+export default {
+  name: 'MenuItem',
+  functional: true,
+  props: {
+    icon: {
+      type: String,
+      default: ''
+    },
+    title: {
+      type: String,
+      default: ''
+    },
+    path: {
+      type: String,
+      default: ''
+    }
+  },
+  render(h, context) {
+    const { icon, title } = context.props
+    const vnodes = []
+
+    if (icon) {
+      if (icon.includes('el-icon')) {
+        vnodes.push(<i class={[icon, 'sub-el-icon']} />)
+      } else {
+        vnodes.push(<svg-icon icon-class={icon}/>)
+      }
+    }
+
+    if (title) {
+      // 三级目录文字展示
+      vnodes.push(<span slot="title">{childTitle(context)}</span>)
+    }
+    return vnodes
+  }
+}
+</script>
+```
+
+这里可以用一个取巧的方式，因为 `render` 函数里的 `context` 里面有 `parent` 父节点，可以使用这个父节点上面的方法（`$t`、`$te`）
+
+```js
+export function childTitle(item) {
+  const p = item.props.path
+  const parent = item.parent
+  const name = `menu.${p}`
+  if (parent.$te(name)) {
+    return parent.$t(name)
+  }
+  return item.props.title
+}
+```
+
+这样路由菜单、面包屑导航及导航守卫国际化基本做完事了
 
 # 组件篇
 
@@ -435,22 +548,22 @@ for (const item in viewsC) {
 
 ## * 2.选择框、输入框表单校验
 
-如果直接把 rules 校验规则写在 data 里面，Element 内部对其 this 进行了处理，所以需要换一种思路
+如果直接把 `rules` 校验规则写在 `data` 里面，Element 内部对其 `this` 进行了处理，所以需要换一种思路
 
-1. 使用 computed 计算属性
+1. 使用 `computed` 计算属性
 
-2. 写在 data 里面，在 return 之前是可以拿到 this的，message 取到这个变量即可（不过这个切换语言不能实时更新）
+2. 写在 `data` 里面，在 return 之前是可以拿到 `this` 的，`message` 取到这个变量即可（不过这个切换语言不能实时更新）
 
    注意：如果使用自定义规则是可以实时更新的，但是出于复用性一般会将其抽到 utils 方法库中，这样就会产生其他问题
 
-   - this 无法处理
+   - `this` 无法处理
    - 简单认证还得写复杂的自定义规则
 
    所以这个不是一个好方法，推荐使用计算属性
 
-**一般出于复用性将方法抽到 utils 方法库中，直接写是不行的**（Element 内部对其 this 进行了处理），需要结合 `bind/call/apply` 来使用
+**一般出于复用性将方法抽到 utils 方法库中，直接写是不行的**（Element 内部对其 `this` 进行了处理），需要结合 `bind/call/apply` 来使用
 
-`pattern: '[^ \x22]+'` 是校验不能全部为空格
+- `pattern: '[^ \x22]+'` 是校验不能全部为空格
 
 ```html
 <el-scrollbar wrap-class="scrollbar-wrapper" style="height: 100%;">
@@ -498,45 +611,38 @@ export default {
 
 ## 3.弹出框（MessageBox 或 Notification）
 
-弹出框的 title 是可以使用 this 的，不过需要注意：
+弹出框的 `title` 是可以使用 `this` 的，不过需要注意：
 
-- 如果使用 function，是拿不到 this 的（可能由于代码不规范导致有这个问题）
+- 如果使用 function，拿到的是错误的 `this` （可能由于代码不规范导致有这个问题）
 
   **要么用一个变量存，要么使用箭头函数**
 
 ```js
-const self = this
-this.$confirm(this.$t('info.notify1') , this.$t('info.friendlyTips'), {
+this.$confirm(this.$t('info.notify') , this.$t('info.friendlyTips'), {
   type: 'warning'
 })
   .then(function() {
-    const params = { }
-    self.listLoading = true
+    const params = {}
     Api(params)
       .then(res => {
-        self.$notify({ title: self.$t('info.friendlyTips'), message: res.data.msg, type: 'success' })
-        self.getList()
+        this.$notify({ title: this.$t('info.friendlyTips'), message: res.data.msg, type: 'success' })
+        this.getList()
       })
-      .catch(e => {
-        console.log(e)
-      })
-      .finally(e => {
-        self.listLoading = false
-      })
+      .catch(e => console.log(e))
   })
 ```
 
-## 4.自制弹出框组件国际化（方式一）
+## 4.自制弹出框组件国际化（Vue.extend）
 
-自制弹出框国际化其实一直是一个难点，可能对混入机制不大了解，所以会出现很多问题
+`Vue.extend` 其实相当于创建了一个 `Vue` 子类，然后对这个子类上扩展一些 `options` 属性
 
 ### popup.js 中处理
 
-结合 `el-dialog` 自制弹出框组件，需要在创建实例时混入 `$i18n`
+结合 `el-dialog` 自制弹出框组件，需要在创建实例时混入 `$i18n` ，这样弹出框组件才能使用 `$t`、`$te`
 
 ```js
 import store from '@/store'
-import i18n from '@/lang'
+import i18n from '@/i18n' // 引入国际化
 import Vue from 'vue'
 export default function(el, params) {
   // 初始化一个Promise
@@ -735,7 +841,7 @@ Vue.component('MsgBox', MsgBox)
 
 ### 页面中使用
 
-在页面中结合 `$msgbox` 使用，在 message 中使用组件，因为 `msg-box` 组件是动态创建的，`$i18n` 是在全局一开始混入，所以在其中拿不到 `i18n`
+在页面中结合 `$msgbox` 使用，在 `message` 中使用组件，因为 `msg-box` 组件是动态创建的，`$i18n` 是在全局一开始混入，所以在其中拿不到 `i18n`
 
 ```js
 this.$msgbox({
@@ -792,25 +898,23 @@ export default {
 
 toB 的项目可能会有这个需求：
 
-- 因为页面组件和表格很多，如果有一个字段名想改，就需要重新打包，很麻烦，现在想将其提出去（比如提取到 public 文件夹下的 config.js 文件中，这个 config.js 在 index.html 中引入一下），这样以后只需要改一下这个 js 文件无需重新打包
+- 因为页面组件和表格很多，如果有一个字段名想改，就需要重新打包，很麻烦，现在想将其提出去（比如提取到 `public` 文件夹下的 config.js 文件中，这个 config.js 在 index.html 中引入一下），这样以后只需要改一下这个 js 文件无需重新打包
 
-### 基础配置
+## 基础配置
 
-首先将各个配置文件复制到 public 下面，**并将其用匿名函数包裹**
-
-，之后在入口 index.html 中，引入如下配置文件
+首先将各个配置文件复制到 `public` 下面，**并将其用匿名函数包裹**，之后在入口 index.html 中，引入如下配置文件
 
 ```html
 <script>
   var now = new Date().getTime();
   document.write('<script src="../config.js?t=' + now + '"><\/script\>')
-  document.write('<script src="../lang/en.js?t=' + now + '"><\/script\>')
-  document.write('<script src="../lang/zh.js?t=' + now + '"><\/script\>')
-  document.write('<script src="../lang/zhTW.js?t=' + now + '"><\/script\>')
+  document.write('<script src="../i18n/en.js?t=' + now + '"><\/script\>')
+  document.write('<script src="../i18n/zh.js?t=' + now + '"><\/script\>')
+  document.write('<script src="../i18n/zhTW.js?t=' + now + '"><\/script\>')
 </script>
 ```
 
-config.js 中用 var 声明变量挂载到 window 上，并在 `en/zh/zhTW` js文件中把配置加到 lang 中
+config.js 中用 `var` 声明变量挂载到 window 上，并在 `en/zh/zhTW` js文件中把配置加到 `lang` 对象中
 
 ```js
 var indexConfig = {}
@@ -819,14 +923,14 @@ indexConfig.lang = {}
 indexConfig.langShow = ['zh', 'en', 'zhTW']
 ```
 
-最后在各个 lang 文件下用 `window.indexConfig.lang` 获取即可
+最后在各个 `lang` 文件下用 `window.indexConfig.lang` 获取即可
 
-### 打包配置
+## 打包配置
 
-由于打包时不会携带 lang 文件夹下面的配置文件，所以需要借助 CopyWebpackPlugin 插件进行复制
+由于打包时不会携带 `i18n` 文件夹下面的配置文件，所以需要借助 CopyWebpackPlugin 插件进行复制
 
 ```js
-const copyWebpackPlugins = ['', '/lang'].map(item => {
+const copyWebpackPlugins = ['', '/i18n'].map(item => {
   return new CopyWebpackPlugin([
     {
       from: `./public${item}/*`,
