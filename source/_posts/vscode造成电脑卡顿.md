@@ -1,5 +1,5 @@
 ---
-title: vscode造成电脑卡顿
+title: VScode造成电脑卡顿
 tags:
   - Vscode
   - 电脑卡顿

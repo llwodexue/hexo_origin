@@ -10,6 +10,8 @@ copyright: ture
 abbrlink: 84a23fec
 ---
 
+## Axios 二次封装
+
 > 目的：把当前项目中，所有请求的公共部分进行统一处理
 
 - `axios.defaults` 设置公共的配置项

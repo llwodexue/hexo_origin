@@ -272,6 +272,160 @@ export default i18n
 
 到此为止，Element 和 页面国际化基本做完了，不过还有一些国际化难点，接下来说一下
 
+## 3.与vuex进行关联
+
+> 参考：[ant-design-vue-pro](https://github.com/vueComponent/ant-design-vue-pro)
+
+- 增加给 HTML 根节点增加 `lang` 属性
+- 可以在 `loadLanguageAsync` 力作缓存语言设置，切换语言时懒加载对应语言，以提升性能
+- 增加 `i18nRender` 方法
+
+```js
+/* i18n/index.js */
+import Vue from 'vue'
+import VueI18n from 'vue-i18n'
+import enLocale from 'element-ui/lib/locale/lang/en'
+import zhCNLocale from 'element-ui/lib/locale/lang/zh-CN'
+import zhTWLocale from 'element-ui/lib/locale/lang/zh-TW'
+
+Vue.use(VueI18n)
+
+const langFiles = require.context('./config', false, /\.js$/)
+const regExp = /\.\/([^\.\/]+)\.([^\.]+)$/
+const messages = {}
+const lang = {
+  zh: zhCNLocale,
+  zhTW: zhTWLocale,
+  en: enLocale
+}
+// 默认语言
+const loadLanguage = 'zh'
+
+langFiles.keys().forEach(key => {
+  const k = regExp.exec(key)[1]
+  // 合并Element国际化配置
+  messages[k] = Object.assign(langFiles(key).default, lang[k])
+})
+
+function setI18nLanguage(lang) {
+  i18n.locale = lang
+  localStorage.setItem('lang', lang)
+  document.querySelector('html').setAttribute('lang', lang)
+  return lang
+}
+
+const i18n = new VueI18n({
+  silentTranslationWarn: true, // 取消本地化失败时输出的警告
+  locale: getLanguage(), // 语言环境
+  messages
+})
+
+export function getLanguage() {
+  // 第一次进入页面或手动清除设置默认语言
+  localStorage.getItem('lang') ? null : localStorage.setItem('lang', loadLanguage)
+  let locale = localStorage.getItem('lang')
+  if (!(locale in messages)) locale = loadLanguage
+  return locale
+}
+
+// 可以在这里做动态加载国际化语言
+export function loadLanguageAsync(lang) {
+  return new Promise(resolve => {
+    return resolve(setI18nLanguage(lang))
+  })
+}
+
+export function i18nRender(key) {
+  return i18n.t(`${key}`)
+}
+
+export default i18n
+```
+
+在 vuex 里增加 `state`、`mutation`、`actions`
+
+```js
+/* store/modules/app.js */
+import { loadLanguageAsync } from '@/i18n'
+
+const state = {
+  lang: 'zh'
+}
+
+const mutations = {
+  SET_LANG: (state, lang) => {
+    state.lang = lang
+  }
+}
+
+const actions = {
+  setLang({ commit }, lang) {
+    return new Promise((resolve, reject) => {
+      commit('SET_LANG', lang)
+      loadLanguageAsync(lang)
+        .then(() => {
+          resolve()
+        })
+        .catch(e => {
+          reject(e)
+        })
+    })
+  }
+}
+```
+
+在 vuex 的 `getters` 里增加 lang
+
+```js
+/* store/getters.js */
+const getters = {
+  lang: state => state.app.lang
+}
+export default getters
+```
+
+在创建 Vue 实例时 `dispatch` 让 `state` 有 lang 的状态
+
+```js
+/* main.js */
+import App from './App'
+import store from '@/store'
+import i18n from '@/i18n' 
+import { getLanguage } from '@/i18n'
+
+function createdConfig() {
+  store.dispatch('app/setLang', getLanguage())
+}
+
+new Vue({
+  el: '#app',
+  store,
+  i18n,
+  created: createdConfig,
+  render: h => h(App)
+})
+```
+
+可以将修改语言抽成组件（这里只写 JS 部分）
+
+```js
+import { mapState } from 'vuex'
+export default {
+  computed: {
+    ...mapState({
+      language: state => state.app.lang
+    })
+  },
+  methods: {
+    handleSetLanguage(lang) {
+      this.$store.dispatch('app/setLang', lang).then(() => {
+        window.location.reload()
+      }).catch(() => {})
+    }
+  }
+}
+```
+
 # 路由导航篇
 
 这里有一些前端后端都可以处理，如果后端进行国际化处理，前端需要在请求拦截器里加 `Accept-Language` 请求头
@@ -824,74 +978,6 @@ import Vue from 'vue'
 import globalComponents from '@/components'
 
 Vue.use(globalComponents)
-```
-
-## * 5.自制弹出框组件国际化（方式二，需改善）
-
-### main.js
-
-这样就可以在全局使用 `MsgBox / msg-box` 了
-
-```js
-import Vue from 'vue'
-import MsgBox from '@/components/MsgBox/MsgBox'
-
-Vue.component('MsgBox', MsgBox)
-```
-
-### 页面中使用
-
-在页面中结合 `$msgbox` 使用，在 `message` 中使用组件，因为 `msg-box` 组件是动态创建的，`$i18n` 是在全局一开始混入，所以在其中拿不到 `i18n`
-
-```js
-this.$msgbox({
-  title: 'xxx',
-  message: <msg-box l={this.$i18n} />,
-  showCancelButton: true,
-  confirmButtonText: this.$t('tools.confirm'),
-  cancelButtonText: this.$t('tools.close'),
-  beforeClose: (action, instance, done) => {
-    if (action === 'confirm') {
-      done()
-      confirmFn()
-    } else {
-      done()
-    }
-  }
-})
-```
-
-### 组件里接收使用
-
-说白了就是模仿 `$t` 的功能。不过使用 split 最好结合循环使用，这样不管多少层没事（这个方法还有点是不太好，后续想想怎么优化）
-
-```html
-<template>
-  <div>
-    <span>{{ $l('tools.ipAddr') }}</span>
-    <span>{{ $l('tools.reason') }}</span>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'MsgBox',
-  props: {
-    l: {
-      default: () => {}
-    }
-  },
-  methods: {
-    $l(key) {
-      const i18n = this.l
-      const locale = i18n.locale
-      const messages = i18n.messages
-      const val = key.split('.')
-      return messages[locale][val[0]][val[1]]
-    }
-  }
-}
-</script>
 ```
 
 # 打包篇
