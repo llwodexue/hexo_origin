@@ -5,6 +5,8 @@ tags:
   - new
   - instanceof
 categories: JavaScript
+description: >-
+  介绍new、Object.create、instanceof、forEach、call、bind、promise
 author: LiLyn
 copyright: ture
 abbrlink: e8c036a5
