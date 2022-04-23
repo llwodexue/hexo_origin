@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"llmysnow.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍 VScode 在前端领域中的常用配置、常用设置以及可能会出现的问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VScode 前端常用配置&#x2F;设置&#x2F;问题">
+<meta property="og:url" content="http://llmysnow.top/posts/735a614e/index.html">
+<meta property="og:site_name" content="奇幻的梦之旅">
+<meta property="og:description" content="介绍 VScode 在前端领域中的常用配置、常用设置以及可能会出现的问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/44b0beb30e83fe54f1f1948ecb00d613.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/92d5103fc2c57d04b198741d635eb776.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/b10162b4e1145d08d9685ac6ebfdeaa4.gif">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/59234ecb0e2943a88377ea26165825c7.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/075e43fb700f26a1240de4be016c8d37.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/d6e428b65dd8131b492659d4f3004107.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/9ad8792e7e802de910dd0070cd7eacbb.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/1eb567481b1aea535769d85a4e9f07d4.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/612dc7c99c0304caae1c183dfdc71d62.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/eb96264dcbd7b4e87d0aee3c1e4d59dc.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/ea0f9eb2f34906f683d24a7b01cb3b87.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/3f96b4d903074054eda29cb333cfef7f.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/5b19c5fc4dcc4779a6ec93c2584994a2.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/8523c757447f0bb63150699bbdb9a120.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/40252b907528a66d3431bb27604f5d74.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/a2137bc49325c18fd8ae8bbbfe19c623.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/c083b8bc1ac24d068ea8a758175295b4.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/9f4397e73ceb9d2ac0446d7bf2b63151.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/f0d36b33675af3ab96846851b2ca8cba.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/c13c3954830cf70f8cbd26707f385e63.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/9ad77a5030fb2942a20764c71ba3e90b.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/4b2a642aa6c9e54f5d6a64cecde17eaa.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/11f8580c2ea74100a9252b9c66fb6cbe.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/421edebf8a64c9c16e96b93416afe03f.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/770b16dd075a82ccacf03961569fe96b.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/400f341f7947476680cd3388ddffec4d.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/4646c18eaa5bdf9d1381b18997b5313d.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/a2a03e1007b443545624f583db933b79.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/128f90e8aa946c031c3f6e752e0d208f.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/416f5adc4c14224ad9bc77855a1c27df.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/9bbac98df915d7f543a333ce869da317.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/a8fc4b6ac8688f3e10e2b1b1c2287f07.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/79d6d89a327cb3f407004a26dc155dc6.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/224c68fa7e8b2711d96db0d7031bfb09.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/5e3d38f8d10495270f313177a4f6207f.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/b3b8d8deabe36111a8ce1d2b7dbfd674.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/5d2ebfc340f21579bfcb217a2cb8046a.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200811234121722.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4Njg5Mzk1,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="article:published_time" content="2022-04-23T11:27:04.396Z">
+<meta property="article:modified_time" content="2022-04-23T11:27:47.120Z">
+<meta property="article:author" content="LiLyn">
+<meta property="article:tag" content="主题">
+<meta property="article:tag" content="字体">
+<meta property="article:tag" content="图标">
+<meta property="article:tag" content="插件">
+<meta property="article:tag" content="配置">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/44b0beb30e83fe54f1f1948ecb00d613.png">
+
+<link rel="canonical" href="http://llmysnow.top/posts/735a614e/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>VScode 前端常用配置/设置/问题 | 奇幻的梦之旅</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="奇幻的梦之旅" type="application/atom+xml">
+</head>
+<!--即时预加载技术，在用户点击之前预先加载页面-->
+<script src="https://cdn.jsdelivr.net/gh/TRHX/CDN-for-itrhx.com@2.0.2/js/instantclick-1.2.2.js" type="module"></script>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	  <!--<a target="_blank" rel="noopener" href="https://github.com/llwodexue" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>-->
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">奇幻的梦之旅</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">http://llmysnow.top/</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/735a614e/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.jpg">
+      <meta itemprop="name" content="LiLyn">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="奇幻的梦之旅">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VScode 前端常用配置/设置/问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-23 19:27:04" itemprop="dateCreated datePublished" datetime="2022-04-23T19:27:04+08:00">2022-04-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/" itemprop="url" rel="index"><span itemprop="name">基础配置</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+            <div class="post-description">介绍 VScode 在前端领域中的常用配置、常用设置以及可能会出现的问题</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h2><h3 id="Snazzy-Operator"><a href="#Snazzy-Operator" class="headerlink" title="Snazzy Operator"></a>Snazzy Operator</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/44b0beb30e83fe54f1f1948ecb00d613.png"></p>
+<h3 id="Oceanic-Next"><a href="#Oceanic-Next" class="headerlink" title="Oceanic Next"></a>Oceanic Next</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/92d5103fc2c57d04b198741d635eb776.png"></p>
+<h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><h3 id="JetBrains-Mono"><a href="#JetBrains-Mono" class="headerlink" title="JetBrains Mono"></a><a target="_blank" rel="noopener" href="https://www.jetbrains.com/lp/mono/">JetBrains Mono</a></h3><ul>
+<li>字体效果</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/b10162b4e1145d08d9685ac6ebfdeaa4.gif"></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//控制字体体系</span></span><br><span class="line"><span class="string">&quot;editor.fontFamily&quot;</span>: <span class="string">&quot;&#x27;JetBrains Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace&quot;</span>,</span><br></pre></td></tr></table></figure>
+
+<h3 id="SourceCodePro"><a href="#SourceCodePro" class="headerlink" title="SourceCodePro"></a><a target="_blank" rel="noopener" href="https://github.com/adobe-fonts/source-code-pro">SourceCodePro</a></h3><h2 id="图标"><a href="#图标" class="headerlink" title="图标"></a>图标</h2><h3 id="Material-Icon-Theme"><a href="#Material-Icon-Theme" class="headerlink" title="Material Icon Theme"></a>Material Icon Theme</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/59234ecb0e2943a88377ea26165825c7.png"></p>
+<h2 id="扩展插件"><a href="#扩展插件" class="headerlink" title="扩展插件"></a>扩展插件</h2><h3 id="Auto-Close-Tag-——代码闭合"><a href="#Auto-Close-Tag-——代码闭合" class="headerlink" title="Auto Close Tag ——代码闭合"></a>Auto Close Tag ——代码闭合</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/075e43fb700f26a1240de4be016c8d37.png"></p>
+<h3 id="Auto-Rename-Tag-——重命名匹配标签"><a href="#Auto-Rename-Tag-——重命名匹配标签" class="headerlink" title="Auto Rename Tag ——重命名匹配标签"></a>Auto Rename Tag ——重命名匹配标签</h3><ul>
+<li>自动重命名配对的 HTML / XML 标签，也可以在 JSX 中使用</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/d6e428b65dd8131b492659d4f3004107.png"></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;auto-rename-tag.activationOnLanguage&quot;: [&quot;html&quot;, &quot;xml&quot;, &quot;php&quot;, &quot;javascript&quot;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="Better-Comments——-代码注释"><a href="#Better-Comments——-代码注释" class="headerlink" title="Better Comments—— 代码注释"></a>Better Comments—— 代码注释</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/9ad8792e7e802de910dd0070cd7eacbb.png"></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* MyMethod</span></span><br><span class="line"><span class="comment">  * 绿色的高亮注释</span></span><br><span class="line"><span class="comment">  ! 红色的高亮注释</span></span><br><span class="line"><span class="comment">  ? 蓝色的高亮注释</span></span><br><span class="line"><span class="comment">  todo 橙色的高亮注释</span></span><br><span class="line"><span class="comment">  // 灰色带删除线的注释</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/1eb567481b1aea535769d85a4e9f07d4.png"></p>
+<h3 id="Bracket-Pair-Colorizer-2-——括号颜色"><a href="#Bracket-Pair-Colorizer-2-——括号颜色" class="headerlink" title="Bracket Pair Colorizer 2 ——括号颜色"></a>Bracket Pair Colorizer 2 ——括号颜色</h3><ul>
+<li>此扩展名允许用颜色标识匹配的括号</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/612dc7c99c0304caae1c183dfdc71d62.png"></p>
+<h3 id="Change-case-——切换命名规则"><a href="#Change-case-——切换命名规则" class="headerlink" title="Change-case ——切换命名规则"></a>Change-case ——切换命名规则</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/eb96264dcbd7b4e87d0aee3c1e4d59dc.png"></p>
+<p>Ctrl + Shift + P 执行命令的输入框，选择 <code>Change Case Commands</code>，选择其规范格式即可</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/ea0f9eb2f34906f683d24a7b01cb3b87.png"></p>
+<h3 id="Code-Runner——-代码运行"><a href="#Code-Runner——-代码运行" class="headerlink" title="Code Runner—— 代码运行"></a>Code Runner—— 代码运行</h3><ul>
+<li>代码一键运行，万能语言运行环境</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/3f96b4d903074054eda29cb333cfef7f.png"></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&quot;code-runner.executorMap&quot;: &#123;</span><br><span class="line">	&quot;python&quot;: &quot;set PYTHONIOENCODING=utf8 &amp;&amp; python&quot;,</span><br><span class="line">	&quot;java&quot;: &quot;cd $dir &amp;&amp; javac -encoding utf-8 $fileName &amp;&amp; java $fileNameWithoutExt&quot;,</span><br><span class="line">&#125;,</span><br><span class="line">&quot;code-runner.runInTerminal&quot;: true,</span><br></pre></td></tr></table></figure>
+<h3 id="Color-Highlight-——-高亮显示颜色"><a href="#Color-Highlight-——-高亮显示颜色" class="headerlink" title="Color Highlight —— 高亮显示颜色"></a>Color Highlight —— 高亮显示颜色</h3><p><img data-src="https://img-blog.csdnimg.cn/5b19c5fc4dcc4779a6ec93c2584994a2.png"></p>
+<h3 id="Chinese-Simplified-Language-Pack-——汉化包"><a href="#Chinese-Simplified-Language-Pack-——汉化包" class="headerlink" title="Chinese (Simplified) Language Pack ——汉化包"></a>Chinese (Simplified) Language Pack ——汉化包</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/8523c757447f0bb63150699bbdb9a120.png"></p>
+<h3 id="CSS-Peek-——快速编辑查看css"><a href="#CSS-Peek-——快速编辑查看css" class="headerlink" title="CSS Peek ——快速编辑查看css"></a>CSS Peek ——快速编辑查看css</h3><p>比较常用的快捷键</p>
+<ul>
+<li>Go to：直接跳转到 CSS 文件或在新的编辑器（F12）中打开</li>
+<li>Hover：在符号上悬停显示定义（Ctrl + hover）</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/40252b907528a66d3431bb27604f5d74.png"></p>
+<h3 id="Code-Spell-Checker-——代码检查"><a href="#Code-Spell-Checker-——代码检查" class="headerlink" title="Code Spell Checker ——代码检查"></a>Code Spell Checker ——代码检查</h3><ul>
+<li>检查单词拼写是否有错</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/a2137bc49325c18fd8ae8bbbfe19c623.png"></p>
+<h3 id="Document-This-——增加代码注释"><a href="#Document-This-——增加代码注释" class="headerlink" title="Document This ——增加代码注释"></a>Document This ——增加代码注释</h3><p>选中代码，键入 <code>Ctrl + Alt + D</code> 即可生成注释模板<br><img data-src="https://img-blog.csdnimg.cn/c083b8bc1ac24d068ea8a758175295b4.png"></p>
+<h3 id="DotENV-——env-高亮"><a href="#DotENV-——env-高亮" class="headerlink" title="DotENV ——env 高亮"></a>DotENV ——env 高亮</h3><p>env 可能大致分为如下几种情况</p>
+<ul>
+<li><code>.env.development</code> 开发环境</li>
+<li><code>.env.production</code> 生产环境</li>
+<li><code>.env.stage</code> 预发布环境 <code>.env.grayscale</code> 灰度测试环境</li>
+<li><code>.env.sit</code> 系统集成测试环境 <code>.env.test</code> 测试环境</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/9f4397e73ceb9d2ac0446d7bf2b63151.png"></p>
+<h3 id="ESLint-——代码风格"><a href="#ESLint-——代码风格" class="headerlink" title="ESLint ——代码风格"></a>ESLint ——代码风格</h3><ul>
+<li>语法规则和代码风格的检查工具</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/f0d36b33675af3ab96846851b2ca8cba.png"></p>
+<p><a target="_blank" rel="noopener" href="https://docs.shanyuhai.top/tools/vscode/format-with-eslint.html">ESLint</a></p>
+<h3 id="filesize——文件大小"><a href="#filesize——文件大小" class="headerlink" title="filesize——文件大小"></a>filesize——文件大小</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/c13c3954830cf70f8cbd26707f385e63.png"></p>
+<p>在 Vscode 左下角显示文件大小</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/9ad77a5030fb2942a20764c71ba3e90b.png"></p>
+<h3 id="Image-preview——图片预览"><a href="#Image-preview——图片预览" class="headerlink" title="Image preview——图片预览"></a>Image preview——图片预览</h3><ul>
+<li>悬停时显示图像预览或装订线左侧可以预览大小图片</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/4b2a642aa6c9e54f5d6a64cecde17eaa.png"></p>
+<h3 id="Indenticator-——-强调缩进深度"><a href="#Indenticator-——-强调缩进深度" class="headerlink" title="Indenticator —— 强调缩进深度"></a>Indenticator —— 强调缩进深度</h3><p><img data-src="https://img-blog.csdnimg.cn/11f8580c2ea74100a9252b9c66fb6cbe.png"></p>
+<h3 id="Indent-Rainbow——文本缩进颜色"><a href="#Indent-Rainbow——文本缩进颜色" class="headerlink" title="Indent Rainbow——文本缩进颜色"></a>Indent Rainbow——文本缩进颜色</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/421edebf8a64c9c16e96b93416afe03f.png"></p>
+<p>缩进效果如下：</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/770b16dd075a82ccacf03961569fe96b.png"></p>
+<h3 id="koroFileHeader-——-函数注释"><a href="#koroFileHeader-——-函数注释" class="headerlink" title="koroFileHeader —— 函数注释"></a>koroFileHeader —— 函数注释</h3><p>详细配置可参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/D_claus/article/details/85243454">vscode添加新建文件头部注释和函数注释</a><br><img data-src="https://img-blog.csdnimg.cn/400f341f7947476680cd3388ddffec4d.png"></p>
+<h3 id="Live-Server——热更新"><a href="#Live-Server——热更新" class="headerlink" title="Live Server——热更新"></a>Live Server——热更新</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/4646c18eaa5bdf9d1381b18997b5313d.png"></p>
+<h3 id="open-in-browser——打开默认浏览器"><a href="#open-in-browser——打开默认浏览器" class="headerlink" title="open in browser——打开默认浏览器"></a>open in browser——打开默认浏览器</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/a2a03e1007b443545624f583db933b79.png"></p>
+<h3 id="Prettier——代码格式化"><a href="#Prettier——代码格式化" class="headerlink" title="Prettier——代码格式化"></a>Prettier——代码格式化</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/128f90e8aa946c031c3f6e752e0d208f.png"></p>
+<p>常用配置表如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 多少行时开始折行</span></span><br><span class="line">    <span class="attr">&quot;prettier.printWidth&quot;</span>: <span class="number">140</span>,</span><br><span class="line">    <span class="comment">// flase 不要分号</span></span><br><span class="line">    <span class="attr">&quot;prettier.semi&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="comment">// true 使用单引号</span></span><br><span class="line">    <span class="attr">&quot;prettier.singleQuote&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="comment">// 箭头函数参数只有一个时是否要有小括号。avoid：省略括号</span></span><br><span class="line">    <span class="attr">&quot;prettier.arrowParens&quot;</span>: <span class="string">&quot;avoid&quot;</span>,</span><br><span class="line">    <span class="comment">// 自动格式化</span></span><br><span class="line">    <span class="attr">&quot;editor.formatOnSave&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Path-Intellisense——自动显示文件名-路径"><a href="#Path-Intellisense——自动显示文件名-路径" class="headerlink" title="Path Intellisense——自动显示文件名/路径"></a>Path Intellisense——自动显示文件名/路径</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/416f5adc4c14224ad9bc77855a1c27df.png"></p>
+<h3 id="ES7-React-Redux-GraphQL-React-Native-snippets——高亮jsx"><a href="#ES7-React-Redux-GraphQL-React-Native-snippets——高亮jsx" class="headerlink" title="ES7 React/Redux/GraphQL/React-Native snippets——高亮jsx"></a>ES7 React/Redux/GraphQL/React-Native snippets——高亮jsx</h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/9bbac98df915d7f543a333ce869da317.png"></p>
+<h3 id="Settings-Sync——Vscode配置同步"><a href="#Settings-Sync——Vscode配置同步" class="headerlink" title="Settings Sync——Vscode配置同步"></a>Settings Sync——Vscode配置同步</h3><ul>
+<li>使用 GitHub Gist 在多台机器上同步设置，代码片段，主题，文件图标，启动，键绑定，工作区和扩展</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/a8fc4b6ac8688f3e10e2b1b1c2287f07.png"></p>
+<ul>
+<li><p>上传快捷键 : Shift + Alt + U</p>
+</li>
+<li><p>下载快捷键 : Shift + Alt + D</p>
+</li>
+</ul>
+<h3 id="Vetur——Vue工具"><a href="#Vetur——Vue工具" class="headerlink" title="Vetur——Vue工具"></a>Vetur——Vue工具</h3><ul>
+<li>支持多种功能，比如语法高亮、错误检测、Emmet 和 Snippet 等等</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/79d6d89a327cb3f407004a26dc155dc6.png"></p>
+<h3 id="Vue-CSS-Peek——Vue-查看-CSS-定义"><a href="#Vue-CSS-Peek——Vue-查看-CSS-定义" class="headerlink" title="Vue CSS Peek——Vue 查看 CSS 定义"></a>Vue CSS Peek——Vue 查看 CSS 定义</h3><ul>
+<li>允许在 Vue 中跳转到 CSS 定义，补足 CSS Peek 无法定义的部分</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/224c68fa7e8b2711d96db0d7031bfb09.png"></p>
+<h3 id="Vue-helper——Vue"><a href="#Vue-helper——Vue" class="headerlink" title="Vue-helper——Vue"></a>Vue-helper——Vue</h3><ul>
+<li>Element、iView 代码提示和属性解读</li>
+<li>允许查看方法、组件的定义</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/5e3d38f8d10495270f313177a4f6207f.png"></p>
+<p><strong>注意：</strong> 下载的不是下面那个，下面那个是语法提示、简化的插件</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/b3b8d8deabe36111a8ce1d2b7dbfd674.png"></p>
+<h3 id="Vue-Peek——Vue-查看组件定义"><a href="#Vue-Peek——Vue-查看组件定义" class="headerlink" title="Vue Peek——Vue 查看组件定义"></a>Vue Peek——Vue 查看组件定义</h3><ul>
+<li>允许在 Vue 中跳转相对/绝对文件路径</li>
+<li>允许查看组件的定义</li>
+</ul>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/5d2ebfc340f21579bfcb217a2cb8046a.png"></p>
+<h2 id="Emmet"><a href="#Emmet" class="headerlink" title="Emmet"></a>Emmet</h2><p>目前所有的前端编辑器都支持 Emmet</p>
+<p><a target="_blank" rel="noopener" href="https://docs.emmet.io/cheat-sheet/">Emmet 作弊表</a></p>
+<h2 id="settings-json"><a href="#settings-json" class="headerlink" title="settings.json"></a>settings.json</h2><p>在 VS Code 中，按 <strong>Ctrl + P</strong>，输入 <strong>settings.json</strong> 并打开该文件</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">/* 配置 terminal 为 Git */</span></span><br><span class="line">  <span class="attr">&quot;terminal.integrated.profiles.windows&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;Git-Bash&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;path&quot;</span>: <span class="string">&quot;D:\\Develop\\Git\\bin\\bash.exe&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;args&quot;</span>: []</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;terminal.integrated.defaultProfile.windows&quot;</span>: <span class="string">&quot;Git-Bash&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;code-runner.runInTerminal&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="comment">/* 配置编辑器字体、贯标 */</span></span><br><span class="line">  <span class="attr">&quot;editor.fontSize&quot;</span>: <span class="number">16</span>,</span><br><span class="line">  <span class="attr">&quot;editor.lineHeight&quot;</span>: <span class="number">20</span>,</span><br><span class="line">  <span class="attr">&quot;editor.letterSpacing&quot;</span>: <span class="number">0.5</span>,</span><br><span class="line">  <span class="attr">&quot;editor.fontWeight&quot;</span>: <span class="string">&quot;400&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;editor.fontFamily&quot;</span>: <span class="string">&quot;&#x27;JetBrains Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;editor.fontLigatures&quot;</span>: <span class="literal">true</span>, <span class="comment">// 连体字</span></span><br><span class="line">  <span class="attr">&quot;editor.tabSize&quot;</span>: <span class="number">2</span>,</span><br><span class="line">  <span class="attr">&quot;editor.cursorStyle&quot;</span>: <span class="string">&quot;line&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;editor.cursorWidth&quot;</span>: <span class="number">5</span>,</span><br><span class="line">  <span class="attr">&quot;editor.cursorBlinking&quot;</span>: <span class="string">&quot;solid&quot;</span>, <span class="comment">// 光标动画样式</span></span><br><span class="line">  <span class="attr">&quot;editor.suggestSelection&quot;</span>: <span class="string">&quot;first&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;editor.wordWrap&quot;</span>: <span class="string">&quot;on&quot;</span>, <span class="comment">// 视区自动折行</span></span><br><span class="line">  <span class="attr">&quot;editor.defaultFormatter&quot;</span>: <span class="string">&quot;esbenp.prettier-vscode&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;editor.detectIndentation&quot;</span>: <span class="literal">false</span>, <span class="comment">// 打开文件时不自动检查tabSize</span></span><br><span class="line">  <span class="comment">// &quot;editor.formatOnSave&quot;: true, // 自动格式化</span></span><br><span class="line">  <span class="attr">&quot;terminal.integrated.fontSize&quot;</span>: <span class="number">15</span>,</span><br><span class="line">  <span class="attr">&quot;files.autoSave&quot;</span>: <span class="string">&quot;onFocusChange&quot;</span>, <span class="comment">// 文件焦点变化自动保存</span></span><br><span class="line">  <span class="comment">/* 配置编辑器样式 */</span></span><br><span class="line">  <span class="attr">&quot;window.zoomLevel&quot;</span>: <span class="number">0</span>, <span class="comment">// 窗口缩放级别</span></span><br><span class="line">  <span class="attr">&quot;explorer.compactFolders&quot;</span>: <span class="literal">false</span>, <span class="comment">// 紧凑显示名称</span></span><br><span class="line">  <span class="attr">&quot;workbench.iconTheme&quot;</span>: <span class="string">&quot;material-icon-theme&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;workbench.colorTheme&quot;</span>: <span class="string">&quot;Snazzy Operator&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;workbench.sideBar.location&quot;</span>: <span class="string">&quot;right&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;indentRainbow.colors&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;rgba(255,255,64,0.07)&quot;</span>,</span><br><span class="line">    <span class="string">&quot;rgba(127,255,127,0.07)&quot;</span>,</span><br><span class="line">    <span class="string">&quot;rgba(255,127,255,0.07)&quot;</span>,</span><br><span class="line">    <span class="string">&quot;rgba(79,236,236,0.07)&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="comment">/* 配置格式化 */</span></span><br><span class="line">  <span class="attr">&quot;prettier.singleQuote&quot;</span>: <span class="literal">true</span>, <span class="comment">// 使用单引号</span></span><br><span class="line">  <span class="attr">&quot;prettier.semi&quot;</span>: <span class="literal">false</span>, <span class="comment">// 使用分号</span></span><br><span class="line">  <span class="attr">&quot;prettier.arrowParens&quot;</span>: <span class="string">&quot;avoid&quot;</span>, <span class="comment">// (x) =&gt; &#123;&#125; 只有一个参数省略括号</span></span><br><span class="line">  <span class="attr">&quot;prettier.tabWidth&quot;</span>: <span class="number">2</span>,</span><br><span class="line">  <span class="attr">&quot;prettier.printWidth&quot;</span>: <span class="number">100</span>,</span><br><span class="line">  <span class="comment">/* 配置编辑器确认方式 */</span></span><br><span class="line">  <span class="attr">&quot;open-in-browser.default&quot;</span>: <span class="string">&quot;chrome&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;liveServer.settings.CustomBrowser&quot;</span>: <span class="string">&quot;chrome&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;git.confirmSync&quot;</span>: <span class="literal">false</span>, <span class="comment">// 同步 Git 是否确认</span></span><br><span class="line">  <span class="attr">&quot;explorer.confirmDelete&quot;</span>: <span class="literal">false</span>, <span class="comment">// 删除文件是否确认</span></span><br><span class="line">  <span class="attr">&quot;security.workspace.trust.untrustedFiles&quot;</span>: <span class="string">&quot;open&quot;</span>, <span class="comment">// 允许打开不信任文件</span></span><br><span class="line">  <span class="attr">&quot;javascript.updateImportsOnFileMove.enabled&quot;</span>: <span class="string">&quot;always&quot;</span>, <span class="comment">// 移动文件更新导入路径</span></span><br><span class="line">  <span class="comment">/* 文件不会显示在工作空间中 */</span></span><br><span class="line">  <span class="attr">&quot;files.exclude&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;**/.git&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;**/.svn&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;**/.DS_Store&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;**/.vscode&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;node_modules&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;target&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;logs&quot;</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">/* 搜索功能时，文件夹/文件排除在外 */</span></span><br><span class="line">  <span class="attr">&quot;search.exclude&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;**/node_modules&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;**/target&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;**/logs&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;**/dist&quot;</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;emmet.syntaxProfiles&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;vue-html&quot;</span>: <span class="string">&quot;html&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;vue&quot;</span>: <span class="string">&quot;html&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;eslint.validate&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;javascript&quot;</span>,</span><br><span class="line">    <span class="string">&quot;javascriptreact&quot;</span>,</span><br><span class="line">    <span class="string">&quot;typescript&quot;</span>,</span><br><span class="line">    <span class="string">&quot;typescriptreact&quot;</span>,</span><br><span class="line">    <span class="string">&quot;vue&quot;</span>,</span><br><span class="line">    <span class="string">&quot;html&quot;</span>,</span><br><span class="line">    <span class="string">&quot;jsx&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">&quot;typescript.locale&quot;</span>: <span class="string">&quot;en&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="jsconfig-json"><a href="#jsconfig-json" class="headerlink" title="jsconfig.json"></a>jsconfig.json</h2><p>绝对路径、相对路径跳转需要在根目录增加 <code>jsconfig.json</code> 文件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;baseUrl&quot;</span>: <span class="string">&quot;.&quot;</span>,</span><br><span class="line">    <span class="string">&quot;paths&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;@/*&quot;</span>: [<span class="string">&quot;./src/*&quot;</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;target&quot;</span>: <span class="string">&quot;ES6&quot;</span>,</span><br><span class="line">    <span class="string">&quot;module&quot;</span>: <span class="string">&quot;commonjs&quot;</span>,</span><br><span class="line">    <span class="string">&quot;allowSyntheticDefaultImports&quot;</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;include&quot;</span>: [<span class="string">&quot;src/**/*&quot;</span>],</span><br><span class="line">  <span class="string">&quot;exclude&quot;</span>: [<span class="string">&quot;node_modules&quot;</span>, <span class="string">&quot;dist&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><p><a target="_blank" rel="noopener" href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf">vscode 快捷键</a></p>
+<ul>
+<li><strong>Ctrl + P</strong> ：转到文件，您可以在 Visual Studio Code 中移动到打开的文件/文件夹的任何文件。</li>
+<li><strong>Ctrl + `</strong> ：在 VS Code 中打开 terminal</li>
+<li><strong>Alt + Down</strong>：下移一行</li>
+<li><strong>Alt + Up</strong>：上移一行</li>
+<li><strong>Ctrl + D</strong>：将选定的字符移动到下一个匹配字符串上</li>
+<li><strong>Ctrl + Space</strong>：触发建议</li>
+<li><strong>Shift + Alt + Down</strong>：向下复制行</li>
+<li><strong>Shift + Alt + Up</strong>：向上复制行</li>
+<li><strong>Ctrl + Shift + T</strong>：重新打开最新关闭的窗口</li>
+</ul>
+<h2 id="VSCODE-问题"><a href="#VSCODE-问题" class="headerlink" title="VSCODE 问题"></a>VSCODE 问题</h2><ol>
+<li>vscode 保存文件时自动删除行尾空格：搜索 <code>files.trimTrailingWhitespace</code> ，然后将选项勾选即可</li>
+<li>Code-runner 在终端运行：搜索 <code>code-runner.runInTerminal</code> ，然后将选项勾选即可</li>
+<li>VSCode 中调用 cv2，代码一直显示红色波浪线（pylint 只支持自己的标准库）：搜索 <code>Pylint Args</code> 点击 add item 添加 <code>--generate-members</code> 即可</li>
+<li>代码补全失效：搜索 <code>auto Complete</code> 添加第三方库的路径</li>
+<li>如果打开终端的时候弹出了系统的 cmd 窗口。解决方法：打开系统 cmd，然后左上角右键属性，取消使用旧版控制台<br><img data-src="https://img-blog.csdnimg.cn/20200811234121722.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4Njg5Mzk1,size_16,color_FFFFFF,t_70#pic_center" alt="弹出cmd窗口"></li>
+</ol>
+<h2 id="扩展工具其他篇——Jypyter"><a href="#扩展工具其他篇——Jypyter" class="headerlink" title="扩展工具其他篇——Jypyter"></a>扩展工具其他篇——Jypyter</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/73452541">工具篇-vscode 效率提升插件</a></p>
+<p><a target="_blank" rel="noopener" href="http://news.eeworld.com.cn/mp/QbitAI/a58625.jspx">你真的会用 Jupyter 吗？这里有 7 个进阶功能助你效率翻倍</a></p>
+<p>如果出错：以管理员方式运行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新pip到最新版本</span></span><br><span class="line">pip install --upgrade pip</span><br><span class="line"><span class="comment"># 如果没有pip</span></span><br><span class="line">python -m ensurepip</span><br><span class="line">easy_install pip</span><br><span class="line"><span class="comment"># 安装Jupyter</span></span><br><span class="line">pip install jupyter</span><br><span class="line"><span class="comment"># 安装nbextensions</span></span><br><span class="line">python -m pip install jupyter_contrib_nbextensions</span><br><span class="line">jupyter contrib nbextension install --user --skip-running-check</span><br><span class="line">或</span><br><span class="line">conda install -c conda-forge jupyter_nbextensions_configurator</span><br><span class="line"><span class="comment"># 安装完成后，勾选 “Table of Contents” 以及 “Hinterland”</span></span><br><span class="line"><span class="comment"># 启动</span></span><br><span class="line">jupyter notebook</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+	<div>
+		  
+			
+		  
+	</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%B8%BB%E9%A2%98/" rel="tag"><i class="fa fa-tag"></i> 主题</a>
+              <a href="/tags/%E5%AD%97%E4%BD%93/" rel="tag"><i class="fa fa-tag"></i> 字体</a>
+              <a href="/tags/%E5%9B%BE%E6%A0%87/" rel="tag"><i class="fa fa-tag"></i> 图标</a>
+              <a href="/tags/%E6%8F%92%E4%BB%B6/" rel="tag"><i class="fa fa-tag"></i> 插件</a>
+              <a href="/tags/%E9%85%8D%E7%BD%AE/" rel="tag"><i class="fa fa-tag"></i> 配置</a>
+          </div>
+		 
+		<!--post-tags 彩色标签-->
+		<script type="text/javascript">
+		var tagsall=document.getElementsByClassName("post-tags")
+		for (var i = tagsall.length - 1; i >= 0; i--){
+			var tags=tagsall[i].getElementsByTagName("a");
+			for (var j = tags.length - 1; j >= 0; j--) {
+				var r=Math.floor(Math.random()*75+130);
+				var g=Math.floor(Math.random()*75+100);
+				var b=Math.floor(Math.random()*75+80);
+				tags[j].style.background = "rgb("+r+","+g+","+b+")";
+				tags[j].style.color = "#fff";
+				tags[j].style.padding = "0 10px";
+			}
+		}                        
+		</script>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/126e4b0f/" rel="prev" title="Node 事件循环及多线程">
+      <i class="fa fa-chevron-left"></i> Node 事件循环及多线程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/920f26b5/" rel="next" title="Vue2 面试题">
+      Vue2 面试题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98"><span class="nav-text">主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Snazzy-Operator"><span class="nav-text">Snazzy Operator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oceanic-Next"><span class="nav-text">Oceanic Next</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E4%BD%93"><span class="nav-text">字体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JetBrains-Mono"><span class="nav-text">JetBrains Mono</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SourceCodePro"><span class="nav-text">SourceCodePro</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E6%A0%87"><span class="nav-text">图标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Material-Icon-Theme"><span class="nav-text">Material Icon Theme</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E6%8F%92%E4%BB%B6"><span class="nav-text">扩展插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Auto-Close-Tag-%E2%80%94%E2%80%94%E4%BB%A3%E7%A0%81%E9%97%AD%E5%90%88"><span class="nav-text">Auto Close Tag ——代码闭合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Auto-Rename-Tag-%E2%80%94%E2%80%94%E9%87%8D%E5%91%BD%E5%90%8D%E5%8C%B9%E9%85%8D%E6%A0%87%E7%AD%BE"><span class="nav-text">Auto Rename Tag ——重命名匹配标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Better-Comments%E2%80%94%E2%80%94-%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A"><span class="nav-text">Better Comments—— 代码注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bracket-Pair-Colorizer-2-%E2%80%94%E2%80%94%E6%8B%AC%E5%8F%B7%E9%A2%9C%E8%89%B2"><span class="nav-text">Bracket Pair Colorizer 2 ——括号颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Change-case-%E2%80%94%E2%80%94%E5%88%87%E6%8D%A2%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99"><span class="nav-text">Change-case ——切换命名规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Code-Runner%E2%80%94%E2%80%94-%E4%BB%A3%E7%A0%81%E8%BF%90%E8%A1%8C"><span class="nav-text">Code Runner—— 代码运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Color-Highlight-%E2%80%94%E2%80%94-%E9%AB%98%E4%BA%AE%E6%98%BE%E7%A4%BA%E9%A2%9C%E8%89%B2"><span class="nav-text">Color Highlight —— 高亮显示颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Chinese-Simplified-Language-Pack-%E2%80%94%E2%80%94%E6%B1%89%E5%8C%96%E5%8C%85"><span class="nav-text">Chinese (Simplified) Language Pack ——汉化包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSS-Peek-%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E7%BC%96%E8%BE%91%E6%9F%A5%E7%9C%8Bcss"><span class="nav-text">CSS Peek ——快速编辑查看css</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Code-Spell-Checker-%E2%80%94%E2%80%94%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5"><span class="nav-text">Code Spell Checker ——代码检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Document-This-%E2%80%94%E2%80%94%E5%A2%9E%E5%8A%A0%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A"><span class="nav-text">Document This ——增加代码注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DotENV-%E2%80%94%E2%80%94env-%E9%AB%98%E4%BA%AE"><span class="nav-text">DotENV ——env 高亮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ESLint-%E2%80%94%E2%80%94%E4%BB%A3%E7%A0%81%E9%A3%8E%E6%A0%BC"><span class="nav-text">ESLint ——代码风格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filesize%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F"><span class="nav-text">filesize——文件大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Image-preview%E2%80%94%E2%80%94%E5%9B%BE%E7%89%87%E9%A2%84%E8%A7%88"><span class="nav-text">Image preview——图片预览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Indenticator-%E2%80%94%E2%80%94-%E5%BC%BA%E8%B0%83%E7%BC%A9%E8%BF%9B%E6%B7%B1%E5%BA%A6"><span class="nav-text">Indenticator —— 强调缩进深度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Indent-Rainbow%E2%80%94%E2%80%94%E6%96%87%E6%9C%AC%E7%BC%A9%E8%BF%9B%E9%A2%9C%E8%89%B2"><span class="nav-text">Indent Rainbow——文本缩进颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#koroFileHeader-%E2%80%94%E2%80%94-%E5%87%BD%E6%95%B0%E6%B3%A8%E9%87%8A"><span class="nav-text">koroFileHeader —— 函数注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Live-Server%E2%80%94%E2%80%94%E7%83%AD%E6%9B%B4%E6%96%B0"><span class="nav-text">Live Server——热更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#open-in-browser%E2%80%94%E2%80%94%E6%89%93%E5%BC%80%E9%BB%98%E8%AE%A4%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="nav-text">open in browser——打开默认浏览器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prettier%E2%80%94%E2%80%94%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-text">Prettier——代码格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Path-Intellisense%E2%80%94%E2%80%94%E8%87%AA%E5%8A%A8%E6%98%BE%E7%A4%BA%E6%96%87%E4%BB%B6%E5%90%8D-%E8%B7%AF%E5%BE%84"><span class="nav-text">Path Intellisense——自动显示文件名&#x2F;路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ES7-React-Redux-GraphQL-React-Native-snippets%E2%80%94%E2%80%94%E9%AB%98%E4%BA%AEjsx"><span class="nav-text">ES7 React&#x2F;Redux&#x2F;GraphQL&#x2F;React-Native snippets——高亮jsx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Settings-Sync%E2%80%94%E2%80%94Vscode%E9%85%8D%E7%BD%AE%E5%90%8C%E6%AD%A5"><span class="nav-text">Settings Sync——Vscode配置同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vetur%E2%80%94%E2%80%94Vue%E5%B7%A5%E5%85%B7"><span class="nav-text">Vetur——Vue工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue-CSS-Peek%E2%80%94%E2%80%94Vue-%E6%9F%A5%E7%9C%8B-CSS-%E5%AE%9A%E4%B9%89"><span class="nav-text">Vue CSS Peek——Vue 查看 CSS 定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue-helper%E2%80%94%E2%80%94Vue"><span class="nav-text">Vue-helper——Vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue-Peek%E2%80%94%E2%80%94Vue-%E6%9F%A5%E7%9C%8B%E7%BB%84%E4%BB%B6%E5%AE%9A%E4%B9%89"><span class="nav-text">Vue Peek——Vue 查看组件定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Emmet"><span class="nav-text">Emmet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-json"><span class="nav-text">settings.json</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jsconfig-json"><span class="nav-text">jsconfig.json</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-text">快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VSCODE-%E9%97%AE%E9%A2%98"><span class="nav-text">VSCODE 问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%B7%A5%E5%85%B7%E5%85%B6%E4%BB%96%E7%AF%87%E2%80%94%E2%80%94Jypyter"><span class="nav-text">扩展工具其他篇——Jypyter</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiLyn"
+      src="/images/logo.jpg">
+  <p class="site-author-name" itemprop="name">LiLyn</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/llwodexue" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;llwodexue" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/qq_38689395" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_38689395" rel="noopener" target="_blank"><i class="fas fa-copyright fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://scx69.gitee.io/blogs/" title="https:&#x2F;&#x2F;scx69.gitee.io&#x2F;blogs&#x2F;" rel="noopener" target="_blank">花开满城</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yixin-oss.gitee.io/daytoy/" title="http:&#x2F;&#x2F;yixin-oss.gitee.io&#x2F;daytoy&#x2F;" rel="noopener" target="_blank">daytoy</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiLyn</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">463k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:01</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>-->
+
+<!--
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="powered-by">
+  <i class="fa fa-user-md"></i>
+  <span id="busuanzi_container_site_pv">
+    本站访问量:<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">
+    本站总访客量：<span id="busuanzi_value_site_uv"></span>人
+  </span>
+</div>-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  <!-- 动态线条背景 -->
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript">
+	!function(e,t,a){function n(){c(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),o(),r()}function r(){for(var e=0;e<d.length;e++)d[e].alpha<=0?(t.body.removeChild(d[e].el),d.splice(e,1)):(d[e].y--,d[e].scale+=.004,d[e].alpha-=.013,d[e].el.style.cssText="left:"+d[e].x+"px;top:"+d[e].y+"px;opacity:"+d[e].alpha+";transform:scale("+d[e].scale+","+d[e].scale+") rotate(45deg);background:"+d[e].color+";z-index:99999");requestAnimationFrame(r)}function o(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),i(e)}}function i(e){var a=t.createElement("div");a.className="heart",d.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:s()}),t.body.appendChild(a)}function c(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function s(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var d=[];e.requestAnimationFrame=function(){return e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)}}(),n()}(window,document);
+  </script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+</html>

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"llmysnow.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="JS的开销&amp;缩短JS解析时间&amp;JS代码优化；前端修仙之路 - V8编译原理；HTML优化-前端必知必会；CSS优化-现代优化方案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="优化3.代码优化">
+<meta property="og:url" content="http://llmysnow.top/posts/32a9efe/index.html">
+<meta property="og:site_name" content="奇幻的梦之旅">
+<meta property="og:description" content="JS的开销&amp;缩短JS解析时间&amp;JS代码优化；前端修仙之路 - V8编译原理；HTML优化-前端必知必会；CSS优化-现代优化方案">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061424849.jpg">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061431980.png">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061440018.png">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061452685.jpg">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061501154.png">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203071001116.png">
+<meta property="og:image" content="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203071140279.png">
+<meta property="article:published_time" content="2022-04-23T11:27:04.405Z">
+<meta property="article:modified_time" content="2022-04-23T11:27:47.128Z">
+<meta property="article:author" content="LiLyn">
+<meta property="article:tag" content="性能优化">
+<meta property="article:tag" content="配合 V8 引擎优化">
+<meta property="article:tag" content="函数对象优化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061424849.jpg">
+
+<link rel="canonical" href="http://llmysnow.top/posts/32a9efe/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>优化3.代码优化 | 奇幻的梦之旅</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="奇幻的梦之旅" type="application/atom+xml">
+</head>
+<!--即时预加载技术，在用户点击之前预先加载页面-->
+<script src="https://cdn.jsdelivr.net/gh/TRHX/CDN-for-itrhx.com@2.0.2/js/instantclick-1.2.2.js" type="module"></script>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	  <!--<a target="_blank" rel="noopener" href="https://github.com/llwodexue" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>-->
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">奇幻的梦之旅</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">http://llmysnow.top/</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://llmysnow.top/posts/32a9efe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.jpg">
+      <meta itemprop="name" content="LiLyn">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="奇幻的梦之旅">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          优化3.代码优化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-23 19:27:04" itemprop="dateCreated datePublished" datetime="2022-04-23T19:27:04+08:00">2022-04-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">性能优化</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+            <div class="post-description">JS的开销&缩短JS解析时间&JS代码优化；前端修仙之路 - V8编译原理；HTML优化-前端必知必会；CSS优化-现代优化方案</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="JS开销"><a href="#JS开销" class="headerlink" title="JS开销"></a>JS开销</h2><h3 id="JS-开销在哪"><a href="#JS-开销在哪" class="headerlink" title="JS 开销在哪"></a>JS 开销在哪</h3><p>资源大小相同的情况下，JS 开销更高</p>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061424849.jpg"></p>
+<p><code>Bottom-Up</code>：自下而上，可以看下里面具体做了哪些事情，耗时多久</p>
+<ul>
+<li><code>Evaluate Script</code>：解析耗时 101.6ms</li>
+</ul>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061431980.png"></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://v8.dev/blog/cost-of-javascript-2019">The cost of JavaScript in 2019</a></p>
+</blockquote>
+<p>对于一个网站而言，总共的网络加载过程中，压缩后 1.4 M 的 JS 在整个网络加载耗时中占 1/3</p>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061440018.png"></p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
+<li><p><code>Code Splitting</code>：代码拆分，按需加载</p>
+<p>当前路径需要哪些资源就加载哪些资源，不需要的延迟加载或访问需要它的页面再加载</p>
+</li>
+<li><p><code>Tree Shaking</code>：代码减重</p>
+<p>摇一棵树，树上枯萎的叶子就会掉下来。如果有代码用不到，就不打包进来</p>
+</li>
+</ul>
+<p><strong>减少主线程工作量：</strong></p>
+<ul>
+<li><p>避免长任务</p>
+</li>
+<li><p>避免超过 1KB 的行间脚本</p>
+<p>行间脚本是一个优化策略，比如要加快首屏加载时间，可以把 JS 和 CSS 都行间化，其余通过 Web 文件加载</p>
+</li>
+<li><p>使用 rAF 和 rAC 进行调度</p>
+</li>
+</ul>
+<p><strong>Progressive Bootstrapping（渐进式启动）：</strong></p>
+<ol>
+<li><strong>Navigation begins</strong>：第一个字节</li>
+<li><strong>First Paint</strong>：白屏开始有内容绘制</li>
+<li><strong>FCP: First Contentful Paint</strong> ：导航启动</li>
+<li><strong>FMP: First Meaningful Paint</strong>：页面内容是可见的</li>
+<li><strong>Visually ready</strong>：页面基本绘制完成</li>
+<li><strong>Time to Interactive</strong>：页面完全能进行交互</li>
+<li><strong>Fully Loaded</strong>：结束这轮生命周期</li>
+</ol>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061452685.jpg"></p>
+<h2 id="配合-V8-进行优化代码"><a href="#配合-V8-进行优化代码" class="headerlink" title="配合 V8 进行优化代码"></a>配合 V8 进行优化代码</h2><h3 id="V8-编译原理"><a href="#V8-编译原理" class="headerlink" title="V8 编译原理"></a>V8 编译原理</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.sec4.fun/2020/06/19/v8TurboFan/">V8中Speculative Optimization简介</a></p>
+</blockquote>
+<p>当 Chrome 或 Node 要执行一段 JS 代码时，首先会进行解析（Parse it），并将其翻译成一个抽象语法数（AST），之后把文本识别成字符，然后把重要信息提取出来，变成一些节点存储在一定的数据结构里（Interpreter）。最后把代码编成机器码之前，编译器会进行优化工作（Optimize Compiler），但是有时它自动优化工作并不一定合适（逆优化），所以我们需要在代码层面做的优化尽量满足它的优化条件，之后按照它的期望代码去写即可</p>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203061501154.png"></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://nodejs.cn/api/perf_hooks.html">perf_hooks 性能钩子</a></p>
+</blockquote>
+<p>注释掉和没注释掉 <code>add(num1, &#39;s&#39;)</code> 各执行一次观察 <code>duration</code> 持续时间。在执行函数时，发现参数类型发生变化，运行时不能用已经做过的优化逻辑了，就会把刚做的优化撤销，会造成一定的延时</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; performance, PerformanceObserver &#125; = <span class="built_in">require</span>(<span class="string">&#x27;perf_hooks&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b</span><br><span class="line"><span class="keyword">const</span> num1 = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> num2 = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">performance.mark(<span class="string">&#x27;start&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10000000</span>; i++) &#123;</span><br><span class="line">  add(num1, num2)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// add(num1, &#x27;s&#x27;)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10000000</span>; i++) &#123;</span><br><span class="line">  add(num1, num2)</span><br><span class="line">&#125;</span><br><span class="line">performance.mark(<span class="string">&#x27;end&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> observer = <span class="keyword">new</span> PerformanceObserver(<span class="function"><span class="params">list</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(list.getEntries()[<span class="number">0</span>])</span><br><span class="line">&#125;)</span><br><span class="line">observer.observe(&#123; <span class="attr">entryTypes</span>: [<span class="string">&#x27;measure&#x27;</span>] &#125;)</span><br><span class="line">performance.measure(<span class="string">&#x27;测量&#x27;</span>, <span class="string">&#x27;start&#x27;</span>, <span class="string">&#x27;end&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment">// 没注释 add(num1, &#x27;s&#x27;)</span></span><br><span class="line"><span class="comment">PerformanceEntry &#123;</span></span><br><span class="line"><span class="comment">  name: &#x27;测量&#x27;,</span></span><br><span class="line"><span class="comment">  entryType: &#x27;measure&#x27;,</span></span><br><span class="line"><span class="comment">  startTime: 30.1886,</span></span><br><span class="line"><span class="comment">  duration: 50.1463</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">// 注释 add(num1, &#x27;s&#x27;)</span></span><br><span class="line"><span class="comment">PerformanceEntry &#123;</span></span><br><span class="line"><span class="comment">  name: &#x27;测量&#x27;,</span></span><br><span class="line"><span class="comment">  entryType: &#x27;measure&#x27;,</span></span><br><span class="line"><span class="comment">  startTime: 27.3498,</span></span><br><span class="line"><span class="comment">  duration: 19.102599</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>如果想进一步了解 V8 做了什么优化，可以利用 Node 的两个参数（<code>trace-opt</code>、<code>trace-deopt</code>）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node --trace-opt --trace-deopt de-opt.js </span><br></pre></td></tr></table></figure>
+
+<p><strong>抽象语法数：</strong></p>
+<ul>
+<li>源码 -&gt; 抽象语法数 -&gt; 字节码 Bytecode -&gt; 机器码</li>
+<li>编译过程进行优化</li>
+<li>运行时可能发生反优化</li>
+</ul>
+<h3 id="优化机制"><a href="#优化机制" class="headerlink" title="优化机制"></a>优化机制</h3><ul>
+<li><p>脚本流</p>
+<p>脚本正常情况要先进行下载再进行解析最后执行的过程，Chrome 在这里做了优化，在下载过程中可以同时进行解析就可以加快这个过程。当下载一个超过 30 KB 的脚本时，可以先对这 30 KB 内容进行解析，会单独开一个线程去给这段代码进行解析，等整个都下载完在完成时再进行解析合并，最后就可以执行，效率就大大提高了。这是流式处理的一个特点</p>
+</li>
+<li><p>字节码缓存</p>
+<p>有些东西使用频率比较高，可以把它进行缓存，再次进行访问时就可以加快访问。源码被翻译成字节码之后，发现有一些不仅在当前页面有使用，在其他页面也会有使用的片段，就可以把这些片段对应的字节码缓存起来，在其他页面再次进行访问相同逻辑时，直接从缓存去取即可，不需要再进行翻译过程，效率就大大提高了</p>
+</li>
+<li><p>懒解析</p>
+<p>对于函数而言，虽然声明了这个函数，但是不一定会马上用它，默认情况下会进行懒解析（先不去解析函数内部的逻辑，当使用时再去解析函数内部逻辑），效率就大大提高了</p>
+</li>
+</ul>
+<h2 id="函数优化"><a href="#函数优化" class="headerlink" title="函数优化"></a>函数优化</h2><ul>
+<li><code>lazy parsing</code> 懒解析与 <code>eager parsing</code> 饥饿解析</li>
+<li>利用 <code>Optimize.js</code> 优化初次加载时间</li>
+</ul>
+<p><strong>懒解析与饥饿解析</strong></p>
+<ul>
+<li><p>只是加一对括号 <code>()</code> 即可把懒解析变为饥饿解析</p>
+<p>但是当我们使用 uglify 进行压缩代码时，这队括号会被去掉，这样就导致本来想做的事情，没办法通知到解析器，这时就可以使用 <code>Optimize.js</code> 工具</p>
+<p>当然现在 uglify 已经把这个问题解决掉了</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* test.js */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> add = <span class="function">(<span class="params">a, b</span>) =&gt;</span> a*b      <span class="comment">// lazy parsing</span></span><br><span class="line">  <span class="comment">// const add = ((a, b) =&gt; a*b) // eager parsing</span></span><br><span class="line">  <span class="keyword">const</span> num1 = <span class="number">1</span></span><br><span class="line">  <span class="keyword">const</span> num2 = <span class="number">2</span></span><br><span class="line">  add(num1, num2)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* App.jsx */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params">props</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">super</span>(props)</span><br><span class="line">    test()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* webpack.config.js */</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: &#123;</span><br><span class="line">    app: <span class="string">&#x27;./src/index.jsx&#x27;</span>,</span><br><span class="line">    test: <span class="string">&#x27;./src/test.js&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: <span class="string">`<span class="subst">$&#123;__dirname&#125;</span>/build`</span>,</span><br><span class="line">    filename: <span class="string">&#x27;[name].bundle.js&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="对象优化"><a href="#对象优化" class="headerlink" title="对象优化"></a>对象优化</h2><p>做这些优化的目的：迎合 V8 引擎进行解析，把你的代码进行优化。因为它也是用代码写的，所做的优化其实也是代码实现的规则，如果我们的代码迎合了这些规则，就可以帮你去做优化，代码效率可以得到提升</p>
+<ul>
+<li>以相同顺序初始化对象成员，避免隐藏类的调整</li>
+<li>实例化后避免添加新属性</li>
+<li>尽量使用 Array 代替 array-like 对象</li>
+<li>避免读取超过数组的长度</li>
+<li>避免元素类型转换</li>
+</ul>
+<p><strong>以相同顺序初始化对象成员，避免隐藏类的调整</strong></p>
+<p>JS 是动态、弱类型语言，写的时候不会声明和强调它变量的类型，但是对于编辑器而言，实际上还是需要知道确定的类型，在解析时，它根据自己的推断，会给这些变量赋一个具体的类型，通常管这些类型叫隐藏类型（hidden class），之后所做的优化都是基于隐藏类型进行的</p>
+<ul>
+<li>隐藏类型底层会以描述的数组进行存储，数组里会去强调所有属性声明的顺序，或者说索引，索引的位置</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RectArea</span> </span>&#123; <span class="comment">// HC0</span></span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params">l, w</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.l = l <span class="comment">// HC1</span></span><br><span class="line">    <span class="built_in">this</span>.w = w <span class="comment">// HC2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当我们声明了矩形面积类之后，创建第一个HC0</span></span><br><span class="line"><span class="keyword">const</span> rect1 = <span class="keyword">new</span> RectArea(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"><span class="comment">// 接下来再创建实例时，还能按照这个服用所有隐藏类</span></span><br><span class="line"><span class="keyword">const</span> rect2 = <span class="keyword">new</span> RectArea(<span class="number">5</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// car1声明对象的时候会创建一个隐藏类 HC0</span></span><br><span class="line"><span class="keyword">const</span> car = &#123; <span class="attr">color</span>: <span class="string">&#x27;red&#x27;</span> &#125;</span><br><span class="line"><span class="comment">// 追加属性会再创建个隐藏类型 HC1</span></span><br><span class="line">car1.seats = <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// car2声明时，HC0的属性是关于color的属性，car2声明的是关于seats的属性，所以没办法复用，只能再创建 HC2</span></span><br><span class="line"><span class="keyword">const</span> car2 = &#123; <span class="attr">seats</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="comment">// HC1不是只包含seats的属性，是包含了color和seats两个属性，所以没有可复用的隐藏类，创建 HC3</span></span><br><span class="line">car2.color = <span class="string">&#x27;blue&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>实例化后避免添加新属性</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// In-Object属性</span></span><br><span class="line"><span class="keyword">const</span> car = &#123; <span class="attr">color</span>: <span class="string">&#x27;red&#x27;</span> &#125;</span><br><span class="line"><span class="comment">// Normal/Fast属性，存储property store里，需要通过描述数组间接查找</span></span><br><span class="line">car1.seats = <span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>尽量使用 Array 代替 array-like 对象</strong></p>
+<ul>
+<li><code>array-like</code> 对象：JS 里都有一个 arguments 对象，包含了函数参数变量的信息，本身是一个对象，但是可以通过索引去访问里面的属性，它还有 length 属性，像是一个数组，但又不是数组，不具备数组上面的方法，比如：forEach</li>
+<li>V8 引擎会对数组能极大性能优化，目前有 21 种不同的元素类型，最好是把类数组转成数组再进行遍历，这样会比不去转成数组直接遍历效率高</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不如在真实数组上效率高</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.forEach.call(arrObj, <span class="function">(<span class="params">val, index</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;index&#125;</span>：<span class="subst">$&#123;value&#125;</span>`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> arr = <span class="built_in">Array</span>.prototype.slice.call(arrObj, <span class="number">0</span>)</span><br><span class="line">arr.forEach(<span class="function">(<span class="params">value, index</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;index&#125;</span>：<span class="subst">$&#123;value&#125;</span>`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>避免读取超过数组的长度</strong></p>
+<ol>
+<li><code>arr[3] -&gt; undefined</code> 会与数字进行比较（JS 里越界不一定会报错）</li>
+<li>如果在数组对象里找不到，会沿着原型链向上找，所以会进行额外的开销</li>
+<li>越界比较会造成原型链额外的查找，性能相差 6 倍</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 把超过边界的值也比较进来 &lt;=</span></span><br><span class="line">  <span class="built_in">Array</span>.prototype[<span class="string">&#x27;3&#x27;</span>] = <span class="number">10000</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (arr[i] &gt; <span class="number">1000</span>) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(arr[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo([<span class="number">10</span>, <span class="number">100</span>, <span class="number">1000</span>])</span><br></pre></td></tr></table></figure>
+
+<p><strong>避免元素类型转换</strong></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000023193375">你可能不知道的V8数组优化</a></p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000011303679">JavaScript 在 V8 中的元素种类及性能优化</a></p>
+</blockquote>
+<ul>
+<li><p>对于编辑器而言，实际上是有类型的</p>
+<p>JavaScript 是不区分整数、浮点数和双精度，它们都是数字，但是在编辑器里会对这个做出精确的区分，如果使数组里面类型发生变化，就会造成额外的开销，效率就不高了</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>] <span class="comment">// PACKED_SMI_ELEMENTS</span></span><br><span class="line">arr.push(<span class="number">4.4</span>) <span class="comment">// PACKED_DOUBLE_ELEMENTS</span></span><br><span class="line">arr.push(<span class="string">&#x27;x&#x27;</span>) <span class="comment">// PACKED_ELEMENTS</span></span><br><span class="line">arr[<span class="number">9</span>] = <span class="number">1</span> <span class="comment">// HOLEY_ELEMENTS</span></span><br></pre></td></tr></table></figure>
+
+<p>类型越具体，编辑器能做的优化就越多，如果越通用，能做的优化余地就越少</p>
+<ul>
+<li>只能通过格子向下过度，一旦将单精度浮点数添加到 Smi 数组中，即使稍后用 Smi 覆盖浮点数，它也会被标记为 DOUBLE。类似地，一旦在数组中创建了一个洞，它将永久标记为有洞 HOLEY，即使稍微填充它也是如此</li>
+</ul>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203071001116.png"></p>
+<h2 id="HTML-优化"><a href="#HTML-优化" class="headerlink" title="HTML 优化"></a>HTML 优化</h2><ul>
+<li>减少 iframes 使用</li>
+<li>压缩空白符</li>
+<li>避免节点深层次嵌套</li>
+<li>避免使用 table 布局</li>
+<li>删除注释</li>
+<li>CSS 和 JavaScript 尽量使用外联</li>
+<li>删除元素默认属性</li>
+</ul>
+<p><strong>减少 iframes 使用：</strong></p>
+<ul>
+<li><p>额外添加了文档，需要加载的过程，也会阻碍父文档的加载过程，也就是说如果它加载不完成，父文档本身的 onload 事件就不会触发，一直等着它。在 iframe 里创建的元素，比在父文档创建同样的元素，开销要高出很多</p>
+<p>如果非得用 iframe，可以做个延时加载</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">id</span>=<span class="string">&quot;iframe&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.getElementById(<span class="string">&#x27;iframe&#x27;</span>).setAttribute(<span class="string">&#x27;src&#x27;</span>, url)</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>压缩空白符：</strong></p>
+<ul>
+<li>编程时，为了方便阅读，会留空行和换行，最后打包要把空白符去掉</li>
+</ul>
+<p><strong>避免节点深层次嵌套：</strong></p>
+<ul>
+<li>嵌套越深消耗越高，节点越多最后生成 DOM 树占用内存会比较高</li>
+</ul>
+<p><strong>避免使用 table 布局：</strong></p>
+<ul>
+<li>table 布局本身有很多问题，使用起来没有那么灵活，造成的开销比较大</li>
+</ul>
+<p><strong>删除元素默认属性：</strong></p>
+<ul>
+<li>本身默认那些值，没必要写出来，写出来就添加了额外的字符，造成了不必要的浪费</li>
+</ul>
+<p><strong>借助工具</strong></p>
+<ul>
+<li>html-minifier</li>
+</ul>
+<h2 id="CSS-优化"><a href="#CSS-优化" class="headerlink" title="CSS 优化"></a>CSS 优化</h2><ul>
+<li><p>利用 DevTools 测量样式计算开销</p>
+<p>CSS 解析原则是自右向左去读，会先找出最具体的元素，把所有 a 全部找出来，再根据 #box 进行过滤…直至把所有有影响的元素全部过滤出来。不过随着浏览器解析不断进度，现在这种复杂度的计算依据不是主要的问题了</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.list</span><span class="selector-pseudo">:nth-last-child(1)</span> &gt; <span class="selector-id">#box</span> <span class="selector-tag">a</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>CSS 优化：</strong></p>
+<ul>
+<li><p>降低 CSS 对渲染的阻塞</p>
+</li>
+<li><p>利用 GPU 完成动画，不进行回流重绘</p>
+</li>
+<li><p>使用 font-display 属性</p>
+<p>可以帮助我们让文字更早显示在页面上，减轻文字闪动</p>
+</li>
+<li><p>使用 contain 属性</p>
+<p>contain 是开发者和浏览器进行沟通的一个属性，通过 <code>contain: layout</code> 告诉浏览器，盒子里所有的子元素和盒子外面的元素之间没有任何布局上的关系。这样浏览器就可以对盒子里面的元素进行单独处理，不需要管理页面上其他的部分，这样就可以大大减少回流计算</p>
+<p><img data-src="https://gitee.com/lilyn/pic/raw/master/jslearn-img/202203071140279.png"></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+	<div>
+		  
+			
+<div class="my_post_copyright clearfix">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <article class="box-left">
+    <img src="https://gitee.com/lilyn/pic/raw/master/logo.jpg">
+  </article>
+  <article class="box-right">
+    <p><span>本文标题:</span><a href="/posts/32a9efe/">优化3.代码优化</a></p>
+    <p><span>文章作者:</span><a href="/" title="访问 LiLyn 的个人博客">LiLyn</a></p>
+    <p><span>原始链接:</span><a href="/posts/32a9efe/" title="优化3.代码优化">http://llmysnow.top/posts/32a9efe/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://llmysnow.top/posts/32a9efe/"  aria-label="复制成功！"></i></span>
+  </p>
+    <p><span>许可协议:</span>转载请保留原文链接及作者。</p>  
+  </article>
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+    });
+    });  
+</script>
+
+		  
+	</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag"><i class="fa fa-tag"></i> 性能优化</a>
+              <a href="/tags/%E9%85%8D%E5%90%88-V8-%E5%BC%95%E6%93%8E%E4%BC%98%E5%8C%96/" rel="tag"><i class="fa fa-tag"></i> 配合 V8 引擎优化</a>
+              <a href="/tags/%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%BC%98%E5%8C%96/" rel="tag"><i class="fa fa-tag"></i> 函数对象优化</a>
+          </div>
+		 
+		<!--post-tags 彩色标签-->
+		<script type="text/javascript">
+		var tagsall=document.getElementsByClassName("post-tags")
+		for (var i = tagsall.length - 1; i >= 0; i--){
+			var tags=tagsall[i].getElementsByTagName("a");
+			for (var j = tags.length - 1; j >= 0; j--) {
+				var r=Math.floor(Math.random()*75+130);
+				var g=Math.floor(Math.random()*75+100);
+				var b=Math.floor(Math.random()*75+80);
+				tags[j].style.background = "rgb("+r+","+g+","+b+")";
+				tags[j].style.color = "#fff";
+				tags[j].style.padding = "0 10px";
+			}
+		}                        
+		</script>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/9847b5b5/" rel="prev" title="优化2.渲染优化">
+      <i class="fa fa-chevron-left"></i> 优化2.渲染优化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/a7b3e4ca/" rel="next" title="优化4.资源优化">
+      优化4.资源优化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JS%E5%BC%80%E9%94%80"><span class="nav-text">JS开销</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JS-%E5%BC%80%E9%94%80%E5%9C%A8%E5%93%AA"><span class="nav-text">JS 开销在哪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-text">解决方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E5%90%88-V8-%E8%BF%9B%E8%A1%8C%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81"><span class="nav-text">配合 V8 进行优化代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#V8-%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86"><span class="nav-text">V8 编译原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E6%9C%BA%E5%88%B6"><span class="nav-text">优化机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%BC%98%E5%8C%96"><span class="nav-text">函数优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E4%BC%98%E5%8C%96"><span class="nav-text">对象优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML-%E4%BC%98%E5%8C%96"><span class="nav-text">HTML 优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSS-%E4%BC%98%E5%8C%96"><span class="nav-text">CSS 优化</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiLyn"
+      src="/images/logo.jpg">
+  <p class="site-author-name" itemprop="name">LiLyn</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/llwodexue" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;llwodexue" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/qq_38689395" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_38689395" rel="noopener" target="_blank"><i class="fas fa-copyright fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://scx69.gitee.io/blogs/" title="https:&#x2F;&#x2F;scx69.gitee.io&#x2F;blogs&#x2F;" rel="noopener" target="_blank">花开满城</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yixin-oss.gitee.io/daytoy/" title="http:&#x2F;&#x2F;yixin-oss.gitee.io&#x2F;daytoy&#x2F;" rel="noopener" target="_blank">daytoy</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiLyn</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">463k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:01</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>-->
+
+<!--
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="powered-by">
+  <i class="fa fa-user-md"></i>
+  <span id="busuanzi_container_site_pv">
+    本站访问量:<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">
+    本站总访客量：<span id="busuanzi_value_site_uv"></span>人
+  </span>
+</div>-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  <!-- 动态线条背景 -->
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript">
+	!function(e,t,a){function n(){c(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),o(),r()}function r(){for(var e=0;e<d.length;e++)d[e].alpha<=0?(t.body.removeChild(d[e].el),d.splice(e,1)):(d[e].y--,d[e].scale+=.004,d[e].alpha-=.013,d[e].el.style.cssText="left:"+d[e].x+"px;top:"+d[e].y+"px;opacity:"+d[e].alpha+";transform:scale("+d[e].scale+","+d[e].scale+") rotate(45deg);background:"+d[e].color+";z-index:99999");requestAnimationFrame(r)}function o(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),i(e)}}function i(e){var a=t.createElement("div");a.className="heart",d.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:s()}),t.body.appendChild(a)}function c(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function s(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var d=[];e.requestAnimationFrame=function(){return e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)}}(),n()}(window,document);
+  </script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+</html>

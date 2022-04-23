@@ -7,9 +7,9 @@ tags:
   - 插件
   - 配置
 categories: 基础配置
-description: >-
-  介绍 VScode 在前端领域中的常用配置、常用设置以及可能会出现的问题
+description: 介绍 VScode 在前端领域中的常用配置、常用设置以及可能会出现的问题
 author: LiLyn
+abbrlink: 735a614e
 ---
 
 ## 主题

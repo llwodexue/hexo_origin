@@ -6,10 +6,10 @@ tags:
   - 事件循环
   - 多线程
 categories: JavaScript
-description: >-
-  介绍 Node 事件循环与浏览器事件循环的区别，以及 Node 多线程
+description: 介绍 Node 事件循环与浏览器事件循环的区别，以及 Node 多线程
 author: LiLyn
 copyright: ture
+abbrlink: 126e4b0f
 ---
 
 ## 浏览器事件循环

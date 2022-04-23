@@ -7,10 +7,10 @@ tags:
   - 环境变量
   - AES
 categories: 基础配置
-description: >-
-  介绍如何使用 nvm 搭建 Node 环境，在 Mac 电脑下的常用软件和环境变量配置
+description: 介绍如何使用 nvm 搭建 Node 环境，在 Mac 电脑下的常用软件和环境变量配置
 author: LiLyn
 copyright: ture
+abbrlink: 167dee54
 ---
 
 ## 使用 nvm
@@ -219,6 +219,7 @@ export NVM_NODEJS_ORG_MIRROR=$NODEJS_ORG_MIRROR
 安装 typora 免费版本
 
 - [typora](https://typora.io/dev_release.html)
+- [typora windows](https://typora.io/windows/dev_release.html)
 
 使用 iterm2 命令行
 
